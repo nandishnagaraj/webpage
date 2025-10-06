@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CSV Fetch Test</title>
+</head>
+<body>
+  <h2>CSV Fetch Test</h2>
+  <pre id="output">Loading...</pre>
+
+  <script>
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv';
+
+    fetch(csvUrl)
+      .then(resp => {
+        if (!resp.ok) {
+          throw new Error('Network response was not ok: ' + resp.status);
+        }
+        return resp.text();
+      })
+      .then(text => {
+        document.getElementById('output').textContent = text;
+        console.log('CSV Text:', text);
+      })
+      .catch(err => {
+        document.getElementById('output').textContent = 'Error: ' + err;
+        console.error('Fetch error:', err);
+      });
+  </script>
+</body>
+</html>
