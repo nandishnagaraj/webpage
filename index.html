@@ -236,60 +236,61 @@
   </footer>
 
 <script>
-document.getElementById('year').textContent = new Date().getFullYear();
+document.getElementById("year").textContent = new Date().getFullYear();
 
 const sheetUrl =
-  'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv';
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv";
 
-// Handle DD/MM/YYYY correctly
+// Parse DD/MM/YYYY safely
 function parseDate(s) {
   if (!s) return null;
-  const parts = s.trim().split(/[\\/\\-]/);
+  const parts = s.trim().split(/[\/\-]/);
   if (parts.length === 3) {
-    const [day, month, year] = parts.map(p => parseInt(p, 10));
+    const [day, month, year] = parts.map((p) => parseInt(p, 10));
     return new Date(year, month - 1, day);
   }
   return new Date(s);
 }
 
 fetch(sheetUrl)
-  .then(response => response.text())
-  .then(csv => {
-    // Parse CSV properly for Google output
+  .then((resp) => resp.text())
+  .then((csv) => {
+    // Parse CSV lines correctly
     const rows = csv
-      .split(/\\r?\\n/)
-      .filter(line => line.trim() !== '')
-      .map(line => line.replace(/^\"|\"$/g, '').split(/\",?\"/));
-
-    const headers = rows.shift().map(h => h.toLowerCase());
-    const idxDate = headers.findIndex(h => h.includes('date'));
-    const idxLocation = headers.findIndex(h => h.includes('location'));
-    const idxDistance = headers.findIndex(h => h.includes('distance'));
-    const idxTime = headers.findIndex(h => h.includes('time'));
+      .split(/\r?\n/)   // <-- real backslash, not escaped
+      .filter((line) => line.trim() !== "")
+      .map((line) => line.split(","));
+    
+    // Grab headers
+    const headers = rows.shift().map((h) => h.toLowerCase());
+    const idxDate = headers.findIndex((h) => h.includes("date"));
+    const idxLocation = headers.findIndex((h) => h.includes("location"));
+    const idxDistance = headers.findIndex((h) => h.includes("distance"));
+    const idxTime = headers.findIndex((h) => h.includes("time"));
 
     const today = new Date();
     const runs = rows
-      .map(r => ({
+      .map((r) => ({
         dateRaw: r[idxDate],
         location: r[idxLocation],
         distance: r[idxDistance],
         time: r[idxTime],
-        dateObj: parseDate(r[idxDate])
+        dateObj: parseDate(r[idxDate]),
       }))
-      .filter(r => r.dateObj && r.dateObj >= today)
+      .filter((r) => r.dateObj && r.dateObj >= today)
       .sort((a, b) => a.dateObj - b.dateObj);
 
-    const container = document.getElementById('runs-list');
-    container.innerHTML = '';
+    const container = document.getElementById("runs-list");
+    container.innerHTML = "";
 
-    if (runs.length === 0) {
-      container.innerHTML = '<p>No upcoming long runs scheduled.</p>';
+    if (!runs.length) {
+      container.innerHTML = "<p>No upcoming long runs scheduled.</p>";
       return;
     }
 
-    runs.forEach(r => {
-      const card = document.createElement('div');
-      card.className = 'card';
+    runs.forEach((r) => {
+      const card = document.createElement("div");
+      card.className = "card";
       card.innerHTML = `
         <h3>${r.location}</h3>
         <p><strong>Date:</strong> ${r.dateRaw}</p>
@@ -299,11 +300,13 @@ fetch(sheetUrl)
       container.appendChild(card);
     });
   })
-  .catch(err => {
-    console.error('Error fetching or parsing CSV:', err);
-    document.getElementById('runs-list').innerHTML = '<p style=\"color:red;\">Error loading data. Check console.</p>';
+  .catch((err) => {
+    console.error("Error fetching or parsing CSV:", err);
+    document.getElementById("runs-list").innerHTML =
+      '<p style="color:red;">Error loading data. Check console.</p>';
   });
 </script>
+
 
 
 
