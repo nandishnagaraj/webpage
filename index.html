@@ -241,52 +241,26 @@ document.getElementById('year').textContent = new Date().getFullYear();
 const sheetUrl =
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv';
 
-// Parse DD/MM/YYYY safely
+// Handle DD/MM/YYYY correctly
 function parseDate(s) {
   if (!s) return null;
-  const parts = s.split(/[\\/-]/);
+  const parts = s.trim().split(/[\\/\\-]/);
   if (parts.length === 3) {
     const [day, month, year] = parts.map(p => parseInt(p, 10));
     return new Date(year, month - 1, day);
   }
-  const d = new Date(s);
-  return isNaN(d) ? null : d;
-}
-
-// Proper CSV parser for quoted values
-function parseCSV(text) {
-  const rows = [];
-  let row = [], cell = '', inQuotes = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (c === '\"') {
-      if (inQuotes && text[i + 1] === '\"') { // escaped quote
-        cell += '\"';
-        i++;
-      } else {
-        inQuotes = !inQuotes;
-      }
-    } else if (c === ',' && !inQuotes) {
-      row.push(cell.trim());
-      cell = '';
-    } else if ((c === '\\n' || c === '\\r') && !inQuotes) {
-      if (cell) row.push(cell.trim());
-      if (row.length) rows.push(row);
-      row = [];
-      cell = '';
-    } else {
-      cell += c;
-    }
-  }
-  if (cell) row.push(cell.trim());
-  if (row.length) rows.push(row);
-  return rows;
+  return new Date(s);
 }
 
 fetch(sheetUrl)
-  .then(r => r.text())
+  .then(response => response.text())
   .then(csv => {
-    const rows = parseCSV(csv);
+    // Parse CSV properly for Google output
+    const rows = csv
+      .split(/\\r?\\n/)
+      .filter(line => line.trim() !== '')
+      .map(line => line.replace(/^\"|\"$/g, '').split(/\",?\"/));
+
     const headers = rows.shift().map(h => h.toLowerCase());
     const idxDate = headers.findIndex(h => h.includes('date'));
     const idxLocation = headers.findIndex(h => h.includes('location'));
@@ -308,7 +282,7 @@ fetch(sheetUrl)
     const container = document.getElementById('runs-list');
     container.innerHTML = '';
 
-    if (!runs.length) {
+    if (runs.length === 0) {
       container.innerHTML = '<p>No upcoming long runs scheduled.</p>';
       return;
     }
@@ -325,7 +299,10 @@ fetch(sheetUrl)
       container.appendChild(card);
     });
   })
-  .catch(err => console.error('Error fetching sheet:', err));
+  .catch(err => {
+    console.error('Error fetching or parsing CSV:', err);
+    document.getElementById('runs-list').innerHTML = '<p style=\"color:red;\">Error loading data. Check console.</p>';
+  });
 </script>
 
 
