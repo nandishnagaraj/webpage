@@ -1,34 +1,32 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Svedah — Upcoming Long Runs</title>
-  <meta name="description" content="Svedah: inspiring runners through coaching, community sessions, and blogs." />
-  <meta name="theme-color" content="#0ea5e9" />
+  <title>Svedah — Coaching & Long Runs</title>
+  <meta name="description" content="Svedah: running coaching, upcoming long runs, and easy calendar booking." />
+  <meta name="theme-color" content="#dc2626" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b1220;
-      --text: #f0faff;
-      --muted: #9fb3c8;
-      --brand: #0ea5e9;
-      --brand-2: #22d3ee;
-      --accent: #a78bfa;
+      --bg: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --brand: #dc2626;
+      --brand-2: #f43f5e;
+      --accent: #ef4444;
+      --surface: #ffffff;
+      --line: #e5e7eb;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { margin: 0; padding: 0; }
     body {
-      background: radial-gradient(1000px 500px at 80% -10%, rgba(14, 165, 233, .25), transparent 60%),
-        radial-gradient(900px 400px at -10% 10%, rgba(167, 139, 250, .25), transparent 60%),
+      background:
+        radial-gradient(900px 500px at 100% -10%, rgba(244,63,94,.10), transparent 60%),
+        radial-gradient(800px 400px at -10% 10%, rgba(220,38,38,.12), transparent 60%),
         var(--bg);
       color: var(--text);
       font-family: 'Poppins', sans-serif;
@@ -36,133 +34,97 @@
       scroll-behavior: smooth;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-      transition: color 0.3s;
-    }
+    a { color: inherit; text-decoration: none; transition: color .2s; }
+    a:hover { color: var(--brand); }
 
-    a:hover {
-      color: var(--brand-2);
-    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 22px; }
 
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 22px;
-    }
-
+    /* Nav */
     nav {
-      position: sticky;
-      top: 0;
-      backdrop-filter: blur(12px);
-      background: rgba(11, 18, 32, 0.8);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 12px 0;
-      z-index: 100;
+      position: sticky; top: 0; z-index: 1000;
+      background: rgba(255,255,255,.95);
+      backdrop-filter: saturate(140%) blur(8px);
+      border-bottom: 1px solid var(--line);
     }
-
-    .nav-wrap {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .nav-wrap { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+    .brand-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: .12em;
+      background: repeating-linear-gradient(-45deg, var(--brand) 0 10px, var(--brand-2) 10px 20px);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      text-shadow: 0 2px 0 rgba(0,0,0,.05);
     }
+    .nav-links { display: flex; gap: 1rem; align-items: center; font-weight: 600; }
+    .nav-links a { padding: 8px 12px; border-radius: 10px; }
+    .nav-cta { border: 2px solid var(--brand); color: var(--brand); }
+    .nav-cta:hover { background: var(--brand); color: #fff; }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: .7rem;
-      font-weight: 700;
-      font-size: 1.4rem;
-      letter-spacing: 1px;
-    }
-
-    .logo {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: conic-gradient(from 210deg, var(--brand), var(--brand-2), var(--accent));
-      box-shadow: 0 0 12px rgba(14, 165, 233, .6);
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 1.5rem;
-      font-weight: 500;
-    }
-
-    header {
-      padding: 100px 0;
-      text-align: center;
-      background: linear-gradient(180deg, rgba(14, 165, 233, .1), transparent 80%);
-    }
-
+    /* Hero */
+    header { padding: 72px 0 48px; border-bottom: 1px solid var(--line); text-align: center; }
     h1 {
+      font-family: 'Bebas Neue', sans-serif;
       font-size: 3.2rem;
-      margin-bottom: 1rem;
-      background: linear-gradient(90deg, var(--brand), var(--accent));
-      -webkit-background-clip: text;
-      color: transparent;
+      letter-spacing: .06em;
+      margin: .5rem 0;
+      color: var(--text);
     }
-
-    .sub {
-      color: var(--muted);
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-    }
+    .sub { color: var(--muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
 
     .profile-img {
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      object-fit: cover;
-      object-position: 50% 25%; /* moves the focus slightly upward */
-      box-shadow: 0 0 25px rgba(14, 165, 233, 0.5);
-      border: 3px solid var(--brand);
-      margin-bottom: 1.5rem;
+      width: 240px; height: 240px; border-radius: 50%;
+      object-fit: cover; object-position: 50% 25%;
+      border: 4px solid var(--brand);
+      box-shadow: 0 10px 24px rgba(220,38,38,.25);
+      margin-bottom: 1rem; transition: transform .35s ease;
     }
+    .profile-img:hover { transform: scale(1.03); }
 
-
-    section {
-      padding: 80px 0;
-      text-align: center;
+    .btn {
+      display: inline-block; font-weight: 700;
+      padding: 12px 24px; border-radius: 12px;
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      color: #fff; box-shadow: 0 8px 22px rgba(244,63,94,.35);
+      transition: transform .15s ease, box-shadow .2s ease;
     }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(244,63,94,.45); }
 
+    section { padding: 72px 0; text-align: center; }
     section h2 {
-      font-size: 2.4rem;
-      margin-bottom: 1rem;
-      background: linear-gradient(90deg, var(--brand), var(--accent));
-      -webkit-background-clip: text;
-      color: transparent;
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: .06em;
+      font-size: 2.6rem;
+      margin-bottom: .5rem;
+      color: var(--text);
     }
+    .section-sub { color: var(--muted); margin-bottom: 1.2rem; }
 
     .card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 18px;
-      padding: 24px;
-      margin: 20px auto;
-      box-shadow: 0 10px 25px rgba(14, 165, 233, 0.15);
-      transition: transform 0.3s, box-shadow 0.3s;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.04);
+      transition: transform .2s, box-shadow .2s, border-color .2s;
     }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px rgba(14, 165, 233, 0.25);
-    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(0,0,0,.08); border-color: #fca5a5; }
 
     .runs-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
     }
 
     footer {
-      text-align: center;
-      padding: 40px 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid var(--line);
+      padding: 26px 0;
       color: var(--muted);
-      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    @media (max-width: 680px) {
+      h1 { font-size: 2.6rem; }
+      .profile-img { width: 200px; height: 200px; }
     }
   </style>
 </head>
@@ -170,16 +132,12 @@
 <body>
   <nav>
     <div class="container nav-wrap">
-      <div class="brand">
-        <div class="logo"></div>
-        <span>SVEDAH</span>
-      </div>
+      <span class="brand-text">SVEDAH</span>
       <div class="nav-links">
         <a href="#home">Home</a>
-        <a href="#longruns">Upcoming Long Runs</a>
-        <a href="#contact">Contact Us</a>
-        <a href="#history">Coaching History</a>
-        <a href="#blogs">Blogs</a>
+        <a href="#longruns">Upcoming Runs</a>
+        <a href="#calendar" class="nav-cta">Book Slots</a>
+        <a href="#contact">Contact</a>
       </div>
     </div>
   </nav>
@@ -189,137 +147,103 @@
       <img src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg" alt="Coach Profile Image" class="profile-img">
       <h1>Welcome to Svedah</h1>
       <p class="sub">Run farther. Recover faster. Together we move stronger.</p>
+
+      <div style="max-width:720px; margin:0 auto; text-align:center; color:var(--text); line-height:1.7;">
+        <p><strong>Hi, I’m Nandish Nagaraj</strong> — a passionate long-distance runner with over <strong>13 years of experience</strong> on the road and trails, and <strong>2 years of coaching</strong> runners of all levels. I believe running transforms not just bodies but mindsets. Through Svedah, I help you train smarter, recover better, and discover joy in every stride.</p>
+      </div>
     </div>
   </header>
-
-    <section id="calendar">
-    <div class="container">
-      <h2>Book a Coaching Session</h2>
-      <p class="sub">Choose a slot on my calendar to schedule your 1-on-1 running consultation.</p>
-      <a href="https://calendar.app.google/D6obo8kMrDpTuARWA" target="_blank" class="btn">Open My Calendar</a>
-    </div>
-  </section>
 
   <section id="longruns">
     <div class="container">
       <h2>Upcoming Long Runs</h2>
-      <div id="runs-list" class="runs-grid">
-        <!-- Run cards will appear here dynamically -->
-      </div>
+      <p class="section-sub">Community-powered group runs updated live from Google Sheets.</p>
+      <div id="runs-list" class="runs-grid"></div>
+    </div>
+  </section>
+
+  <section id="calendar">
+    <div class="container">
+      <h2>Book a Coaching Session</h2>
+      <p class="section-sub">Pick a slot that works for you — schedule a 1:1 coaching call or training session through my calendar.</p>
+      <a href="https://calendar.app.google/D6obo8kMrDpTuARWA" target="_blank" rel="noopener" class="btn">Open My Calendar →</a>
     </div>
   </section>
 
   <section id="contact">
     <div class="container">
-      <h2>Contact Us</h2>
-      <p class="sub">We’d love to hear from you! Reach out directly for queries, collaborations, or upcoming training
-        sessions.</p>
-      <div class="card" style="max-width:500px; margin:auto;">
+      <h2>Contact</h2>
+      <div class="card" style="max-width:520px;margin:auto">
         <p><strong>📞 Phone:</strong> <a href="tel:9886033901">9886033901</a></p>
-        <p><strong>📧 Email:</strong> <a href="mailto:info@svedah.com">info@svedah.com</a></p>
+        <p><strong>📧 Email:</strong> <a href="mailto:svedahplatform@svedah.co.in">svedahplatform@svedah.co.in</a></p>
         <p><strong>📍 Location:</strong> Bengaluru, India</p>
+        <p style="margin-top:1rem;">
+          <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." target="_blank" class="btn" style="background:linear-gradient(90deg,#25D366,#128C7E);box-shadow:0 6px 18px rgba(37,211,102,.4);">
+            💬 WhatsApp Me
+          </a>
+        </p>
       </div>
     </div>
   </section>
 
-  <section id="history">
-    <div class="container">
-      <h2>Coaching History</h2>
-      <p style="max-width:700px; margin:auto; color:var(--muted); font-size:1.1rem;">
-        With over <strong>2 years of dedicated coaching</strong>, I’ve helped athletes of all levels discover their
-        rhythm, build endurance, and run with purpose. My approach blends science-based training and mindful recovery
-        for long-term progress.
-      </p>
-    </div>
-  </section>
-
-  <section id="blogs">
-    <div class="container">
-      <h2>Blogs</h2>
-      <p class="sub">Coming soon — get ready for running tips, nutrition insights, and inspiring stories from our
-        community.</p>
-    </div>
-  </section>
-
   <footer>
-    <p>© <span id="year"></span> Svedah. Designed with passion for runners 🏃‍♀️</p>
+    <p>© <span id="year"></span> Svedah — Run with purpose.</p>
   </footer>
 
-<script>
-document.getElementById("year").textContent = new Date().getFullYear();
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
 
-const sheetUrl =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv";
+    const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv";
 
-// Parse DD/MM/YYYY safely
-function parseDate(s) {
-  if (!s) return null;
-  const parts = s.trim().split(/[\/\-]/);
-  if (parts.length === 3) {
-    const [day, month, year] = parts.map((p) => parseInt(p, 10));
-    return new Date(year, month - 1, day);
-  }
-  return new Date(s);
-}
-
-fetch(sheetUrl)
-  .then((resp) => resp.text())
-  .then((csv) => {
-    // Parse CSV lines correctly
-    const rows = csv
-      .split(/\r?\n/)   // <-- real backslash, not escaped
-      .filter((line) => line.trim() !== "")
-      .map((line) => line.split(","));
-    
-    // Grab headers
-    const headers = rows.shift().map((h) => h.toLowerCase());
-    const idxDate = headers.findIndex((h) => h.includes("date"));
-    const idxLocation = headers.findIndex((h) => h.includes("location"));
-    const idxDistance = headers.findIndex((h) => h.includes("distance"));
-    const idxTime = headers.findIndex((h) => h.includes("time"));
-
-    const today = new Date();
-    const runs = rows
-      .map((r) => ({
-        dateRaw: r[idxDate],
-        location: r[idxLocation],
-        distance: r[idxDistance],
-        time: r[idxTime],
-        dateObj: parseDate(r[idxDate]),
-      }))
-      .filter((r) => r.dateObj && r.dateObj >= today)
-      .sort((a, b) => a.dateObj - b.dateObj);
-
-    const container = document.getElementById("runs-list");
-    container.innerHTML = "";
-
-    if (!runs.length) {
-      container.innerHTML = "<p>No upcoming long runs scheduled.</p>";
-      return;
+    function parseDate(s){
+      if(!s) return null;
+      const parts=s.trim().split(/[\/\-]/);
+      if(parts.length===3){const[d,m,y]=parts.map(n=>parseInt(n,10));return new Date(y,m-1,d);}
+      const dt=new Date(s);return isNaN(dt)?null:dt;
     }
 
-    runs.forEach((r) => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <h3>${r.location}</h3>
-        <p><strong>Date:</strong> ${r.dateRaw}</p>
-        <p><strong>Distance:</strong> ${r.distance}</p>
-        <p><strong>Time:</strong> ${r.time}</p>
-      `;
-      container.appendChild(card);
-    });
-  })
-  .catch((err) => {
-    console.error("Error fetching or parsing CSV:", err);
-    document.getElementById("runs-list").innerHTML =
-      '<p style="color:red;">Error loading data. Check console.</p>';
-  });
-</script>
+    function parseCSV(text){
+      return text.split(/\r?\n/).filter(l=>l.trim()!=="").map(l=>l.split(","));
+    }
 
+    fetch(SHEET_CSV)
+      .then(r=>r.text())
+      .then(csv=>{
+        const rows=parseCSV(csv);
+        const headers=rows.shift().map(h=>h.toLowerCase());
+        const idxDate=headers.findIndex(h=>h.includes("date"));
+        const idxLoc=headers.findIndex(h=>h.includes("location"));
+        const idxDist=headers.findIndex(h=>h.includes("distance"));
+        const idxTime=headers.findIndex(h=>h.includes("time"));
+        const today=new Date();
+        const runs=rows.map(r=>({
+          dateRaw:r[idxDate],
+          dateObj:parseDate(r[idxDate]),
+          location:r[idxLoc],
+          distance:r[idxDist],
+          time:r[idxTime]
+        }))
+        .filter(r=>r.dateObj&&r.dateObj>=today)
+        .sort((a,b)=>a.dateObj-b.dateObj)
+        .slice(0,5);
 
-
-
+        const box=document.getElementById("runs-list");
+        box.innerHTML=runs.length?"":'<p class="section-sub">No upcoming long runs scheduled.</p>';
+        runs.forEach(r=>{
+          const el=document.createElement("div");
+          el.className="card";
+          el.innerHTML=`
+            <h3 style="color:#991b1b">${r.location||"Run"}</h3>
+            <p><strong>Date:</strong> ${r.dateRaw||"-"}</p>
+            <p><strong>Distance:</strong> ${r.distance||"-"}</p>
+            <p><strong>Time:</strong> ${r.time||"-"}</p>`;
+          box.appendChild(el);
+        });
+      })
+      .catch(err=>{
+        console.error("Sheet load error:",err);
+        document.getElementById("runs-list").innerHTML='<p style="color:#dc2626">Error loading runs.</p>';
+      });
+  </script>
 </body>
-
 </html>
