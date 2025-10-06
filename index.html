@@ -235,93 +235,99 @@
     <p>© <span id="year"></span> Svedah. Designed with passion for runners 🏃‍♀️</p>
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
+ <script>
+document.getElementById('year').textContent = new Date().getFullYear();
 
-    const sheetUrl =
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv';
+const sheetUrl =
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv';
 
-    // Correctly handle DD/MM/YYYY format
-    function parseDate(s) {
-      if (!s) return null;
-      const parts = s.split(/[\\/-]/);
-      if (parts.length === 3) {
-        const [day, month, year] = parts.map(p => parseInt(p, 10));
-        return new Date(year, month - 1, day);
+// Parse DD/MM/YYYY safely
+function parseDate(s) {
+  if (!s) return null;
+  const parts = s.split(/[\\/-]/);
+  if (parts.length === 3) {
+    const [day, month, year] = parts.map(p => parseInt(p, 10));
+    return new Date(year, month - 1, day);
+  }
+  const d = new Date(s);
+  return isNaN(d) ? null : d;
+}
+
+// Proper CSV parser for quoted values
+function parseCSV(text) {
+  const rows = [];
+  let row = [], cell = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === '\"') {
+      if (inQuotes && text[i + 1] === '\"') { // escaped quote
+        cell += '\"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
       }
-      const d = new Date(s);
-      return isNaN(d) ? null : d;
-    }
-
-    // Parse CSV safely (supports quoted fields)
-    function parseCSV(text) {
-      const rows = [];
-      let row = [], inQuotes = false, value = '';
-      for (let char of text) {
-        if (char === '"') {
-          inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-          row.push(value.trim());
-          value = '';
-        } else if ((char === '\\n' || char === '\\r') && !inQuotes) {
-          if (value || row.length) {
-            row.push(value.trim());
-            rows.push(row);
-            row = [];
-            value = '';
-          }
-        } else {
-          value += char;
-        }
-      }
-      if (value) row.push(value.trim());
+    } else if (c === ',' && !inQuotes) {
+      row.push(cell.trim());
+      cell = '';
+    } else if ((c === '\\n' || c === '\\r') && !inQuotes) {
+      if (cell) row.push(cell.trim());
       if (row.length) rows.push(row);
-      return rows.filter(r => r.length > 1);
+      row = [];
+      cell = '';
+    } else {
+      cell += c;
+    }
+  }
+  if (cell) row.push(cell.trim());
+  if (row.length) rows.push(row);
+  return rows;
+}
+
+fetch(sheetUrl)
+  .then(r => r.text())
+  .then(csv => {
+    const rows = parseCSV(csv);
+    const headers = rows.shift().map(h => h.toLowerCase());
+    const idxDate = headers.findIndex(h => h.includes('date'));
+    const idxLocation = headers.findIndex(h => h.includes('location'));
+    const idxDistance = headers.findIndex(h => h.includes('distance'));
+    const idxTime = headers.findIndex(h => h.includes('time'));
+
+    const today = new Date();
+    const runs = rows
+      .map(r => ({
+        dateRaw: r[idxDate],
+        location: r[idxLocation],
+        distance: r[idxDistance],
+        time: r[idxTime],
+        dateObj: parseDate(r[idxDate])
+      }))
+      .filter(r => r.dateObj && r.dateObj >= today)
+      .sort((a, b) => a.dateObj - b.dateObj);
+
+    const container = document.getElementById('runs-list');
+    container.innerHTML = '';
+
+    if (!runs.length) {
+      container.innerHTML = '<p>No upcoming long runs scheduled.</p>';
+      return;
     }
 
-    fetch(sheetUrl)
-      .then(resp => resp.text())
-      .then(csv => {
-        const lines = parseCSV(csv);
-        const headers = lines.shift().map(h => h.toLowerCase());
-        const idxDate = headers.findIndex(h => h.includes('date'));
-        const idxLocation = headers.findIndex(h => h.includes('location'));
-        const idxDistance = headers.findIndex(h => h.includes('distance'));
-        const idxTime = headers.findIndex(h => h.includes('time'));
+    runs.forEach(r => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h3>${r.location}</h3>
+        <p><strong>Date:</strong> ${r.dateRaw}</p>
+        <p><strong>Distance:</strong> ${r.distance}</p>
+        <p><strong>Time:</strong> ${r.time}</p>
+      `;
+      container.appendChild(card);
+    });
+  })
+  .catch(err => console.error('Error fetching sheet:', err));
+</script>
 
-        const today = new Date();
-        const runs = lines
-          .map(cols => ({
-            dateRaw: cols[idxDate],
-            location: cols[idxLocation],
-            distance: cols[idxDistance],
-            time: cols[idxTime],
-            dateObj: parseDate(cols[idxDate])
-          }))
-          .filter(r => r.dateObj && r.dateObj >= today)
-          .sort((a, b) => a.dateObj - b.dateObj);
-
-        const container = document.getElementById('runs-list');
-        container.innerHTML = '';
-
-        if (runs.length === 0) {
-          container.innerHTML = '<p>No upcoming long runs scheduled.</p>';
-        } else {
-          runs.forEach(r => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-          <h3>${r.location}</h3>
-          <p><strong>Date:</strong> ${r.dateRaw}</p>
-          <p><strong>Distance:</strong> ${r.distance}</p>
-          <p><strong>Time:</strong> ${r.time}</p>
-        `;
-            container.appendChild(card);
-          });
-        }
-      })
-      .catch(err => console.error('Error fetching or parsing CSV:', err));
-  </script>
 
 </body>
 
