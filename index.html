@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Svedah — Upcoming Long Runs</title>
+  <meta name="description" content="Svedah: inspiring runners through coaching, community sessions, and blogs." />
+  <meta name="theme-color" content="#0ea5e9" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1220;
+      --text: #f0faff;
+      --muted: #9fb3c8;
+      --brand: #0ea5e9;
+      --brand-2: #22d3ee;
+      --accent: #a78bfa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(1000px 500px at 80% -10%, rgba(14, 165, 233, .25), transparent 60%),
+        radial-gradient(900px 400px at -10% 10%, rgba(167, 139, 250, .25), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    a:hover {
+      color: var(--brand-2);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 22px;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(12px);
+      background: rgba(11, 18, 32, 0.8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 0;
+      z-index: 100;
+    }
+
+    .nav-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      font-weight: 700;
+      font-size: 1.4rem;
+      letter-spacing: 1px;
+    }
+
+    .logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: conic-gradient(from 210deg, var(--brand), var(--brand-2), var(--accent));
+      box-shadow: 0 0 12px rgba(14, 165, 233, .6);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      font-weight: 500;
+    }
+
+    header {
+      padding: 100px 0;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(14, 165, 233, .1), transparent 80%);
+    }
+
+    h1 {
+      font-size: 3.2rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .profile-img {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 25px rgba(14, 165, 233, 0.5);
+      border: 3px solid var(--brand);
+      margin-bottom: 1.5rem;
+    }
+
+    section {
+      padding: 80px 0;
+      text-align: center;
+    }
+
+    section h2 {
+      font-size: 2.4rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, var(--brand), var(--accent));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      padding: 24px;
+      margin: 20px auto;
+      box-shadow: 0 10px 25px rgba(14, 165, 233, 0.15);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(14, 165, 233, 0.25);
+    }
+
+    .runs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <div class="container nav-wrap">
+      <div class="brand">
+        <div class="logo"></div>
+        <span>SVEDAH</span>
+      </div>
+      <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#longruns">Upcoming Long Runs</a>
+        <a href="#contact">Contact Us</a>
+        <a href="#history">Coaching History</a>
+        <a href="#blogs">Blogs</a>
+      </div>
+    </div>
+  </nav>
+
+  <header id="home">
+    <div class="container">
+      <img src="IMG_1103.jpeg" alt="Coach Profile Image" class="profile-img">
+      <h1>Welcome to Svedah</h1>
+      <p class="sub">Run farther. Recover faster. Together we move stronger.</p>
+    </div>
+  </header>
+
+  <section id="longruns">
+    <div class="container">
+      <h2>Upcoming Long Runs</h2>
+      <div id="runs-list" class="runs-grid">
+        <!-- Run cards will appear here dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <p class="sub">We’d love to hear from you! Reach out directly for queries, collaborations, or upcoming training
+        sessions.</p>
+      <div class="card" style="max-width:500px; margin:auto;">
+        <p><strong>📞 Phone:</strong> <a href="tel:9886033901">9886033901</a></p>
+        <p><strong>📧 Email:</strong> <a href="mailto:info@svedah.com">info@svedah.com</a></p>
+        <p><strong>📍 Location:</strong> Bengaluru, India</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="history">
+    <div class="container">
+      <h2>Coaching History</h2>
+      <p style="max-width:700px; margin:auto; color:var(--muted); font-size:1.1rem;">
+        With over <strong>2 years of dedicated coaching</strong>, I’ve helped athletes of all levels discover their
+        rhythm, build endurance, and run with purpose. My approach blends science-based training and mindful recovery
+        for long-term progress.
+      </p>
+    </div>
+  </section>
+
+  <section id="blogs">
+    <div class="container">
+      <h2>Blogs</h2>
+      <p class="sub">Coming soon — get ready for running tips, nutrition insights, and inspiring stories from our
+        community.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>© <span id="year"></span> Svedah. Designed with passion for runners 🏃‍♀️</p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const sheetUrl =
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv';
+
+    // Correctly handle DD/MM/YYYY format
+    function parseDate(s) {
+      if (!s) return null;
+      const parts = s.split(/[\\/-]/);
+      if (parts.length === 3) {
+        const [day, month, year] = parts.map(p => parseInt(p, 10));
+        return new Date(year, month - 1, day);
+      }
+      const d = new Date(s);
+      return isNaN(d) ? null : d;
+    }
+
+    // Parse CSV safely (supports quoted fields)
+    function parseCSV(text) {
+      const rows = [];
+      let row = [], inQuotes = false, value = '';
+      for (let char of text) {
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          row.push(value.trim());
+          value = '';
+        } else if ((char === '\\n' || char === '\\r') && !inQuotes) {
+          if (value || row.length) {
+            row.push(value.trim());
+            rows.push(row);
+            row = [];
+            value = '';
+          }
+        } else {
+          value += char;
+        }
+      }
+      if (value) row.push(value.trim());
+      if (row.length) rows.push(row);
+      return rows.filter(r => r.length > 1);
+    }
+
+    fetch(sheetUrl)
+      .then(resp => resp.text())
+      .then(csv => {
+        const lines = parseCSV(csv);
+        const headers = lines.shift().map(h => h.toLowerCase());
+        const idxDate = headers.findIndex(h => h.includes('date'));
+        const idxLocation = headers.findIndex(h => h.includes('location'));
+        const idxDistance = headers.findIndex(h => h.includes('distance'));
+        const idxTime = headers.findIndex(h => h.includes('time'));
+
+        const today = new Date();
+        const runs = lines
+          .map(cols => ({
+            dateRaw: cols[idxDate],
+            location: cols[idxLocation],
+            distance: cols[idxDistance],
+            time: cols[idxTime],
+            dateObj: parseDate(cols[idxDate])
+          }))
+          .filter(r => r.dateObj && r.dateObj >= today)
+          .sort((a, b) => a.dateObj - b.dateObj);
+
+        const container = document.getElementById('runs-list');
+        container.innerHTML = '';
+
+        if (runs.length === 0) {
+          container.innerHTML = '<p>No upcoming long runs scheduled.</p>';
+        } else {
+          runs.forEach(r => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+          <h3>${r.location}</h3>
+          <p><strong>Date:</strong> ${r.dateRaw}</p>
+          <p><strong>Distance:</strong> ${r.distance}</p>
+          <p><strong>Time:</strong> ${r.time}</p>
+        `;
+            container.appendChild(card);
+          });
+        }
+      })
+      .catch(err => console.error('Error fetching or parsing CSV:', err));
+  </script>
+
+</body>
+
+</html>
