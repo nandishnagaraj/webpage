@@ -79,14 +79,31 @@
     }
     .sub { color: var(--muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
 
+    /* Buttons */
     .btn {
-      display: inline-block; font-weight: 700;
-      padding: 12px 24px; border-radius: 12px;
+      display: inline-block;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 12px;
       background: linear-gradient(90deg, var(--brand), var(--brand-2));
-      color: #fff; box-shadow: 0 8px 22px rgba(244,63,94,.35);
-      transition: transform .15s ease, box-shadow .2s ease;
+      color: #fff;
+      box-shadow: 0 8px 22px rgba(244,63,94,.35);
+      transition: all 0.25s ease-in-out;
+      cursor: pointer;
     }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(244,63,94,.45); }
+    .btn:hover {
+      background: linear-gradient(90deg, #ef4444, #fb7185);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 0 16px rgba(239,68,68,0.6), 0 10px 22px rgba(239,68,68,0.25);
+      filter: brightness(1.05);
+    }
+
+    /* WhatsApp button hover */
+    .btn[style*="25D366"]:hover {
+      background: linear-gradient(90deg, #22c55e, #16a34a) !important;
+      box-shadow: 0 0 16px rgba(34,197,94,0.4) !important;
+      transform: translateY(-2px) scale(1.03);
+    }
 
     /* Section layout */
     section { padding: 80px 0; text-align: center; }
@@ -218,6 +235,7 @@
       box-shadow: 0 6px 16px rgba(244,63,94,.4);
       z-index: 999;
       display: none;
+      cursor: pointer;
     }
     @media (max-width: 600px) {
       .floating-btn { display: inline-block; font-size: .9rem; }
@@ -285,18 +303,22 @@
 <section id="calendar">
   <div class="container">
     <h2>Book a Coaching Session</h2>
-    <p class="section-sub">Pick a slot that works for you — schedule a 1:1 coaching call or training session through my calendar.</p>
+    <p class="section-sub">
+      Book your <strong>paid 1:1 Strength & Conditioning consultation</strong> — 
+      get guidance to build endurance, improve form, and stay injury-free.
+    </p>
 
     <div style="background:#fff5f5;border:1px solid #fca5a5;border-radius:12px;
          padding:16px 20px;margin-bottom:4rem;max-width:720px;margin:auto;
          color:#991b1b;font-weight:500;">
-        Please book your slot at least <strong>3 days in advance</strong> to help us plan your session efficiently.
+        Please book your paid slot at least <strong>3 days in advance</strong> to help us plan your session efficiently.
     </div>
 
     <div style="text-align:center;margin-top:2.5rem;">
       <a href="https://calendar.app.google/D6obo8kMrDpTuARWA" target="_blank" rel="noopener" class="btn">
         Open My Calendar
       </a>
+      <p style="margin-top:0.8rem;color:#6b7280;font-size:0.9rem;">Limited to 4 appointments per slot — reserve early!</p>
     </div>
   </div>
 </section>
