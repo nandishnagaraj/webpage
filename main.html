@@ -6,6 +6,10 @@
   <title>Svedah — Your Running Partner</title>
   <meta name="description" content="Svedah: running coaching, upcoming long runs, and easy calendar booking." />
   <meta name="theme-color" content="#dc2626" />
+  <link rel="icon" href="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/favicon.png" type="image/png">
+  <meta property="og:title" content="Svedah — Your Running Partner">
+  <meta property="og:description" content="Personalized running coaching and AI-powered training plans by Nandish Nagaraj. Train smarter, run stronger.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -164,6 +168,23 @@
       font-weight: 700;
     }
 
+    /* Bio image */
+    #bio img {
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      object-fit:cover;
+      object-position:50% 25%;
+      border:4px solid var(--brand);
+      margin-bottom:1rem;
+      display:block;
+      margin-left:auto;
+      margin-right:auto;
+      box-shadow:0 10px 24px rgba(220,38,38,0.25);
+      transition:transform .3s ease;
+    }
+    #bio img:hover { transform: scale(1.03); }
+
     footer {
       border-top: 1px solid var(--line);
       padding: 26px 0;
@@ -176,6 +197,7 @@
     @media (max-width: 680px) {
       header { padding: 80px 0 60px; }
       header h1 { font-size: 2.4rem; }
+      #bio img { width:180px; height:180px; }
     }
     @media (max-width: 480px) {
       section { padding: 60px 16px; }
@@ -246,23 +268,10 @@
 
 <section id="bio">
   <div class="container">
-    <div style="max-width:720px; margin:0 auto; text-align:center; color:var(--text); line-height:1.7; margin-top:1.5rem;">
+    <div style="max-width:720px; margin:0 auto; text-align:center; color:var(--text); line-height:1.7; margin-top:1rem;">
       <img 
         src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg" 
-        alt="Coach Profile Image" 
-        style="
-          width:220px;
-          height:220px;
-          border-radius:50%;
-          object-fit:cover;
-          object-position:50% 25%; /* focuses on face */
-          border:4px solid var(--brand);
-          margin-bottom:1rem;
-          display:block;
-          margin-left:auto;
-          margin-right:auto;
-          box-shadow:0 10px 24px rgba(220,38,38,0.25);
-          transition:transform .3s ease;>
+        alt="Coach Profile Image">
       <p><strong>Hi, I’m Nandish Nagaraj</strong> — a passionate long-distance runner with over 
         <strong>13 years of experience</strong> on the road and trails, and 
         <strong>2 years of coaching</strong> runners of all levels. 
@@ -272,8 +281,6 @@
     </div>
   </div>
 </section>
-
-
 
 <section id="calendar">
   <div class="container">
@@ -294,126 +301,123 @@
   </div>
 </section>
 
+<section id="longruns">
+  <div class="container">
+    <h2>Upcoming Long Runs</h2>
+    <p class="section-sub">Community-powered group runs updated live every week.</p>
+    <div id="runs-list" class="services-grid"></div>
+  </div>
+</section>
 
-  <section id="longruns">
-    <div class="container">
-      <h2>Upcoming Long Runs</h2>
-      <p class="section-sub">Community-powered group runs updated live every week.</p>
-      <div id="runs-list" class="services-grid"></div>
+<section id="aiplanner" style="background:#fff5f5;">
+  <div class="container" style="text-align:center;">
+    <h2>AI-Powered Training Planner</h2>
+    <p class="section-sub" style="max-width:720px;margin:0 auto 1.5rem;">
+      <strong>Introducing Svedah AI Planner</strong> — a smart running assistant that
+      automatically generates your personalized weekly training plan by analysing your
+      past seven days of <strong>Strava data</strong>.  
+      Get precise mileage, pace, and recovery suggestions tailored to your recent effort and goals.
+    </p>
+    <a href="https://aiplanner.svedah.co.in/" target="_blank" rel="noopener" class="btn">Try the AI Planner Now</a>
+  </div>
+</section>
+
+<section id="testimonials">
+  <div class="container">
+    <h2>Runner Stories</h2>
+    <p class="section-sub">What our athletes say about training with Svedah</p>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <p>“Nandish’s structured approach helped me break my half marathon PB by 12 minutes!”</p>
+        <strong>— Arjun, Bengaluru</strong>
+      </div>
+      <div class="testimonial-card">
+        <p>“The online plans are flexible and perfectly matched to my schedule — I’ve never felt stronger.”</p>
+        <strong>— Priya, Online Athlete</strong>
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
-
-
-  <section id="aiplanner" style="background:#fff5f5;">
-    <div class="container" style="text-align:center;">
-      <h2>AI-Powered Training Planner</h2>
-      <p class="section-sub" style="max-width:720px;margin:0 auto 1.5rem;">
-        <strong>Introducing Svedah AI Planner</strong> — a smart running assistant that
-        automatically generates your personalized weekly training plan by analysing your
-        past seven days of <strong>Strava data</strong>.  
-        Get precise mileage, pace, and recovery suggestions tailored to your recent effort and goals.
+<section id="contact">
+  <div class="container">
+    <h2>Contact</h2>
+    <div class="card" style="max-width:520px;margin:auto">
+      <p><strong>📞 Phone:</strong> <a href="tel:9886033901">9886033901</a></p>
+      <p><strong>📧 Email:</strong> <a href="mailto:svedahplatform@svedah.co.in">svedahplatform@svedah.co.in</a></p>
+      <p><strong>📍 Location:</strong> Bengaluru, India</p>
+      <p style="margin-top:1rem;">
+        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." target="_blank" class="btn" style="background:linear-gradient(90deg,#25D366,#128C7E);box-shadow:0 6px 18px rgba(37,211,102,.4);">
+          💬 WhatsApp Me
+        </a>
       </p>
-      <a href="https://aiplanner.svedah.co.in/" target="_blank" rel="noopener" class="btn">Try the AI Planner Now</a>
     </div>
-  </section>
+  </div>
+</section>
 
-    <section id="testimonials">
-    <div class="container">
-      <h2>Runner Stories</h2>
-      <p class="section-sub">What our athletes say about training with Svedah</p>
-      <div class="testimonial-grid">
-        <div class="testimonial-card">
-          <p>“Nandish’s structured approach helped me break my half marathon PB by 12 minutes!”</p>
-          <strong>— Arjun, Bengaluru</strong>
-        </div>
-        <div class="testimonial-card">
-          <p>“The online plans are flexible and perfectly matched to my schedule — I’ve never felt stronger.”</p>
-          <strong>— Priya, Online Athlete</strong>
-        </div>
-      </div>
-    </div>
-  </section>
+<footer>
+  <p>Ready to take the next stride?</p>
+  <a href="#calendar" class="btn" style="margin-top:10px;">Join Svedah Today</a>
+  <p style="margin-top:1rem;color:var(--muted);">© <span id="year"></span> Svedah — Run with purpose.</p>
+</footer>
 
-  <section id="contact">
-    <div class="container">
-      <h2>Contact</h2>
-      <div class="card" style="max-width:520px;margin:auto">
-        <p><strong>📞 Phone:</strong> <a href="tel:9886033901">9886033901</a></p>
-        <p><strong>📧 Email:</strong> <a href="mailto:svedahplatform@svedah.co.in">svedahplatform@svedah.co.in</a></p>
-        <p><strong>📍 Location:</strong> Bengaluru, India</p>
-        <p style="margin-top:1rem;">
-          <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." target="_blank" class="btn" style="background:linear-gradient(90deg,#25D366,#128C7E);box-shadow:0 6px 18px rgba(37,211,102,.4);">
-            💬 WhatsApp Me
-          </a>
-        </p>
-      </div>
-    </div>
-  </section>
+<a href="#calendar" class="floating-btn">📅 Book</a>
 
-  <footer>
-    <p>Ready to take the next stride?</p>
-    <a href="#calendar" class="btn" style="margin-top:10px;">Join Svedah Today</a>
-    <p style="margin-top:1rem;color:var(--muted);">© <span id="year"></span> Svedah — Run with purpose.</p>
-  </footer>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
 
-  <a href="#calendar" class="floating-btn">📅 Book</a>
-
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    // Animate sections on scroll
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
-      });
+  // Animate sections on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
     });
-    document.querySelectorAll('.service-card, .testimonial-card').forEach(el => observer.observe(el));
+  });
+  document.querySelectorAll('.service-card, .testimonial-card').forEach(el => observer.observe(el));
 
-    // Fetch long runs from Google Sheet
-    const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv";
+  // Fetch long runs from Google Sheet
+  const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv";
 
-    function parseDate(s){ if(!s) return null; const parts=s.trim().split(/[\/\-]/); if(parts.length===3){const[d,m,y]=parts.map(n=>parseInt(n,10));return new Date(y,m-1,d);} const dt=new Date(s);return isNaN(dt)?null:dt; }
-    function parseCSV(text){ return text.split(/\r?\n/).filter(l=>l.trim()!=="").map(l=>l.split(",")); }
+  function parseDate(s){ if(!s) return null; const parts=s.trim().split(/[\/\-]/); if(parts.length===3){const[d,m,y]=parts.map(n=>parseInt(n,10));return new Date(y,m-1,d);} const dt=new Date(s);return isNaN(dt)?null:dt; }
+  function parseCSV(text){ return text.split(/\r?\n/).filter(l=>l.trim()!=="").map(l=>l.split(",")); }
 
-    fetch(SHEET_CSV)
-      .then(r=>r.text())
-      .then(csv=>{
-        const rows=parseCSV(csv);
-        const headers=rows.shift().map(h=>h.toLowerCase());
-        const idxDate=headers.findIndex(h=>h.includes("date"));
-        const idxLoc=headers.findIndex(h=>h.includes("location"));
-        const idxDist=headers.findIndex(h=>h.includes("distance"));
-        const idxTime=headers.findIndex(h=>h.includes("time"));
-        const today=new Date();
-        const runs=rows.map(r=>({
-          dateRaw:r[idxDate],
-          dateObj:parseDate(r[idxDate]),
-          location:r[idxLoc],
-          distance:r[idxDist],
-          time:r[idxTime]
-        }))
-        .filter(r=>r.dateObj&&r.dateObj>=today)
-        .sort((a,b)=>a.dateObj-b.dateObj)
-        .slice(0,5);
+  fetch(SHEET_CSV)
+    .then(r=>r.text())
+    .then(csv=>{
+      const rows=parseCSV(csv);
+      const headers=rows.shift().map(h=>h.toLowerCase());
+      const idxDate=headers.findIndex(h=>h.includes("date"));
+      const idxLoc=headers.findIndex(h=>h.includes("location"));
+      const idxDist=headers.findIndex(h=>h.includes("distance"));
+      const idxTime=headers.findIndex(h=>h.includes("time"));
+      const today=new Date();
+      const runs=rows.map(r=>({
+        dateRaw:r[idxDate],
+        dateObj:parseDate(r[idxDate]),
+        location:r[idxLoc],
+        distance:r[idxDist],
+        time:r[idxTime]
+      }))
+      .filter(r=>r.dateObj&&r.dateObj>=today)
+      .sort((a,b)=>a.dateObj-b.dateObj)
+      .slice(0,5);
 
-        const box=document.getElementById("runs-list");
-        box.innerHTML=runs.length?"":'<p class="section-sub">No upcoming long runs scheduled.</p>';
-        runs.forEach(r=>{
-          const el=document.createElement("div");
-          el.className="service-card visible";
-          el.innerHTML=`
-            <h3 style="color:#991b1b">${r.location||"Run"}</h3>
-            <p><strong>Date:</strong> ${r.dateRaw||"-"}</p>
-            <p><strong>Distance:</strong> ${r.distance||"-"}</p>
-            <p><strong>Time:</strong> ${r.time||"-"}</p>`;
-          box.appendChild(el);
-        });
-      })
-      .catch(err=>{
-        console.error("Sheet load error:",err);
-        document.getElementById("runs-list").innerHTML='<p style="color:#dc2626">Error loading runs.</p>';
+      const box=document.getElementById("runs-list");
+      box.innerHTML=runs.length?"":'<p class="section-sub">No upcoming long runs scheduled.</p>';
+      runs.forEach(r=>{
+        const el=document.createElement("div");
+        el.className="service-card visible";
+        el.innerHTML=`
+          <h3 style="color:#991b1b">${r.location||"Run"}</h3>
+          <p><strong>Date:</strong> ${r.dateRaw||"-"}</p>
+          <p><strong>Distance:</strong> ${r.distance||"-"}</p>
+          <p><strong>Time:</strong> ${r.time||"-"}</p>`;
+        box.appendChild(el);
       });
-  </script>
+    })
+    .catch(err=>{
+      console.error("Sheet load error:",err);
+      document.getElementById("runs-list").innerHTML='<p style="color:#dc2626">Error loading runs.</p>';
+    });
+</script>
 </body>
 </html>
