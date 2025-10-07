@@ -6,7 +6,10 @@
   <title>Svedah — Your Running Partner</title>
   <meta name="description" content="Svedah: running coaching, upcoming long runs, and easy calendar booking." />
   <meta name="theme-color" content="#dc2626" />
-  <link rel="icon" href="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/favicon.png" type="image/png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/apple-touch-icon.png">
+  <link rel="icon" href="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/favicon.ico" type="image/x-icon">
   <meta property="og:title" content="Svedah — Your Running Partner">
   <meta property="og:description" content="Personalized running coaching and AI-powered training plans by Nandish Nagaraj. Train smarter, run stronger.">
   <meta property="og:image" content="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg">
@@ -70,9 +73,24 @@
       color: var(--text);
       border-bottom: 1px solid var(--line);
       background:
-        linear-gradient(rgba(255,245,245,0.9), rgba(255,245,245,0.95)),
-        url('https://images.unsplash.com/photo-1605296867304-46d5465a13f1?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+        linear-gradient(
+          to bottom right,
+          rgba(255,245,245,0.92),
+          rgba(255,230,230,0.85)
+        ),
+        url('https://raw.githubusercontent.com/nandishnagaraj/webpage/main/photo-1605296867304-46d5465a13f1.avif') center/cover no-repeat;
+      background-attachment: fixed;
     }
+
+    header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(220,38,38,0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+
     header h1 {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 3.2rem; letter-spacing: .06em; margin: .5rem 0;
@@ -269,7 +287,7 @@
           Our Bangalore team meets weekly to train alongside coaches and fellow athletes — blending science, community, and consistency to help you reach your goals.
         </p>
         <div style="margin-top:2rem;">
-          <a href="#calendar" class="btn">Start Your Journey →</a>
+          <a href="#calendar" class="btn">Start Your Journey</a>
         </div>
       </div>
 
@@ -384,7 +402,7 @@
   <p style="margin-top:1rem;color:var(--muted);">© <span id="year"></span> Svedah — Run with purpose.</p>
 </footer>
 
-<a href="#calendar" class="floating-btn">📅 Book</a>
+<a href="#calendar" class="floating-btn">Book</a>
 
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
