@@ -221,6 +221,30 @@
     }
     #bio img:hover { transform: scale(1.03); }
 
+    #bio {
+      position: relative;
+      padding: 100px 0;
+      background:
+        linear-gradient(
+          to bottom right,
+          rgba(255,245,245,0.92),
+          rgba(255,230,230,0.85)
+        ),
+        url('https://raw.githubusercontent.com/nandishnagaraj/webpage/main/trackrunning.jpg') center/cover no-repeat;
+      background-attachment: fixed;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+    }
+    #bio::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(220,38,38,0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+
     footer {
       border-top: 1px solid var(--line);
       padding: 26px 0;
