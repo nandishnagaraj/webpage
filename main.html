@@ -16,7 +16,6 @@
       --muted: #6b7280;
       --brand: #dc2626;
       --brand-2: #f43f5e;
-      --accent: #ef4444;
       --surface: #ffffff;
       --line: #e5e7eb;
       --bg-alt1: #fff5f5;
@@ -44,17 +43,12 @@
       border-bottom: 1px solid var(--line);
     }
     .nav-wrap { 
-      display: flex; 
-      align-items: center; 
-      justify-content: space-between; 
-      padding: 14px 0; 
-      flex-wrap: wrap; 
-      gap: 0.5rem;
+      display: flex; align-items: center; justify-content: space-between; 
+      padding: 14px 0; flex-wrap: wrap; gap: 0.5rem;
     }
     .brand-text {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 2rem;
-      letter-spacing: .12em;
+      font-size: 2rem; letter-spacing: .12em;
       background: repeating-linear-gradient(-45deg, var(--brand) 0 10px, var(--brand-2) 10px 20px);
       -webkit-background-clip: text; background-clip: text; color: transparent;
       text-shadow: 0 2px 0 rgba(0,0,0,.05);
@@ -65,24 +59,21 @@
     .nav-cta:hover { background: var(--brand); color: #fff; }
 
     /* Hero */
-    header { padding: 80px 0 60px; border-bottom: 1px solid var(--line); text-align: center; background: var(--bg-alt1); }
-    h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 3.2rem;
-      letter-spacing: .06em;
-      margin: .5rem 0;
+    header {
+      position: relative;
+      padding: 100px 0 80px;
+      text-align: center;
       color: var(--text);
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(rgba(255,245,245,0.9), rgba(255,245,245,0.95)),
+        url('https://images.unsplash.com/photo-1605296867304-46d5465a13f1?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+    }
+    header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.2rem; letter-spacing: .06em; margin: .5rem 0;
     }
     .sub { color: var(--muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
-
-    .profile-img {
-      width: 240px; height: 240px; border-radius: 50%;
-      object-fit: cover; object-position: 50% 25%;
-      border: 4px solid var(--brand);
-      box-shadow: 0 10px 24px rgba(220,38,38,.25);
-      margin-bottom: 1rem; transition: transform .35s ease;
-    }
-    .profile-img:hover { transform: scale(1.03); }
 
     .btn {
       display: inline-block; font-weight: 700;
@@ -93,7 +84,7 @@
     }
     .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(244,63,94,.45); }
 
-    /* Sections */
+    /* Section layout */
     section { padding: 80px 0; text-align: center; }
     section:nth-of-type(even) { background: var(--bg-alt2); }
     section:nth-of-type(odd) { background: var(--bg); }
@@ -103,46 +94,74 @@
       font-size: 2.6rem;
       margin-bottom: .5rem;
       color: var(--text);
+      position: relative;
+    }
+    section h2::after {
+      content: "";
+      display: block;
+      width: 80px;
+      height: 4px;
+      margin: 8px auto 0;
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      border-radius: 2px;
     }
     .section-sub { color: var(--muted); margin-bottom: 1.2rem; }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.04);
-      transition: transform .2s, box-shadow .2s, border-color .2s;
-    }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(0,0,0,.08); border-color: #fca5a5; }
-
-    .runs-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 18px;
-    }
-
-    /* Services grid */
     .services-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
       margin-top: 2rem;
     }
-
     .service-card {
       border: 1px solid var(--line);
       border-radius: 16px;
       padding: 20px;
       background: #fff;
       box-shadow: 0 6px 16px rgba(0,0,0,.04);
-      transition: all .2s ease;
+      transition: all .3s ease;
+      opacity: 0; transform: translateY(30px);
     }
-
+    .service-card.visible {
+      opacity: 1; transform: translateY(0);
+    }
     .service-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 10px 22px rgba(0,0,0,.08);
       border-color: #fca5a5;
+    }
+
+    /* Testimonials */
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 2rem;
+    }
+    .testimonial-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.04);
+      font-size: 1rem;
+      color: var(--text);
+      transition: transform .3s ease, box-shadow .3s ease;
+      opacity: 0; transform: translateY(30px);
+    }
+    .testimonial-card.visible {
+      opacity: 1; transform: translateY(0);
+    }
+    .testimonial-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 22px rgba(0,0,0,.08);
+      border-color: #fca5a5;
+    }
+    .testimonial-card strong {
+      display: block;
+      margin-top: 0.8rem;
+      color: var(--brand);
+      font-weight: 700;
     }
 
     footer {
@@ -153,24 +172,33 @@
       background: var(--bg-alt2);
     }
 
+    /* Mobile adjustments */
     @media (max-width: 680px) {
-      h1 { font-size: 2.6rem; }
-      .profile-img { width: 200px; height: 200px; }
-      header { padding: 60px 0 40px; }
+      header { padding: 80px 0 60px; }
+      header h1 { font-size: 2.4rem; }
+    }
+    @media (max-width: 480px) {
+      section { padding: 60px 16px; }
+      .nav-links a { font-size: 0.9rem; padding: 6px 10px; }
+      .btn { width: 100%; max-width: 300px; }
     }
 
-    @media (max-width: 480px) {
-      section {
-        padding: 60px 16px;
-      }
-      .nav-links a {
-        font-size: 0.9rem;
-        padding: 6px 10px;
-      }
-      .btn {
-        width: 100%;
-        max-width: 300px;
-      }
+    /* Floating Book Button (Mobile) */
+    .floating-btn {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      box-shadow: 0 6px 16px rgba(244,63,94,.4);
+      z-index: 999;
+      display: none;
+    }
+    @media (max-width: 600px) {
+      .floating-btn { display: inline-block; font-size: .9rem; }
     }
   </style>
 </head>
@@ -190,26 +218,27 @@
 
   <header id="home">
     <div class="container">
-      
       <h1>Welcome to Svedah</h1>
       <p class="sub">Run farther. Recover faster. Together we move stronger.</p>
-   <!-- New Train With Us Section -->
+
       <div style="margin-top:3rem;max-width:780px;margin-left:auto;margin-right:auto;">
         <h2 style="font-size:2.2rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em;color:#dc2626;">Train With Us</h2>
         <p style="color:var(--text);font-size:1.1rem;line-height:1.7;margin-top:.5rem;">
           Train with us <strong>worldwide online</strong>, or <strong>in-person in Bangalore</strong>.  
           Our Bangalore team meets weekly to train alongside coaches and fellow athletes — blending science, community, and consistency to help you reach your goals.
         </p>
+        <div style="margin-top:2rem;">
+          <a href="#calendar" class="btn">Start Your Journey →</a>
+        </div>
       </div>
 
-            <!-- New Services Section -->
       <div style="margin-top:3rem;">
         <h2 style="font-size:2rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em;">Our Services</h2>
         <div class="services-grid">
-          <div class="service-card"><h3>Running Plans</h3><p>Personalized mileage, pace, and recovery plans tailored to your goals and current fitness.</p></div>
-          <div class="service-card"><h3>Running Camps</h3><p>Weekend and altitude camps to boost endurance, community, and motivation.</p></div>
-          <div class="service-card"><h3>Private Sessions</h3><p>One-on-one coaching with live feedback, gait analysis, and performance tracking.</p></div>
-          <div class="service-card"><h3>Nutrition</h3><p>Guided nutrition plans to fuel your runs and optimize recovery.</p></div>
+          <div class="service-card"><h3>🏃‍♂️ Running Plans</h3><p>Personalized mileage, pace, and recovery plans tailored to your goals and fitness level.</p></div>
+          <div class="service-card"><h3>⛰️ Running Camps</h3><p>Weekend and altitude camps that boost endurance, community, and motivation.</p></div>
+          <div class="service-card"><h3>🧭 Private Sessions</h3><p>One-on-one coaching with live feedback, gait analysis, and performance tracking.</p></div>
+          <div class="service-card"><h3>🥗 Nutrition</h3><p>Guided nutrition plans to fuel your runs and optimize recovery.</p></div>
         </div>
       </div>
     </div>
@@ -217,10 +246,21 @@
 
   <section id="bio">
     <div class="container">
-          <div style="max-width:720px; margin:0 auto; text-align:center; color:var(--text); line-height:1.7; margin-top:3rem;">
-            <img src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg" alt="Coach Profile Image" class="profile-img">
-            <p><strong>Hi, I’m Nandish Nagaraj</strong> — a passionate long-distance runner with over <strong>13 years of experience</strong> on the road and trails, and <strong>2 years of coaching</strong> runners of all levels. I believe running transforms not just bodies but mindsets. Through Svedah, I help you train smarter, recover better, and discover joy in every stride.</p>
-          </div>
+      <div style="max-width:720px; margin:0 auto; text-align:center; color:var(--text); line-height:1.7; margin-top:3rem;">
+        <img src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg" alt="Coach Profile Image" style="width:220px;height:220px;border-radius:50%;object-fit:cover;border:4px solid var(--brand);margin-bottom:1rem;">
+        <p><strong>Hi, I’m Nandish Nagaraj</strong> — a passionate long-distance runner with over <strong>13 years of experience</strong> on the road and trails, and <strong>2 years of coaching</strong> runners of all levels. I believe running transforms not just bodies but mindsets. Through Svedah, I help you train smarter, recover better, and discover joy in every stride.</p>
+      </div>
+    </div>
+  </section>
+
+    <section id="calendar">
+    <div class="container">
+      <h2>Book a Coaching Session</h2>
+      <p class="section-sub">Pick a slot that works for you — schedule a 1:1 coaching call or training session through my calendar.</p>
+       <div style="background:#fff5f5;border:1px solid #fca5a5;border-radius:12px;padding:16px 20px;margin-bottom:2rem;max-width:720px;margin:auto;color:#991b1b;font-weight:500;">
+        Please book your slot at least <strong>3 days in advance</strong> to help us plan your session efficiently.
+      </div>
+      <a href="https://calendar.app.google/D6obo8kMrDpTuARWA" target="_blank" rel="noopener" class="btn">Open My Calendar</a>
     </div>
   </section>
 
@@ -228,32 +268,39 @@
     <div class="container">
       <h2>Upcoming Long Runs</h2>
       <p class="section-sub">Community-powered group runs updated live every week.</p>
-      <div id="runs-list" class="runs-grid"></div>
+      <div id="runs-list" class="services-grid"></div>
     </div>
   </section>
 
-  <section id="calendar">
-    <div class="container">
-      <h2>Book a Coaching Session</h2>
-      <p class="section-sub">Pick a slot that works for you — schedule a 1:1 coaching call or training session through my calendar.</p>
-      <a href="https://calendar.app.google/D6obo8kMrDpTuARWA" target="_blank" rel="noopener" class="btn">Open My Calendar →</a>
-    </div>
-  </section>
+
 
   <section id="aiplanner" style="background:#fff5f5;">
     <div class="container" style="text-align:center;">
-      <h2 style="font-family:'Bebas Neue',sans-serif;letter-spacing:.06em;font-size:2.6rem;color:#111827;">
-        AI-Powered Training Planner
-      </h2>
+      <h2>AI-Powered Training Planner</h2>
       <p class="section-sub" style="max-width:720px;margin:0 auto 1.5rem;">
         <strong>Introducing Svedah AI Planner</strong> — a smart running assistant that
         automatically generates your personalized weekly training plan by analysing your
         past seven days of <strong>Strava data</strong>.  
         Get precise mileage, pace, and recovery suggestions tailored to your recent effort and goals.
       </p>
-      <a href="https://aiplanner.svedah.co.in/" target="_blank" rel="noopener" class="btn">
-        Try the AI Planner Now
-      </a>
+      <a href="https://aiplanner.svedah.co.in/" target="_blank" rel="noopener" class="btn">Try the AI Planner Now</a>
+    </div>
+  </section>
+
+    <section id="testimonials">
+    <div class="container">
+      <h2>Runner Stories</h2>
+      <p class="section-sub">What our athletes say about training with Svedah</p>
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <p>“Nandish’s structured approach helped me break my half marathon PB by 12 minutes!”</p>
+          <strong>— Arjun, Bengaluru</strong>
+        </div>
+        <div class="testimonial-card">
+          <p>“The online plans are flexible and perfectly matched to my schedule — I’ve never felt stronger.”</p>
+          <strong>— Priya, Online Athlete</strong>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -274,24 +321,29 @@
   </section>
 
   <footer>
-    <p>© <span id="year"></span> Svedah — Run with purpose.</p>
+    <p>Ready to take the next stride?</p>
+    <a href="#calendar" class="btn" style="margin-top:10px;">Join Svedah Today</a>
+    <p style="margin-top:1rem;color:var(--muted);">© <span id="year"></span> Svedah — Run with purpose.</p>
   </footer>
+
+  <a href="#calendar" class="floating-btn">📅 Book</a>
 
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
+    // Animate sections on scroll
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    });
+    document.querySelectorAll('.service-card, .testimonial-card').forEach(el => observer.observe(el));
+
+    // Fetch long runs from Google Sheet
     const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv";
 
-    function parseDate(s){
-      if(!s) return null;
-      const parts=s.trim().split(/[\/\-]/);
-      if(parts.length===3){const[d,m,y]=parts.map(n=>parseInt(n,10));return new Date(y,m-1,d);}
-      const dt=new Date(s);return isNaN(dt)?null:dt;
-    }
-
-    function parseCSV(text){
-      return text.split(/\r?\n/).filter(l=>l.trim()!=="").map(l=>l.split(","));
-    }
+    function parseDate(s){ if(!s) return null; const parts=s.trim().split(/[\/\-]/); if(parts.length===3){const[d,m,y]=parts.map(n=>parseInt(n,10));return new Date(y,m-1,d);} const dt=new Date(s);return isNaN(dt)?null:dt; }
+    function parseCSV(text){ return text.split(/\r?\n/).filter(l=>l.trim()!=="").map(l=>l.split(",")); }
 
     fetch(SHEET_CSV)
       .then(r=>r.text())
@@ -318,7 +370,7 @@
         box.innerHTML=runs.length?"":'<p class="section-sub">No upcoming long runs scheduled.</p>';
         runs.forEach(r=>{
           const el=document.createElement("div");
-          el.className="card";
+          el.className="service-card visible";
           el.innerHTML=`
             <h3 style="color:#991b1b">${r.location||"Run"}</h3>
             <p><strong>Date:</strong> ${r.dateRaw||"-"}</p>
