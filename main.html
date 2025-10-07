@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Svedah — Coaching & Long Runs</title>
+  <title>Svedah — Your Running Partner</title>
   <meta name="description" content="Svedah: running coaching, upcoming long runs, and easy calendar booking." />
   <meta name="theme-color" content="#dc2626" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +43,14 @@
       backdrop-filter: saturate(140%) blur(8px);
       border-bottom: 1px solid var(--line);
     }
-    .nav-wrap { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+    .nav-wrap { 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      padding: 14px 0; 
+      flex-wrap: wrap; 
+      gap: 0.5rem;
+    }
     .brand-text {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 2rem;
@@ -52,7 +59,7 @@
       -webkit-background-clip: text; background-clip: text; color: transparent;
       text-shadow: 0 2px 0 rgba(0,0,0,.05);
     }
-    .nav-links { display: flex; gap: 1rem; align-items: center; font-weight: 600; }
+    .nav-links { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center; font-weight: 600; }
     .nav-links a { padding: 8px 12px; border-radius: 10px; }
     .nav-cta { border: 2px solid var(--brand); color: var(--brand); }
     .nav-cta:hover { background: var(--brand); color: #fff; }
@@ -88,7 +95,7 @@
 
     /* Section layout */
     section { padding: 80px 0; text-align: center; }
-    section:nth-of-type(even) { background: var(--bg-alt2); } /* alternate backgrounds */
+    section:nth-of-type(even) { background: var(--bg-alt2); }
     section:nth-of-type(odd) { background: var(--bg); }
     section h2 {
       font-family: 'Bebas Neue', sans-serif;
@@ -126,6 +133,21 @@
     @media (max-width: 680px) {
       h1 { font-size: 2.6rem; }
       .profile-img { width: 200px; height: 200px; }
+      header { padding: 60px 0 40px; }
+    }
+
+    @media (max-width: 480px) {
+      section {
+        padding: 60px 16px;
+      }
+      .nav-links a {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+      }
+      .btn {
+        width: 100%;
+        max-width: 300px;
+      }
     }
   </style>
 </head>
@@ -163,7 +185,7 @@
     </div>
   </section>
 
-  <section id="calendar">
+ <section id="calendar">
     <div class="container">
       <h2>Book a Coaching Session</h2>
       <p class="section-sub">Pick a slot that works for you — schedule a 1:1 coaching call or training session through my calendar.</p>
@@ -173,26 +195,26 @@
           <li>• Bookings must be made at least <strong>3 days in advance</strong>.</li>
         </ul>
       </div>
-      <a href="https://calendar.app.google/D6obo8kMrDpTuARWA" target="_blank" rel="noopener" class="btn">Open My Calendar →</a>
+      <a href="https://calendar.app.google/D6obo8kMrDpTuARWA" target="_blank" rel="noopener" class="btn">Open My Calendar</a>
     </div>
   </section>
 
   <section id="aiplanner" style="background:#fff5f5;">
-  <div class="container" style="text-align:center;">
-    <h2 style="font-family:'Bebas Neue',sans-serif;letter-spacing:.06em;font-size:2.6rem;color:#111827;">
-      AI-Powered Training Planner
-    </h2>
-    <p class="section-sub" style="max-width:720px;margin:0 auto 1.5rem;">
-      <strong>Introducing Svedah AI Planner</strong> — a smart running assistant that
-      automatically generates your personalized weekly training plan by analysing your
-      past seven days of <strong>Strava data</strong>.  
-      Get precise mileage, pace, and recovery suggestions tailored to your recent effort and goals.
-    </p>
-    <a href="https://aiplanner.svedah.co.in/" target="_blank" rel="noopener" class="btn">
-      🚀 Try the AI Planner Now
-    </a>
-  </div>
-</section>
+    <div class="container" style="text-align:center;">
+      <h2 style="font-family:'Bebas Neue',sans-serif;letter-spacing:.06em;font-size:2.6rem;color:#111827;">
+        AI-Powered Training Planner
+      </h2>
+      <p class="section-sub" style="max-width:720px;margin:0 auto 1.5rem;">
+        <strong>Introducing Svedah AI Planner</strong> — a smart running assistant that
+        automatically generates your personalized weekly training plan by analysing your
+        past seven days of <strong>Strava data</strong>.  
+        Get precise mileage, pace, and recovery suggestions tailored to your recent effort and goals.
+      </p>
+      <a href="https://aiplanner.svedah.co.in/" target="_blank" rel="noopener" class="btn">
+        Try the AI Planner Now
+      </a>
+    </div>
+  </section>
 
   <section id="contact">
     <div class="container">
