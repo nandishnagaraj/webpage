@@ -68,8 +68,11 @@
     .nav-links { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center; font-weight: 600; }
     .nav-links a { padding: 8px 12px; border-radius: 10px; }
     .nav-cta { border: 2px solid var(--brand); color: var(--brand); }
-    .nav-cta:hover { background: var(--brand); color: #fff; }
-
+    .nav-cta:hover { 
+      background: linear-gradient(90deg,#f59e0b,#f97316);
+      color: #111;
+      box-shadow: 0 0 12px rgba(249,115,22,0.35);
+    }
     /* Hero */
     header {
       position: relative;
@@ -115,13 +118,12 @@
       cursor: pointer;
     }
     .btn:hover {
-      background: linear-gradient(90deg, #ef4444, #fb7185);
+      background: linear-gradient(90deg, #fbbf24, #f97316);
       transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 0 16px rgba(239,68,68,0.6), 0 10px 22px rgba(239,68,68,0.25);
+      box-shadow: 0 0 16px rgba(249,115,22,0.5), 0 10px 22px rgba(251,191,36,0.25);
       filter: brightness(1.05);
-      color: #000 !important;
+      color: #111 !important;
     }
-
     /* WhatsApp button hover */
     .btn[style*="25D366"]:hover {
       background: linear-gradient(90deg, #22c55e, #16a34a) !important;
@@ -172,10 +174,9 @@
     }
     .service-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 10px 22px rgba(0,0,0,.08);
-      border-color: #fca5a5;
+      box-shadow: 0 10px 22px rgba(249,115,22,0.15);
+      border-color: #fbbf24;
     }
-
     /* Testimonials */
     .testimonial-grid {
       display: grid;
