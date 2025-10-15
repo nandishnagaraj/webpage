@@ -17,16 +17,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
+    section {
+      transition: background-image 1s ease-in-out;
+    }
+
+    
     :root {
       --bg: #ffffff;
       --text: #111827;
       --muted: #6b7280;
-      --brand: #dc2626;
-      --brand-2: #f43f5e;
+      --brand: #f59e0b;   /* amber-500 / warm yellow */
+      --brand-2: #f97316; /* orange-500 */
       --surface: #ffffff;
       --line: #e5e7eb;
-      --bg-alt1: #fff5f5;
-      --bg-alt2: #fafafa;
+      --bg-alt1: #fffaf0;
+      --bg-alt2: #fff7ed;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -63,8 +68,11 @@
     .nav-links { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center; font-weight: 600; }
     .nav-links a { padding: 8px 12px; border-radius: 10px; }
     .nav-cta { border: 2px solid var(--brand); color: var(--brand); }
-    .nav-cta:hover { background: var(--brand); color: #fff; }
-
+    .nav-cta:hover { 
+      background: linear-gradient(90deg,#f59e0b,#f97316);
+      color: #111;
+      box-shadow: 0 0 12px rgba(249,115,22,0.35);
+    }
     /* Hero */
     header {
       position: relative;
@@ -110,13 +118,12 @@
       cursor: pointer;
     }
     .btn:hover {
-      background: linear-gradient(90deg, #ef4444, #fb7185);
+      background: linear-gradient(90deg, #fbbf24, #f97316);
       transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 0 16px rgba(239,68,68,0.6), 0 10px 22px rgba(239,68,68,0.25);
+      box-shadow: 0 0 16px rgba(249,115,22,0.5), 0 10px 22px rgba(251,191,36,0.25);
       filter: brightness(1.05);
-      color: #000 !important;
+      color: #111 !important;
     }
-
     /* WhatsApp button hover */
     .btn[style*="25D366"]:hover {
       background: linear-gradient(90deg, #22c55e, #16a34a) !important;
@@ -167,10 +174,9 @@
     }
     .service-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 10px 22px rgba(0,0,0,.08);
-      border-color: #fca5a5;
+      box-shadow: 0 10px 22px rgba(249,115,22,0.15);
+      border-color: #fbbf24;
     }
-
     /* Testimonials */
     .testimonial-grid {
       display: grid;
@@ -286,6 +292,21 @@
     @media (max-width: 600px) {
       .floating-btn { display: inline-block; font-size: .9rem; }
     }
+
+    @media (min-width: 900px) {
+      #programs {
+        padding: 100px 0;
+      }
+      #programs .vertical-divider {
+        display: block !important;
+      }
+    }
+    @media (max-width: 899px) {
+      #programs .vertical-divider {
+        display: none !important;
+      }
+    }
+
   </style>
 </head>
 
@@ -308,7 +329,19 @@
       <p class="sub">Run farther. Recover faster. Together we move stronger.</p>
 
       <div style="margin-top:3rem;max-width:780px;margin-left:auto;margin-right:auto;">
-        <h2 style="font-size:2.2rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em;color:#dc2626;">Train With Us</h2>
+        <h2 style="
+          font-size:2.2rem;
+          font-family:'Bebas Neue',sans-serif;
+          letter-spacing:.05em;
+          background:linear-gradient(90deg,var(--brand),var(--brand-2));
+          -webkit-background-clip:text;
+          -webkit-text-fill-color:transparent;
+          display:inline-block;
+        ">
+          Train With Us
+        </h2>
+
+
         <p style="color:var(--text);font-size:1.1rem;line-height:1.7;margin-top:.5rem;">
           Train with us <strong>worldwide online</strong>, or <strong>in-person in Bangalore</strong>.  
           Our Bangalore team meets weekly to train alongside coaches and fellow athletes — blending science, community, and consistency to help you reach your goals.
@@ -345,6 +378,81 @@
     </div>
   </div>
 </section>
+
+<section id="programs" style="background:#fffaf0;">
+  <div class="container">
+    <h2>Runner Training Programs</h2>
+    <p class="section-sub">
+      Choose the plan that fits your goal — whether you’re building toward your first 10K or training for a half marathon.
+    </p>
+
+    <div style="
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 40px;
+      align-items: start;
+      position: relative;
+    ">
+      <!-- Half Marathon Program -->
+      <div class="service-card visible" style="background:#fff;">
+        <h3 style="
+          font-family:'Bebas Neue',sans-serif;
+          font-size:1.8rem;
+          letter-spacing:.05em;
+          background:linear-gradient(90deg,#f59e0b,#f97316);
+          -webkit-background-clip:text;
+          -webkit-text-fill-color:transparent;
+          margin-bottom:0.8rem;">
+          Half Marathon Strength — 16 Weeks
+        </h3>
+        <p style="color:#6b7280;">
+          Build strength, endurance, and confidence for your next half marathon with our integrated 16-week program.
+        </p>
+        <ul style="text-align:left; margin:1rem 0; line-height:1.6;">
+          <li>🏋️ <strong>32 Strength Workouts</strong> — 2 per week (online or in-person)</li>
+          <li>🧘‍♀️ <strong>16 Stretching Sessions</strong> — improve mobility & recovery</li>
+          <li>🏃 <strong>16-Week Running Plan</strong> — structured runs for endurance</li>
+        </ul>
+        <a href="#calendar" class="btn">Join the 16-Week Program</a>
+      </div>
+
+      <!-- Divider (visible only on large screens) -->
+      <div style="
+        width:2px;
+        background:linear-gradient(180deg,#f59e0b,#f97316);
+        height:auto;
+        margin:auto;
+        border-radius:2px;
+        display:none;
+      " class="vertical-divider"></div>
+
+      <!-- 10KM Program -->
+      <div class="service-card visible" style="background:#fff;">
+        <h3 style="
+          font-family:'Bebas Neue',sans-serif;
+          font-size:1.8rem;
+          letter-spacing:.05em;
+          background:linear-gradient(90deg,#f59e0b,#f97316);
+          -webkit-background-clip:text;
+          -webkit-text-fill-color:transparent;
+          margin-bottom:0.8rem;">
+          10K Strength — 12 Weeks
+        </h3>
+        <p style="color:#6b7280;">
+          A compact, power-packed program designed to help you build speed, stamina, and form in just 12 weeks.
+        </p>
+        <ul style="text-align:left; margin:1rem 0; line-height:1.6;">
+          <li>🏋️ <strong>24 Strength Workouts</strong> — focused on form, stability, and power</li>
+          <li>🧘‍♀️ <strong>12 Stretching Sessions</strong> — stay flexible and injury-free</li>
+          <li>🏃 <strong>12-Week Running Plan</strong> — build pace and 10K endurance</li>
+        </ul>
+        <a href="#calendar" class="btn">Join the 12-Week Program</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
 <section id="calendar">
   <div class="container">
@@ -414,11 +522,28 @@
       <p><strong>📞 Phone:</strong> <a href="tel:9886033901">9886033901</a></p>
       <p><strong>📧 Email:</strong> <a href="mailto:svedahplatform@svedah.co.in">svedahplatform@svedah.co.in</a></p>
       <p><strong>📍 Location:</strong> Bengaluru, India</p>
-      <p style="margin-top:1rem;">
-        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." target="_blank" class="btn" style="background:linear-gradient(90deg,#25D366,#128C7E);box-shadow:0 6px 18px rgba(37,211,102,.4);">
-          💬 WhatsApp Me
+      <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin-top:1rem;">
+        <!-- WhatsApp Button -->
+        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions."
+           target="_blank"
+           class="btn"
+           style="background:linear-gradient(90deg,#25D366,#128C7E);
+                  box-shadow:0 6px 18px rgba(37,211,102,.4);
+                  min-width:160px; text-align:center;">
+          💬 WhatsApp
         </a>
-      </p>
+      
+        <!-- Instagram Button -->
+        <a href="https://www.instagram.com/nandishnagaraj?igsh=bzR6N285N2tpOG45"
+           target="_blank"
+           class="btn"
+           style="background:linear-gradient(90deg,#f59e0b,#f97316);
+                  box-shadow:0 6px 18px rgba(249,115,22,.4);
+                  min-width:160px; text-align:center;">
+          📸 Instagram
+        </a>
+      </div>
+
     </div>
   </div>
 </section>
@@ -436,6 +561,14 @@
    Book a Slot
 </a>
 
+<a href="https://www.instagram.com/nandishnagaraj?igsh=bzR6N285N2tpOG45"
+   target="_blank" rel="noopener"
+   class="floating-btn"
+   style="right: 150px; background: linear-gradient(90deg,#f59e0b,#f97316); box-shadow: 0 6px 18px rgba(249,115,22,.4);">
+   📸 Follow on Instagram
+</a>
+
+
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 
@@ -445,7 +578,9 @@
       if (entry.isIntersecting) entry.target.classList.add('visible');
     });
   });
-  document.querySelectorAll('.service-card, .testimonial-card').forEach(el => observer.observe(el));
+  document.querySelectorAll('.service-card, .testimonial-card, #halfmarathon .service-card')
+  .forEach(el => observer.observe(el));
+
 
   // Fetch long runs from Google Sheet
   const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv";
@@ -491,6 +626,31 @@
       console.error("Sheet load error:",err);
       document.getElementById("runs-list").innerHTML='<p style="color:#dc2626">Error loading runs.</p>';
     });
+
+  
+  // Folder URL containing your background images
+  const bgFolder = "https://raw.githubusercontent.com/nandishnagaraj/webpage/main/backgrounds/";
+  const bgImages = ["1.jpg", "2.jpg", "3.jpg","4.jpg","5.jpg"];
+
+  // Sections you want random images for
+  const sectionsWithBg = ["home", "bio", "programs", "longruns","testimonials", "contact"];
+
+  sectionsWithBg.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      const randomImg = bgImages[Math.floor(Math.random() * bgImages.length)];
+      el.style.backgroundImage = `
+        linear-gradient(to bottom right, rgba(255,250,230,0.92), rgba(255,240,210,0.85)),
+        url('${bgFolder + randomImg}')
+      `;
+      el.style.backgroundAttachment = "fixed";
+      el.style.backgroundPosition = "center";
+      el.style.backgroundSize = "cover";
+      el.style.backgroundRepeat = "no-repeat";
+    }
+  });
+
+
 </script>
 </body>
 </html>
