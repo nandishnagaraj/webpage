@@ -476,7 +476,9 @@
       if (entry.isIntersecting) entry.target.classList.add('visible');
     });
   });
-  document.querySelectorAll('.service-card, .testimonial-card').forEach(el => observer.observe(el));
+  document.querySelectorAll('.service-card, .testimonial-card, #halfmarathon .service-card')
+  .forEach(el => observer.observe(el));
+
 
   // Fetch long runs from Google Sheet
   const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv";
