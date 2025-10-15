@@ -291,6 +291,21 @@
     @media (max-width: 600px) {
       .floating-btn { display: inline-block; font-size: .9rem; }
     }
+
+    @media (min-width: 900px) {
+      #programs {
+        padding: 100px 0;
+      }
+      #programs .vertical-divider {
+        display: block !important;
+      }
+    }
+    @media (max-width: 899px) {
+      #programs .vertical-divider {
+        display: none !important;
+      }
+    }
+
   </style>
 </head>
 
@@ -363,35 +378,79 @@
   </div>
 </section>
 
-<section id="halfmarathon" style="background:#fff5f5;">
+<section id="programs" style="background:#fffaf0;">
   <div class="container">
-    <h2>Half Marathon Strength — 16-Week Program</h2>
+    <h2>Runner Training Programs</h2>
     <p class="section-sub">
-      Build strength, endurance, and confidence for your next half marathon with our integrated program.
+      Choose the plan that fits your goal — whether you’re building toward your first 10K or training for a half marathon.
     </p>
 
-    <div class="services-grid" style="margin-top:2rem;">
-      <div class="service-card visible">
-        <h3>🏋️ 32 Strength Workouts</h3>
-        <p>Two sessions every week for 16 weeks. Each workout can be done <strong>online from home</strong> or <strong>in group classes at Nagarbhavi Circle, Bangalore</strong>.</p>
+    <div style="
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 40px;
+      align-items: start;
+      position: relative;
+    ">
+      <!-- Half Marathon Program -->
+      <div class="service-card visible" style="background:#fff;">
+        <h3 style="
+          font-family:'Bebas Neue',sans-serif;
+          font-size:1.8rem;
+          letter-spacing:.05em;
+          background:linear-gradient(90deg,#f59e0b,#f97316);
+          -webkit-background-clip:text;
+          -webkit-text-fill-color:transparent;
+          margin-bottom:0.8rem;">
+          Half Marathon Strength — 16 Weeks
+        </h3>
+        <p style="color:#6b7280;">
+          Build strength, endurance, and confidence for your next half marathon with our integrated 16-week program.
+        </p>
+        <ul style="text-align:left; margin:1rem 0; line-height:1.6;">
+          <li>🏋️ <strong>32 Strength Workouts</strong> — 2 per week (online or in-person)</li>
+          <li>🧘‍♀️ <strong>16 Stretching Sessions</strong> — improve mobility & recovery</li>
+          <li>🏃 <strong>16-Week Running Plan</strong> — structured runs for endurance</li>
+        </ul>
+        <a href="#calendar" class="btn">Join the 16-Week Program</a>
       </div>
 
-      <div class="service-card visible">
-        <h3>🧘‍♀️ 16 Stretching Workouts</h3>
-        <p>Dedicated mobility sessions at the end of each week to <strong>prevent injuries</strong> and <strong>enhance muscle recovery</strong>.</p>
-      </div>
+      <!-- Divider (visible only on large screens) -->
+      <div style="
+        width:2px;
+        background:linear-gradient(180deg,#f59e0b,#f97316);
+        height:auto;
+        margin:auto;
+        border-radius:2px;
+        display:none;
+      " class="vertical-divider"></div>
 
-      <div class="service-card visible">
-        <h3>🏃 16-Week Running Plan</h3>
-        <p>Weekly runs designed to <strong>build aerobic capacity</strong> and <strong>boost your half marathon performance</strong> with expert pacing guidance.</p>
+      <!-- 10KM Program -->
+      <div class="service-card visible" style="background:#fff;">
+        <h3 style="
+          font-family:'Bebas Neue',sans-serif;
+          font-size:1.8rem;
+          letter-spacing:.05em;
+          background:linear-gradient(90deg,#f59e0b,#f97316);
+          -webkit-background-clip:text;
+          -webkit-text-fill-color:transparent;
+          margin-bottom:0.8rem;">
+          10K Strength — 12 Weeks
+        </h3>
+        <p style="color:#6b7280;">
+          A compact, power-packed program designed to help you build speed, stamina, and form in just 12 weeks.
+        </p>
+        <ul style="text-align:left; margin:1rem 0; line-height:1.6;">
+          <li>🏋️ <strong>24 Strength Workouts</strong> — focused on form, stability, and power</li>
+          <li>🧘‍♀️ <strong>12 Stretching Sessions</strong> — stay flexible and injury-free</li>
+          <li>🏃 <strong>12-Week Running Plan</strong> — build pace and 10K endurance</li>
+        </ul>
+        <a href="#calendar" class="btn">Join the 12-Week Program</a>
       </div>
-    </div>
-
-    <div style="margin-top:2.5rem;">
-      <a href="#calendar" class="btn">Join the 16-Week Program</a>
     </div>
   </div>
 </section>
+
 
 
 <section id="calendar">
@@ -573,7 +632,7 @@
   const bgImages = ["1.jpg", "2.jpg", "3.jpg","4.jpg","5.jpg"];
 
   // Sections you want random images for
-  const sectionsWithBg = ["home", "bio", "halfmarathon", "longruns","testimonials", "contact"];
+  const sectionsWithBg = ["home", "bio", "programs", "longruns","testimonials", "contact"];
 
   sectionsWithBg.forEach(id => {
     const el = document.getElementById(id);
