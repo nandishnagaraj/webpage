@@ -324,6 +324,11 @@
       }
     }
 
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
 
   </style>
 </head>
@@ -393,9 +398,95 @@
         I believe running transforms not just bodies but mindsets. 
         Through Svedah, I help you train smarter, recover better, and discover joy in every stride.
       </p>
+      <div style="margin-top:1.2rem;">
+        <a href="#" id="openAbout" class="btn" 
+           style="background:linear-gradient(90deg,#f59e0b,#f97316);
+                  box-shadow:0 6px 18px rgba(249,115,22,.4);">
+          👟 About Nandish
+        </a>
+      </div>
     </div>
   </div>
 </section>
+
+
+<!-- About Nandish Popup Modal -->
+<div id="aboutModal" style="
+  display:none; 
+  position:fixed; 
+  z-index:2000; 
+  inset:0; 
+  background:rgba(0,0,0,0.65); 
+  backdrop-filter:blur(6px);
+  justify-content:center; 
+  align-items:center;
+">
+  <div style="
+    background:#fff; 
+    border-radius:20px; 
+    max-width:680px; 
+    width:90%; 
+    padding:30px 24px; 
+    text-align:center;
+    position:relative;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+    animation:fadeIn 0.3s ease;
+  ">
+    <button id="closeAbout" style="
+      position:absolute;
+      top:14px; right:18px;
+      background:none; border:none; font-size:1.6rem; cursor:pointer; color:#f97316;
+    ">&times;</button>
+
+    <img src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg" 
+         alt="Nandish Nagaraj" 
+         style="width:160px;height:160px;border-radius:50%;object-fit:cover;
+                border:4px solid #f59e0b;margin-bottom:1rem;box-shadow:0 8px 18px rgba(249,115,22,.3);">
+
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.05em;
+               background:linear-gradient(90deg,#f59e0b,#f97316);
+               -webkit-background-clip:text;-webkit-text-fill-color:transparent;">My Journey</h2>
+
+    <p style="color:#444;line-height:1.7;margin-top:1rem;text-align:left;">
+      It all started in <strong>2011</strong> when I struggled to keep up with my young daughter.  
+      Once a college fitness enthusiast, years of corporate life had pushed me over <strong>105 kg</strong>.  
+      That moment reignited my passion for fitness.
+    </p>
+
+    <p style="color:#444;line-height:1.7;text-align:left;">
+      I began small — swimming, cycling, badminton — until running found me in <strong>2013</strong> at Cubbon Park.  
+      By 2015, joining a club at Bangalore University taught me the true power of the <strong>tribe</strong> — 
+      that belonging fuels consistency.
+    </p>
+
+    <p style="color:#444;line-height:1.7;text-align:left;">
+      Since then, I’ve completed <strong>8 full marathons</strong> with a personal best of <strong>3:39</strong>,  
+      along with numerous 5Ks, 10Ks, and half-marathons.  
+      Through every step, I’ve learned that progress lives in <strong>habits, consistency, and community</strong>.
+    </p>
+
+    <p style="margin-top:1.5rem;color:#f97316;font-weight:600;">🏃 “Fitness isn’t a destination — it’s who you become on the way.”</p>
+  </div>
+</div>
+
+<style>
+@keyframes fadeIn { from {opacity:0; transform:scale(0.95);} to {opacity:1; transform:scale(1);} }
+</style>
+
+<script>
+  // Open and Close Modal
+  document.getElementById("openAbout").addEventListener("click", e => {
+    e.preventDefault();
+    document.getElementById("aboutModal").style.display = "flex";
+  });
+  document.getElementById("closeAbout").addEventListener("click", () => {
+    document.getElementById("aboutModal").style.display = "none";
+  });
+  document.getElementById("aboutModal").addEventListener("click", e => {
+    if (e.target.id === "aboutModal") document.getElementById("aboutModal").style.display = "none";
+  });
+</script>
+
 
 <section id="programs" style="background:#fffaf0;">
   <div class="container">
@@ -668,90 +759,7 @@
     }
   });
 </script>
-  <!-- About Me Trigger Button -->
-<div style="text-align:center; margin:3rem 0;">
-  <a href="#" id="openAbout" class="btn" style="background:linear-gradient(90deg,#f59e0b,#f97316); box-shadow:0 6px 18px rgba(249,115,22,.4);">
-    👟 About Nandish
-  </a>
-</div>
 
-<!-- About Me Popup Modal -->
-<div id="aboutModal" style="
-  display:none; 
-  position:fixed; 
-  z-index:2000; 
-  inset:0; 
-  background:rgba(0,0,0,0.65); 
-  backdrop-filter:blur(6px);
-  justify-content:center; 
-  align-items:center;
-">
-  <div style="
-    background:#fff; 
-    border-radius:20px; 
-    max-width:680px; 
-    width:90%; 
-    padding:30px 24px; 
-    text-align:center;
-    position:relative;
-    box-shadow:0 10px 40px rgba(0,0,0,0.2);
-    animation:fadeIn 0.3s ease;
-  ">
-    <button id="closeAbout" style="
-      position:absolute;
-      top:14px; right:18px;
-      background:none; border:none; font-size:1.6rem; cursor:pointer; color:#f97316;
-    ">&times;</button>
-
-    <img src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg" 
-         alt="Nandish Nagaraj" 
-         style="width:160px;height:160px;border-radius:50%;object-fit:cover;
-                border:4px solid #f59e0b;margin-bottom:1rem;box-shadow:0 8px 18px rgba(249,115,22,.3);">
-
-    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.05em;
-               background:linear-gradient(90deg,#f59e0b,#f97316);
-               -webkit-background-clip:text;-webkit-text-fill-color:transparent;">My Journey</h2>
-
-    <p style="color:#444;line-height:1.7;margin-top:1rem;text-align:left;">
-      It all started in <strong>2011</strong> when I struggled to keep up with my young daughter.  
-      Once a college fitness enthusiast, years of corporate life had pushed me over <strong>105 kg</strong>.  
-      That wake-up call reignited my passion for movement.
-    </p>
-
-    <p style="color:#444;line-height:1.7;text-align:left;">
-      I began small — swimming, cycling, badminton — until running found me in <strong>2013</strong> at Cubbon Park.  
-      What started as weekend jogs soon grew into a lifestyle anchored in discipline, community, and joy.  
-      By 2015, joining a running club at Bangalore University taught me the true power of the <strong>tribe</strong> — 
-      that belonging fuels consistency.
-    </p>
-
-    <p style="color:#444;line-height:1.7;text-align:left;">
-      Since then, I’ve completed countless <strong>5Ks, 10Ks, half marathons,</strong> and <strong>8 full marathons</strong> — 
-      with a personal best of <strong>3:39</strong>.  
-      Through every challenge, I’ve learned that progress lives in <strong>habits, consistency, and the people around us</strong>.
-    </p>
-
-    <p style="margin-top:1.5rem;color:#f97316;font-weight:600;">🏃 “Fitness isn’t a destination — it’s who you become on the way.”</p>
-  </div>
-</div>
-
-<style>
-@keyframes fadeIn { from {opacity:0; transform:scale(0.95);} to {opacity:1; transform:scale(1);} }
-</style>
-
-<script>
-  // Open and Close Modal
-  document.getElementById("openAbout").addEventListener("click", e => {
-    e.preventDefault();
-    document.getElementById("aboutModal").style.display = "flex";
-  });
-  document.getElementById("closeAbout").addEventListener("click", () => {
-    document.getElementById("aboutModal").style.display = "none";
-  });
-  document.getElementById("aboutModal").addEventListener("click", e => {
-    if (e.target.id === "aboutModal") document.getElementById("aboutModal").style.display = "none";
-  });
-</script>
 
 </body>
 </html>
