@@ -405,65 +405,60 @@
         -webkit-text-fill-color: transparent;
         text-shadow: 0 1px 4px rgba(0,0,0,0.5);
       }
-      #aboutModal {
+      /* --- MOBILE-FRIENDLY MODAL FIX --- */
+#aboutModal {
   display: none;
   position: fixed;
-  inset: 0;
   z-index: 2000;
+  inset: 0;
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(6px);
-  justify-content: center;
-  align-items: flex-start; /* key change */
-  overflow-y: auto; /* allow vertical scroll */
-  padding: 40px 16px; /* ensures top space visible */
-  scroll-behavior: smooth;
+  overflow-y: auto; /* enables vertical scroll */
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+  padding: 40px 12px; /* adds breathing space */
 }
 
-#aboutModal > div {
+#aboutModal.active {
+  display: block;
+}
+
+#aboutModal .modal-content {
   background: #fff;
   border-radius: 20px;
-  width: 100%;
   max-width: 680px;
-  margin: 0 auto;
-  padding: 30px 20px;
+  margin: 0 auto 40px;
+  padding: 28px 20px;
   text-align: center;
   position: relative;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
   animation: fadeIn 0.3s ease;
 }
 
 #closeAbout {
-  position: sticky; /* stays visible on scroll */
-  top: 10px;
+  position: sticky;
+  top: 8px;
   float: right;
   background: none;
   border: none;
-  font-size: 1.8rem;
+  font-size: 2rem;
   cursor: pointer;
   color: #f97316;
   z-index: 10;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 600px) {
   #aboutModal {
-    align-items: flex-start;
     padding: 24px 10px;
   }
-
-  #aboutModal > div {
-    padding: 24px 16px;
-    border-radius: 14px;
-  }
-
-  #closeAbout {
-    top: 8px;
-    right: 8px;
-    font-size: 2rem;
-  }
-}
-@media (max-width: 600px) {
-  #aboutModal > div {
+  #aboutModal .modal-content {
+    padding: 22px 16px;
     border-radius: 24px 24px 0 0;
+    margin-top: 0;
     animation: slideUp 0.4s ease;
   }
   @keyframes slideUp {
@@ -471,6 +466,7 @@
     to { transform: translateY(0); opacity: 1; }
   }
 }
+
 
   </style>
 </head>
@@ -634,25 +630,26 @@
   const modal = document.getElementById("aboutModal");
   const openBtn = document.getElementById("openAbout");
   const closeBtn = document.getElementById("closeAbout");
-
+  
   openBtn.addEventListener("click", e => {
     e.preventDefault();
-    modal.style.display = "flex";
-    document.body.style.overflow = "hidden"; // prevent background scroll
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
   });
-
+  
   closeBtn.addEventListener("click", () => {
-    modal.style.display = "none";
+    modal.classList.remove("active");
     document.body.style.overflow = "auto";
   });
-
+  
   modal.addEventListener("click", e => {
-    // close only when user clicks outside popup content
-    if (e.target === modal) {
-      modal.style.display = "none";
+    // close when clicking the dark background
+    if (e.target.id === "aboutModal") {
+      modal.classList.remove("active");
       document.body.style.overflow = "auto";
     }
   });
+
 </script>
 
 
