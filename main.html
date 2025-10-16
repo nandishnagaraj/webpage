@@ -351,7 +351,60 @@
         -webkit-text-fill-color:transparent;
         text-shadow:0 1px 4px rgba(0,0,0,0.4);
       }
+      .about-text p {
+        color: #444;
+        line-height: 1.8;
+        margin: 1rem 0;
+        text-align: left;
+      }
+      
+      .about-text p:last-child {
+        margin-bottom: 0;
+      }
 
+    .transformation-gallery {
+          display: flex;
+          gap: 16px;
+          justify-content: center;
+          margin: 1.5rem 0 2rem;
+          flex-wrap: wrap;
+        }
+        
+        .transform-card {
+          position: relative;
+          flex: 1;
+          min-width: 240px;
+          max-width: 300px;
+          overflow: hidden;
+          border-radius: 16px;
+        }
+        
+        .transform-card img {
+          width: 100%;
+          height: 300px;
+          object-fit: contain; /* shows the full image */
+          border-radius: 16px;
+          background: #fffaf0;
+        }
+        
+        .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.6));
+        border-radius: 16px;
+      }
+      
+      .before-after-caption {
+        position: absolute;
+        bottom: 12px;
+        left: 0; right: 0;
+        font-weight: 700;
+        font-size: 1.1rem;
+        background: linear-gradient(90deg,#f59e0b,#f97316);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+      }
 
 
   </style>
@@ -466,70 +519,44 @@
            background:linear-gradient(90deg,#f59e0b,#f97316);
            -webkit-background-clip:text;-webkit-text-fill-color:transparent;">My Journey</h2>
 
-      <div class="transformation-gallery" style="
-           display:flex; 
-           gap:12px; 
-           justify-content:center; 
-           margin:1.2rem 0; 
-           flex-wrap:wrap;">
+      <div class="transformation-gallery">
         <!-- Before -->
-        <div style="position:relative; flex:1; min-width:240px; max-width:300px;">
-          <img src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/before.jpeg"
-               alt="Before Nandish"
-               style="width:100%; border-radius:16px; object-fit:cover; height:260px; filter:brightness(0.9);">
-          <div style="position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,0.25),rgba(0,0,0,0.55));
-                      border-radius:16px;"></div>
-          <!-- <p style="position:absolute; bottom:12px; left:0; right:0; color:#fff;
-                    font-weight:700; font-size:1.1rem; text-shadow:0 2px 6px rgba(0,0,0,0.6);">
-            Before — 105 kg
-          </p> -->
+        <div class="transform-card">
+          <img src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/before.jpeg" alt="Before Nandish">
+          <div class="overlay"></div>
           <p class="before-after-caption">Before — 108 kg</p>
         </div>
       
         <!-- After -->
-        <div style="position:relative; flex:1; min-width:240px; max-width:300px;">
-          <img src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg"
-               alt="After Nandish"
-               style="width:100%; border-radius:16px; object-fit:cover; height:260px; filter:brightness(0.9);">
-          <div style="position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,0.25),rgba(0,0,0,0.55));
-                      border-radius:16px;"></div>
-          
+        <div class="transform-card">
+          <img src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg" alt="After Nandish">
+          <div class="overlay"></div>
           <p class="before-after-caption">After — 70 kg</p>
-
         </div>
       </div>
 
-
-      <p style="color:#444;line-height:1.7;margin-top:1rem;text-align:left;">
-        It all started in <strong>2011</strong> when I struggled to keep up with my daughter.  
+      <div class="about-text">
+        <p>It all started in <strong>2011</strong> when I struggled to keep up with my daughter.  
         Once a college fitness enthusiast, years of corporate life had pushed me over <strong>108 kg</strong>.  
-        That moment reignited my passion for fitness.
-      </p>
+        That moment reignited my passion for fitness.</p>
       
-      <p style="color:#444;line-height:1.7;text-align:left;">
-        I began small — swimming, cycling, badminton — until running found me in <strong>2013</strong> at Cubbon Park.  
-        By 2015, joining a club at Bangalore University taught me the true power of the <strong>tribe</strong> — 
-        that belonging fuels consistency.
-      </p>
+        <p>I began small — swimming, cycling, badminton — until running found me in <strong>2013</strong> at Cubbon Park.  
+        By 2015, joining a club at Bangalore University taught me the true power of the <strong>tribe</strong> —  
+        that belonging fuels consistency.</p>
       
-      <p style="color:#444;line-height:1.7;text-align:left;">
-        Since then, I’ve completed <strong>8 full marathons</strong> with a personal best of <strong>3:39</strong>,  
+        <p>Since then, I’ve completed <strong>8 full marathons</strong> with a personal best of <strong>3 : 39</strong>,  
         along with numerous 5Ks, 10Ks, and half-marathons.  
-        Through every step, I’ve learned that real transformation lives in <strong>habits, consistency, and community</strong>.
-      </p>
+        Through every step, I’ve learned that real transformation lives in <strong>habits, consistency, and community</strong>.</p>
       
-      <p style="color:#444;line-height:1.7;text-align:left;">
-        I’ve lived that journey—and now, I help others find their own.  
+        <p>I’ve lived that journey — and now, I help others find their own.  
         Whether you’re starting from scratch or chasing your next PR,  
-        I can guide you to <strong>build strength, endurance, and a mindset that lasts</strong>.
-      </p>
+        I can help you <strong>build strength, endurance, and a mindset that lasts</strong>.</p>
       
-      <p style="margin-top:1.5rem;color:#f97316;font-weight:600;text-align:center;">
-        🏃 “Fitness isn’t a destination — it’s who you become on the way.”
-      </p>
+        <p style="text-align:center; color:#f97316; font-weight:600; margin-top:1.8rem;">
+          🏃 “Fitness isn’t a destination — it’s who you become on the way.”
+        </p>
+      </div>
 
-
-    <p style="margin-top:1.5rem;color:#f97316;font-weight:600;">🏃 “Fitness isn’t a destination — it’s who you become on the way.”</p>
   </div>
 </div>
 
