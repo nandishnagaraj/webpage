@@ -324,6 +324,88 @@
       }
     }
 
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .transformation-gallery div {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeSlideUp 0.6s ease forwards;
+      }
+      .transformation-gallery div:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      @keyframes fadeSlideUp {
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .before-after-caption {
+        position:absolute;
+        bottom:12px;
+        left:0; right:0;
+        font-weight:700;
+        font-size:1.1rem;
+        background:linear-gradient(90deg,#f59e0b,#f97316);
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+        text-shadow:0 1px 4px rgba(0,0,0,0.4);
+      }
+      .about-text p {
+        color: #444;
+        line-height: 1.8;
+        margin: 1rem 0;
+        text-align: left;
+      }
+      
+      .about-text p:last-child {
+        margin-bottom: 0;
+      }
+
+    .transformation-gallery {
+          display: flex;
+          gap: 16px;
+          justify-content: center;
+          margin: 1.5rem 0 2rem;
+          flex-wrap: wrap;
+        }
+        
+        .transform-card {
+          position: relative;
+          flex: 1;
+          min-width: 240px;
+          max-width: 300px;
+          overflow: hidden;
+          border-radius: 16px;
+        }
+        
+        .transform-card img {
+          width: 100%;
+          height: 300px;
+          object-fit: contain; /* shows the full image */
+          border-radius: 16px;
+          background: #fffaf0;
+        }
+        
+        .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.6));
+        border-radius: 16px;
+      }
+      
+      .before-after-caption {
+        position: absolute;
+        bottom: 12px;
+        left: 0; right: 0;
+        font-weight: 700;
+        font-size: 1.1rem;
+        background: linear-gradient(90deg,#f59e0b,#f97316);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+      }
+
 
   </style>
 </head>
@@ -393,9 +475,109 @@
         I believe running transforms not just bodies but mindsets. 
         Through Svedah, I help you train smarter, recover better, and discover joy in every stride.
       </p>
+      <div style="margin-top:1.2rem;">
+        <a href="#" id="openAbout" class="btn" 
+           style="background:linear-gradient(90deg,#f59e0b,#f97316);
+                  box-shadow:0 6px 18px rgba(249,115,22,.4);">
+          👟 More about me
+        </a>
+      </div>
     </div>
   </div>
 </section>
+
+
+<!-- About Nandish Popup Modal -->
+<div id="aboutModal" style="
+  display:none; 
+  position:fixed; 
+  z-index:2000; 
+  inset:0; 
+  background:rgba(0,0,0,0.65); 
+  backdrop-filter:blur(6px);
+  justify-content:center; 
+  align-items:center;
+">
+  <div style="
+    background:#fff; 
+    border-radius:20px; 
+    max-width:680px; 
+    width:90%; 
+    padding:30px 24px; 
+    text-align:center;
+    position:relative;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+    animation:fadeIn 0.3s ease;
+  ">
+    <button id="closeAbout" style="
+      position:absolute;
+      top:14px; right:18px;
+      background:none; border:none; font-size:1.6rem; cursor:pointer; color:#f97316;
+    ">&times;</button>
+
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.05em;
+           background:linear-gradient(90deg,#f59e0b,#f97316);
+           -webkit-background-clip:text;-webkit-text-fill-color:transparent;">My Journey</h2>
+
+      <div class="transformation-gallery">
+        <!-- Before -->
+        <div class="transform-card">
+          <img src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/before.jpeg" alt="Before Nandish">
+          <div class="overlay"></div>
+          <p class="before-after-caption">Before — 108 kg</p>
+        </div>
+      
+        <!-- After -->
+        <div class="transform-card">
+          <img src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg" alt="After Nandish">
+          <div class="overlay"></div>
+          <p class="before-after-caption">After — 70 kg</p>
+        </div>
+      </div>
+
+      <div class="about-text">
+        <p>It all started in <strong>2011</strong> when I struggled to keep up with my daughter.  
+        Once a college fitness enthusiast, years of corporate life had pushed me over <strong>108 kg</strong>.  
+        That moment reignited my passion for fitness.</p>
+      
+        <p>I began small — swimming, cycling, badminton — until running found me in <strong>2013</strong> at Cubbon Park.  
+        By 2015, joining a club at Bangalore University taught me the true power of the <strong>tribe</strong> —  
+        that belonging fuels consistency.</p>
+      
+        <p>Since then, I’ve completed <strong>8 full marathons</strong> with a personal best of <strong>3 : 39</strong>,  
+        along with numerous 5Ks, 10Ks, and half-marathons.  
+        Through every step, I’ve learned that real transformation lives in <strong>habits, consistency, and community</strong>.</p>
+      
+        <p>I’ve lived that journey — and now, I help others find their own.  
+        Whether you’re starting from scratch or chasing your next PR,  
+        I can help you <strong>build strength, endurance, and a mindset that lasts</strong>.</p>
+      
+        <p style="text-align:center; color:#f97316; font-weight:600; margin-top:1.8rem;">
+          🏃 “Fitness isn’t a destination — it’s who you become on the way.”
+        </p>
+      </div>
+
+  </div>
+</div>
+
+<style>
+@keyframes fadeIn { from {opacity:0; transform:scale(0.95);} to {opacity:1; transform:scale(1);} }
+</style>
+
+<script>
+  // Open and Close Modal
+  document.getElementById("openAbout").addEventListener("click", e => {
+    e.preventDefault();
+    document.getElementById("aboutModal").style.display = "flex";
+  });
+  document.getElementById("closeAbout").addEventListener("click", () => {
+    document.getElementById("aboutModal").style.display = "none";
+  });
+  document.getElementById("aboutModal").addEventListener("click", e => {
+    if (e.target.id === "aboutModal") document.getElementById("aboutModal").style.display = "none";
+  });
+</script>
+
 
 <section id="programs" style="background:#fffaf0;">
   <div class="container">
@@ -667,8 +849,8 @@
       el.style.backgroundRepeat = "no-repeat";
     }
   });
-
-
 </script>
+
+
 </body>
 </html>
