@@ -510,6 +510,23 @@
         <div style="margin-top:2rem;">
           <a href="#calendar" class="btn">Start Your Journey</a>
         </div>
+
+        <div id="flyer-banner" style="margin-top:3rem; position:relative;">
+          <img src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/backgrounds/1.jpg" alt="Flyer" style="width:100%;max-width:800px;border-radius:20px;margin:0 auto;display:block;">
+          <div style="
+            position:absolute;
+            bottom:16px; left:0; right:0;
+            text-align:center;
+            background:rgba(0,0,0,0.5);
+            color:#fff;
+            padding:10px 0;
+            font-weight:600;
+            border-radius:0 0 20px 20px;
+          ">
+            Join Our Next Workshop 🚀
+          </div>
+        </div>
+
       </div>
 
       <div style="margin-top:3rem;">
@@ -523,6 +540,9 @@
       </div>
     </div>
   </header>
+
+
+
 
 <section id="bio">
   <div class="container">
@@ -909,6 +929,31 @@
       el.style.backgroundRepeat = "no-repeat";
     }
   });
+
+
+  
+  // ======== FEATURED FLYER ROTATION ========
+  const flyerImages = [
+    "1.jpg",
+    "2.jpg",
+    "3.jpg"
+  ];
+
+  const flyerBase = "https://raw.githubusercontent.com/nandishnagaraj/webpage/main/backgrounds/";
+  const flyerImg = document.querySelector("#flyer-banner img");
+  let flyerIndex = 0;
+
+  function rotateFlyers() {
+    flyerIndex = (flyerIndex + 1) % flyerImages.length;
+    flyerImg.style.opacity = 0;
+    setTimeout(() => {
+      flyerImg.src = flyerBase + flyerImages[flyerIndex];
+      flyerImg.style.opacity = 1;
+    }, 600);
+  }
+
+  setInterval(rotateFlyers, 5000); // change every 5 seconds
+
 
 </script>
 
