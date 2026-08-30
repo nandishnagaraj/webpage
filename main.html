@@ -21,7 +21,7 @@
       transition: background-image 1s ease-in-out;
     }
 
-    
+
     :root {
       --bg: #ffffff;
       --text: #111827;
@@ -54,8 +54,8 @@
       backdrop-filter: saturate(140%) blur(8px);
       border-bottom: 1px solid var(--line);
     }
-    .nav-wrap { 
-      display: flex; align-items: center; justify-content: space-between; 
+    .nav-wrap {
+      display: flex; align-items: center; justify-content: space-between;
       padding: 14px 0; flex-wrap: wrap; gap: 0.5rem;
     }
     .brand-text {
@@ -68,7 +68,7 @@
     .nav-links { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center; font-weight: 600; }
     .nav-links a { padding: 8px 12px; border-radius: 10px; }
     .nav-cta { border: 2px solid var(--brand); color: var(--brand); }
-    .nav-cta:hover { 
+    .nav-cta:hover {
       background: linear-gradient(90deg,#f59e0b,#f97316);
       color: #111;
       box-shadow: 0 0 12px rgba(249,115,22,0.35);
@@ -313,12 +313,12 @@
         justify-content: center;
         align-items: center;
       }
-    
+
       .brand-text {
         text-align: center;
         width: 100%;
       }
-    
+
       .nav-links {
         justify-content: center;
       }
@@ -357,7 +357,7 @@
         margin: 1rem 0;
         text-align: left;
       }
-      
+
       .about-text p:last-child {
         margin-bottom: 0;
       }
@@ -369,7 +369,7 @@
           margin: 1.5rem 0 2rem;
           flex-wrap: wrap;
         }
-        
+
         .transform-card {
           position: relative;
           flex: 1;
@@ -378,7 +378,7 @@
           overflow: hidden;
           border-radius: 16px;
         }
-        
+
         .transform-card img {
           width: 100%;
           height: 300px;
@@ -386,14 +386,14 @@
           border-radius: 16px;
           background: #fffaf0;
         }
-        
+
         .overlay {
         position: absolute;
         inset: 0;
         background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.6));
         border-radius: 16px;
       }
-      
+
       .before-after-caption {
         position: absolute;
         bottom: 12px;
@@ -467,6 +467,67 @@
   }
 }
 
+/* Program Cards Styling */
+.program-card {
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  padding: 28px 20px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.04);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  opacity: 0;
+  transform: translateY(30px);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.program-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.program-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f59e0b, #f97316);
+}
+
+.program-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(249,115,22,0.2);
+  border-color: #fbbf24;
+}
+
+.program-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(249,115,22,0.1));
+  border-radius: 16px;
+  transition: all 0.4s ease;
+}
+
+.program-card:hover .program-icon {
+  background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(249,115,22,0.2));
+  transform: rotate(10deg) scale(1.1);
+}
+
+.program-icon svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 4px rgba(249,115,22,0.3));
+}
+
 
   </style>
 </head>
@@ -504,7 +565,7 @@
 
 
         <p style="color:var(--text);font-size:1.1rem;line-height:1.7;margin-top:.5rem;">
-          Train with us <strong>worldwide online</strong>, or <strong>in-person in Bangalore</strong>.  
+          Train with us <strong>worldwide online</strong>, or <strong>in-person in Bangalore</strong>.
           Our Bangalore team meets weekly to train alongside coaches and fellow athletes — blending science, community, and consistency to help you reach your goals.
         </p>
         <div style="margin-top:2rem;">
@@ -535,17 +596,17 @@
 <section id="bio">
   <div class="container">
     <div style="max-width:720px; margin:0 auto; text-align:center; color:var(--text); line-height:1.7; margin-top:1rem;">
-      <img 
-        src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg" 
+      <img
+        src="https://raw.githubusercontent.com/nandishnagaraj/webpage/main/IMG_1665.jpeg"
         alt="Coach Profile Image">
-      <p><strong>Hi, I’m Nandish Nagaraj</strong> — a passionate long-distance runner with over 
-        <strong>13 years of experience</strong> on the road and trails, and 
-        <strong>2 years of coaching</strong> runners of all levels. 
-        I believe running transforms not just bodies but mindsets. 
+      <p><strong>Hi, I'm Nandish Nagaraj</strong> — a passionate long-distance runner with over
+        <strong>13 years of experience</strong> on the road and trails, and
+        <strong>2 years of coaching</strong> runners of all levels.
+        I believe running transforms not just bodies but mindsets.
         Through Svedah, I help you train smarter, recover better, and discover joy in every stride.
       </p>
       <div style="margin-top:1.2rem;">
-        <a href="#" id="openAbout" class="btn" 
+        <a href="#" id="openAbout" class="btn"
            style="background:linear-gradient(90deg,#f59e0b,#f97316);
                   box-shadow:0 6px 18px rgba(249,115,22,.4);">
           👟 More about me
@@ -587,29 +648,29 @@
 
     <!-- Story Text -->
     <div class="about-text">
-      <p>It all started way back in <strong>2011</strong> when my elder daughter was less than a year old.  
-      I realized I couldn’t even run behind her without losing breath. That day, I decided to get back to fitness.  
-      Once a college fitness enthusiast, years of corporate life had pushed me over <strong>108 kg</strong>.  
+      <p>It all started way back in <strong>2011</strong> when my elder daughter was less than a year old.
+      I realized I couldn't even run behind her without losing breath. That day, I decided to get back to fitness.
+      Once a college fitness enthusiast, years of corporate life had pushed me over <strong>108 kg</strong>.
       That moment reignited my passion for health and movement.</p>
 
-      <p>I started small — learning swimming, cycling, playing badminton — just trying to move again.  
-      In <strong>2013</strong>, a friend introduced me to a running group at Cubbon Park.  
-      My wife, daughter, and I would join every weekend — she’d stroll in the park while I ran with the group.  
-      It wasn’t easy at first, but step by step, I began to find my rhythm again.</p>
+      <p>I started small — learning swimming, cycling, playing badminton — just trying to move again.
+      In <strong>2013</strong>, a friend introduced me to a running group at Cubbon Park.
+      My wife, daughter, and I would join every weekend — she'd stroll in the park while I ran with the group.
+      It wasn't easy at first, but step by step, I began to find my rhythm again.</p>
 
-      <p>Since then, I’ve taken part in countless <strong>5Ks, 10Ks, half-marathons, full-marathons, and even ultras</strong>.  
-      There were days when I struggled with injuries or self-doubt, but I never stopped showing up.  
-      As of today, I’ve completed <strong>8 full marathons</strong>, achieving a personal best of <strong>3:39</strong> in 2022.</p>
+      <p>Since then, I've taken part in countless <strong>5Ks, 10Ks, half-marathons, full-marathons, and even ultras</strong>.
+      There were days when I struggled with injuries or self-doubt, but I never stopped showing up.
+      As of today, I've completed <strong>8 full marathons</strong>, achieving a personal best of <strong>3:39</strong> in 2022.</p>
 
-      <p>Through this journey, I’ve learned that transformation isn’t about one big change —  
-      it’s about the <strong>small daily habits, consistency, environment, and the people who lift you up</strong>.</p>
+      <p>Through this journey, I've learned that transformation isn't about one big change —
+      it's about the <strong>small daily habits, consistency, environment, and the people who lift you up</strong>.</p>
 
-      <p>I’ve lived that journey — and now, I help others find their own.  
-      Whether you’re starting from scratch or chasing your next PR,  
+      <p>I've lived that journey — and now, I help others find their own.
+      Whether you're starting from scratch or chasing your next PR,
       I can guide you to <strong>build strength, endurance, and a mindset that lasts</strong>.</p>
 
       <p style="text-align:center;color:#f97316;font-weight:600;margin-top:1.8rem;">
-        🏃 “Fitness isn’t a destination — it’s who you become on the way.”
+        🏃 "Fitness isn't a destination — it's who you become on the way."
       </p>
     </div>
   </div>
@@ -623,18 +684,18 @@
   const modal = document.getElementById("aboutModal");
   const openBtn = document.getElementById("openAbout");
   const closeBtn = document.getElementById("closeAbout");
-  
+
   openBtn.addEventListener("click", e => {
     e.preventDefault();
     modal.classList.add("active");
     document.body.style.overflow = "hidden";
   });
-  
+
   closeBtn.addEventListener("click", () => {
     modal.classList.remove("active");
     document.body.style.overflow = "auto";
   });
-  
+
   modal.addEventListener("click", e => {
     // close when clicking the dark background
     if (e.target.id === "aboutModal") {
@@ -651,74 +712,142 @@
   <div class="container">
     <h2>Runner Training Programs</h2>
     <p class="section-sub">
-      Choose the plan that fits your goal — whether you’re building toward your first 10K or training for a half marathon.
+      Choose the plan that fits your goal — whether you're building toward your first 10K or training for a full marathon.
     </p>
 
     <div style="
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 40px;
-      align-items: start;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      align-items: stretch;
       position: relative;
+      margin-top: 2rem;
     ">
       <!-- Half Marathon Program -->
-      <div class="service-card visible" style="background:#fff;">
+      <div class="program-card visible">
+        <div class="program-icon">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f97316" stroke-width="2">
+            <circle cx="50" cy="25" r="12"/>
+            <line x1="50" y1="37" x2="50" y2="65"/>
+            <line x1="50" y1="45" x2="30" y2="55"/>
+            <line x1="50" y1="45" x2="70" y2="55"/>
+            <line x1="50" y1="65" x2="35" y2="85"/>
+            <line x1="50" y1="65" x2="65" y2="85"/>
+          </svg>
+        </div>
         <h3 style="
           font-family:'Bebas Neue',sans-serif;
-          font-size:1.8rem;
+          font-size:1.6rem;
           letter-spacing:.05em;
           background:linear-gradient(90deg,#f59e0b,#f97316);
           -webkit-background-clip:text;
           -webkit-text-fill-color:transparent;
-          margin-bottom:0.8rem;">
-          Half Marathon Strength — 16 Weeks
+          margin-bottom:0.8rem;
+          text-align:center;">
+          Half Marathon
+          <br style="display:none;"/>
+          <span style="font-size:1.2rem;">16 Weeks</span>
         </h3>
-        <p style="color:#6b7280;">
-          Build strength, endurance, and confidence for your next half marathon with our integrated 16-week program.
+        <p style="color:#6b7280; text-align:center; flex-grow:1;">
+          Build strength, endurance, and confidence for your next half marathon.
         </p>
-        <ul style="text-align:left; margin:1rem 0; line-height:1.6;">
-          <li>🏋️ <strong>32 Strength Workouts</strong> — 2 per week (online or in-person)</li>
-          <li>🧘‍♀️ <strong>16 Stretching Sessions</strong> — improve mobility & recovery</li>
-          <li>🏃 <strong>16-Week Running Plan</strong> — structured runs for endurance</li>
+        <ul style="text-align:left; margin:1.2rem 0; line-height:1.8; font-size:0.95rem;">
+          <li>🏋️ <strong>32 Strength Workouts</strong> — 2 per week</li>
+          <li>🧘‍♀️ <strong>16 Stretching Sessions</strong> — recovery focused</li>
+          <li>🏃 <strong>16-Week Running Plan</strong> — endurance building</li>
         </ul>
-        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." class="btn">Join the 16-Week Program</a>
+        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." class="btn" style="width:100%; text-align:center; margin-top:auto;">Join Now</a>
       </div>
 
-      <!-- Divider (visible only on large screens) -->
-      <div style="
-        width:2px;
-        background:linear-gradient(180deg,#f59e0b,#f97316);
-        height:auto;
-        margin:auto;
-        border-radius:2px;
-        display:none;
-      " class="vertical-divider"></div>
-
       <!-- 10KM Program -->
-      <div class="service-card visible" style="background:#fff;">
+      <div class="program-card visible">
+        <div class="program-icon">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f97316" stroke-width="2">
+            <path d="M 20 70 Q 50 20 80 70" stroke-linecap="round"/>
+            <circle cx="50" cy="70" r="15"/>
+            <line x1="50" y1="50" x2="50" y2="65"/>
+            <line x1="35" y1="65" x2="65" y2="65"/>
+          </svg>
+        </div>
         <h3 style="
           font-family:'Bebas Neue',sans-serif;
-          font-size:1.8rem;
+          font-size:1.6rem;
           letter-spacing:.05em;
           background:linear-gradient(90deg,#f59e0b,#f97316);
           -webkit-background-clip:text;
           -webkit-text-fill-color:transparent;
-          margin-bottom:0.8rem;">
-          10K Strength — 12 Weeks
+          margin-bottom:0.8rem;
+          text-align:center;">
+          10K Speed
+          <br style="display:none;"/>
+          <span style="font-size:1.2rem;">12 Weeks</span>
         </h3>
-        <p style="color:#6b7280;">
-          A compact, power-packed program designed to help you build speed, stamina, and form in just 12 weeks.
+        <p style="color:#6b7280; text-align:center; flex-grow:1;">
+          Build speed, stamina, and form in a compact, power-packed program.
         </p>
-        <ul style="text-align:left; margin:1rem 0; line-height:1.6;">
-          <li>🏋️ <strong>24 Strength Workouts</strong> — focused on form, stability, and power</li>
-          <li>🧘‍♀️ <strong>12 Stretching Sessions</strong> — stay flexible and injury-free</li>
-          <li>🏃 <strong>12-Week Running Plan</strong> — build pace and 10K endurance</li>
+        <ul style="text-align:left; margin:1.2rem 0; line-height:1.8; font-size:0.95rem;">
+          <li>🏋️ <strong>24 Strength Workouts</strong> — form & power</li>
+          <li>🧘‍♀️ <strong>12 Stretching Sessions</strong> — injury prevention</li>
+          <li>🏃 <strong>12-Week Running Plan</strong> — pace training</li>
         </ul>
-        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." class="btn">Join the 12-Week Program</a>
+        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." class="btn" style="width:100%; text-align:center; margin-top:auto;">Join Now</a>
+      </div>
+
+      <!-- Full Marathon Program -->
+      <div class="program-card visible">
+        <div class="program-icon">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f97316" stroke-width="2">
+            <circle cx="50" cy="20" r="10"/>
+            <line x1="50" y1="30" x2="50" y2="55"/>
+            <line x1="50" y1="38" x2="28" y2="50"/>
+            <line x1="50" y1="38" x2="72" y2="50"/>
+            <line x1="50" y1="55" x2="30" y2="80"/>
+            <line x1="50" y1="55" x2="70" y2="80"/>
+            <path d="M 25 85 Q 30 70 35 80" stroke-linecap="round"/>
+            <path d="M 70 85 Q 75 70 80 80" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 style="
+          font-family:'Bebas Neue',sans-serif;
+          font-size:1.6rem;
+          letter-spacing:.05em;
+          background:linear-gradient(90deg,#f59e0b,#f97316);
+          -webkit-background-clip:text;
+          -webkit-text-fill-color:transparent;
+          margin-bottom:0.8rem;
+          text-align:center;">
+          Full Marathon
+          <br style="display:none;"/>
+          <span style="font-size:1.2rem;">25 Weeks</span>
+        </h3>
+        <p style="color:#6b7280; text-align:center; flex-grow:1;">
+          Comprehensive training for endurance, speed, and mental toughness.
+        </p>
+        <ul style="text-align:left; margin:1.2rem 0; line-height:1.8; font-size:0.95rem;">
+          <li>🏋️ <strong>50 Strength Workouts</strong> — injury prevention</li>
+          <li>🧘‍♀️ <strong>25 Recovery Sessions</strong> — mobility focus</li>
+          <li>🏃 <strong>25-Week Running Plan</strong> — marathon prep</li>
+          <li>🎯 <strong>Nutrition Strategy</strong> — race-day fueling</li>
+        </ul>
+        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." class="btn" style="width:100%; text-align:center; margin-top:auto;">Join Now</a>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  @media (max-width: 1024px) {
+    #programs > div > div {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    #programs > div > div {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>
 
 
 
@@ -726,7 +855,7 @@
   <div class="container">
     <h2>Book a Coaching Session</h2>
     <p class="section-sub">
-      Book your <strong> 1:1 Strength & Conditioning consultation</strong> — 
+      Book your <strong> 1:1 Strength & Conditioning consultation</strong> —
       get guidance to build endurance, improve form, and stay injury-free.
     </p>
 
@@ -759,7 +888,7 @@
     <p class="section-sub" style="max-width:720px;margin:0 auto 1.5rem;">
       <strong>Introducing Svedah AI Planner</strong> — a smart running assistant that
       automatically generates your personalized weekly training plan by analysing your
-      past seven days of <strong>Strava data</strong>.  
+      past seven days of <strong>Strava data</strong>.
       Get precise mileage, pace, and recovery suggestions tailored to your recent effort and goals.
     </p>
     <a href="https://aiplanner.svedah.co.in/" target="_blank" rel="noopener" class="btn">Try the AI Planner Now</a>
@@ -772,11 +901,11 @@
     <p class="section-sub">What our athletes say about training with Svedah</p>
     <div class="testimonial-grid">
       <div class="testimonial-card">
-        <p>“Nandish’s structured approach helped me break my half marathon PB by 12 minutes!”</p>
+        <p>"Nandish's structured approach helped me break my half marathon PB by 12 minutes!"</p>
         <strong>— Arjun, Bengaluru</strong>
       </div>
       <div class="testimonial-card">
-        <p>“The online plans are flexible and perfectly matched to my schedule — I’ve never felt stronger.”</p>
+        <p>"The online plans are flexible and perfectly matched to my schedule — I've never felt stronger."</p>
         <strong>— Priya, Online Athlete</strong>
       </div>
     </div>
@@ -800,7 +929,7 @@
                   min-width:160px; text-align:center;">
           💬 WhatsApp
         </a>
-      
+
         <!-- Instagram Button -->
         <a href="https://www.instagram.com/nandishnagaraj?igsh=bzR6N285N2tpOG45"
            target="_blank"
@@ -822,9 +951,9 @@
   <p style="margin-top:1rem;color:var(--muted);">© <span id="year"></span> Svedah — Run with purpose.</p>
 </footer>
 
-<a href="https://calendar.app.google/D6obo8kMrDpTuARWA" 
-   class="floating-btn" 
-   target="_blank" 
+<a href="https://calendar.app.google/D6obo8kMrDpTuARWA"
+   class="floating-btn"
+   target="_blank"
    rel="noopener">
    Book a Slot
 </a>
@@ -895,7 +1024,7 @@
       document.getElementById("runs-list").innerHTML='<p style="color:#dc2626">Error loading runs.</p>';
     });
 
-  
+
   // Folder URL containing your background images
   const bgFolder = "https://raw.githubusercontent.com/nandishnagaraj/webpage/main/backgrounds/";
   const bgImages = ["1.jpg", "2.jpg", "3.jpg","4.jpg","5.jpg"];
