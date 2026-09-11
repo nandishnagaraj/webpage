@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Anonymous campus stories, events, observations and harmless gossip." />
+  <title>MY SCHOOL TALKS — Anonymous Campus Stories</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="My School Talks home">
+      <span class="brand-mark">◉</span>
+      <span>MY SCHOOL <em>TALKS</em></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#blasts">Latest</a>
+      <a href="#how">How it works</a>
+      <a href="#rules">Rules</a>
+      <button class="ghost-btn" onclick="openModal()">Start a conversation</button>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse"></span> THE STUDENT VOICE</div>
+        <h1>What’s happening<br><span>at school?</span></h1>
+        <p>My School Talks is a thoughtful place for campus updates, events, observations, and the conversations that bring a school community together.</p>
+        <div class="hero-actions">
+          <a class="primary-btn" href="#blasts">Explore school talks <span>→</span></a>
+          <button class="secondary-btn" onclick="openModal()">Share an update <span>＋</span></button>
+        </div>
+        <div class="trust-row">
+          <div><strong id="feedCount">—</strong><span>published talks</span></div>
+          <div><strong>0</strong><span>public profiles</span></div>
+          <div><strong>24/7</strong><span>community pulse</span></div>
+        </div>
+      </div>
+      <div class="hero-art">
+        <img src="hero.png" alt="Neon school hallway with anonymous message cards" />
+      </div>
+    </section>
+
+    <section class="ticker" aria-label="Site themes">
+      <div>SHARE WHAT MATTERS</div><span>✦</span><div>FIND YOUR COMMUNITY</div><span>✦</span><div>STAY ANONYMOUS</div><span>✦</span><div>KEEP IT RESPECTFUL</div>
+    </section>
+
+    <section id="blasts" class="content-section">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">THE FEED</div>
+          <h2>Latest talks</h2>
+        </div>
+        <div class="filter-row" aria-label="Filter talks">
+          <button class="filter active" data-filter="ALL">All</button>
+          <button class="filter" data-filter="CAMPUS">Campus</button>
+          <button class="filter" data-filter="EVENTS">Events</button>
+          <button class="filter" data-filter="FUNNY">Funny</button>
+        </div>
+      </div>
+      <div id="feedGrid" class="feed-grid" aria-live="polite"></div>
+      <div id="feedMessage" class="feed-message">Loading the latest approved talks…</div>
+    </section>
+
+    <section id="how" class="how-section">
+      <div class="section-heading compact">
+        <div class="eyebrow">NO PROFILE. NO PRESSURE.</div>
+        <h2>How it works</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><span>01</span><h3>Start a talk</h3><p>Share a campus moment, event, observation, or useful question with the community.</p></div>
+        <div class="step"><span>02</span><h3>We review it</h3><p>Your submission is stored in Google Sheets as <strong>PENDING</strong> for moderation.</p></div>
+        <div class="step"><span>03</span><h3>Everyone joins in</h3><p>Only rows changed to <strong>APPROVED</strong> appear in the public feed.</p></div>
+      </div>
+    </section>
+
+    <section id="rules" class="rules-section">
+      <div class="rules-panel">
+        <div>
+          <div class="eyebrow">GUARDRAILS</div>
+          <h2>Anonymous doesn’t mean anything goes.</h2>
+          <p>Keep the feed funny, interesting and safe. Don’t use the platform to target, threaten, expose private information or make serious unverified accusations about people.</p>
+        </div>
+        <div class="rules-list">
+          <div><span>✓</span> Rumors, jokes & campus observations</div>
+          <div><span>✓</span> Events, trends & school buzz</div>
+          <div><span>×</span> Doxxing, threats or personal data</div>
+          <div><span>×</span> Harassment or harmful allegations</div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="brand footer-brand"><span class="brand-mark">◉</span><span>MY SCHOOL <em>TALKS</em></span></div>
+      <div>A better way to stay connected at school.</div>
+    </footer>
+  </main>
+
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <button class="close" onclick="closeModal()" aria-label="Close">×</button>
+      <div class="eyebrow">NEW ANONYMOUS TALK</div>
+      <h2 id="modalTitle">What would you like to share?</h2>
+      <p class="modal-intro">Your public sender name will be <strong>Anonymous</strong>. Your talk is sent to the moderation sheet first.</p>
+      <form id="blastForm">
+        <label for="category">Category</label>
+        <select id="category" name="category">
+          <option value="CAMPUS">Campus</option>
+          <option value="EVENTS">Events</option>
+          <option value="FUNNY">Funny</option>
+          <option value="OTHER">Other</option>
+        </select>
+        <label for="blastText">Your message</label>
+        <textarea id="blastText" name="blast" maxlength="500" placeholder="Share something your school community should know..."></textarea>
+        <div class="modal-meta"><span id="counter">0 / 500</span><span>Public after moderation</span></div>
+        <label class="check"><input type="checkbox" id="safeCheck"> I’m not posting threats, private information, or harmful allegations.</label>
+        <button id="submitButton" class="primary-btn full" type="submit">Submit for review →</button>
+        <div id="status" class="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Paste the deployed Google Apps Script Web App URL here.
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwNiuXhwjMs1dp_exTdxWKYj44PTxn8ps-5ihGvYkgC-DwhzNsAR5q5OMIKURlTdIx3bQ/exec';
+    const POLL_MS = 30000;
+    let allBlasts = [];
+    let activeFilter = 'ALL';
+
+    const modal = document.getElementById('modal');
+    const form = document.getElementById('blastForm');
+    const text = document.getElementById('blastText');
+    const counter = document.getElementById('counter');
+    const status = document.getElementById('status');
+    const submitButton = document.getElementById('submitButton');
+    const feedGrid = document.getElementById('feedGrid');
+    const feedMessage = document.getElementById('feedMessage');
+    const category = document.getElementById('category');
+
+    text.addEventListener('input', () => counter.textContent = `${text.value.length} / 500`);
+
+    function openModal(){
+      modal.classList.add('open');
+      text.focus();
+    }
+
+    function closeModal(){
+      modal.classList.remove('open');
+      status.textContent = '';
+    }
+
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    function escapeHtml(value) {
+      const div = document.createElement('div');
+      div.textContent = value == null ? '' : String(value);
+      return div.innerHTML;
+    }
+
+    function relativeTime(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      const diff = Math.max(0, Date.now() - date.getTime());
+      const minutes = Math.floor(diff / 60000);
+      if (minutes < 1) return 'just now';
+      if (minutes < 60) return `${minutes} min ago`;
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours} hr ago`;
+      const days = Math.floor(hours / 24);
+      return `${days} day${days === 1 ? '' : 's'} ago`;
+    }
+
+    function renderFeed() {
+      const filtered = activeFilter === 'ALL'
+        ? allBlasts
+        : allBlasts.filter(blast => blast.category === activeFilter);
+
+      document.getElementById('feedCount').textContent = allBlasts.length;
+
+      if (!filtered.length) {
+        feedGrid.innerHTML = '';
+        feedMessage.textContent = API_URL.startsWith('PASTE_')
+          ? 'Connect the Google Apps Script URL to load approved talks.'
+          : 'No approved talks in this category yet.';
+        return;
+      }
+
+      feedMessage.textContent = '';
+      feedGrid.innerHTML = filtered.map((blast, index) => `
+        <article class="blast-card ${index === 0 ? 'featured' : ''}">
+          <div class="card-top"><span class="tag ${index === 0 ? 'hot' : ''}">${escapeHtml(blast.category)}</span><span>${escapeHtml(relativeTime(blast.publishedAt))}</span></div>
+          <h3>${escapeHtml(blast.text)}</h3>
+          <p>Shared anonymously and approved for the public feed.</p>
+          <div class="card-footer"><span>👤 Anonymous</span><span>✓ Approved</span></div>
+        </article>
+      `).join('');
+    }
+
+    async function loadPublishedBlasts() {
+      if (API_URL.startsWith('PASTE_')) {
+        renderFeed();
+        return;
+      }
+      try {
+        const response = await fetch(`${API_URL}?action=published&_=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        if (!data.ok) throw new Error(data.error || 'Unable to load feed');
+        allBlasts = Array.isArray(data.blasts) ? data.blasts : [];
+        renderFeed();
+      } catch (error) {
+        feedMessage.textContent = 'The feed is temporarily unavailable. Please try again shortly.';
+        console.error(error);
+      }
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const blast = text.value.trim();
+      const safe = document.getElementById('safeCheck').checked;
+
+      if (blast.length < 10) {
+        status.textContent = 'Give your talk a little more detail.';
+        return;
+      }
+      if (!safe) {
+        status.textContent = 'Please confirm the community-safety rules before submitting.';
+        return;
+      }
+      if (API_URL.startsWith('PASTE_')) {
+        status.textContent = 'Connect the Google Apps Script Web App URL before submitting.';
+        return;
+      }
+
+      submitButton.disabled = true;
+      status.textContent = 'Sending to the moderation queue…';
+
+      try {
+        const body = new URLSearchParams({
+          category: category.value,
+          blast,
+        });
+
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+          body,
+        });
+        const data = await response.json();
+        if (!response.ok || !data.ok) throw new Error(data.error || 'Submission failed');
+
+        status.textContent = 'Talk queued for moderation. It will appear publicly only after the Status column is changed to APPROVED.';
+        text.value = '';
+        document.getElementById('safeCheck').checked = false;
+        counter.textContent = '0 / 500';
+      } catch (error) {
+        status.textContent = 'Could not submit the blast. Please check the API URL and Google Apps Script deployment.';
+        console.error(error);
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+
+    document.querySelectorAll('.filter').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      renderFeed();
+    }));
+
+    loadPublishedBlasts();
+    setInterval(loadPublishedBlasts, POLL_MS);
+  </script>
+</body>
+</html>
