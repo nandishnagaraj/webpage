@@ -4,18 +4,17 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Anonymous campus stories, events, observations and harmless gossip." />
-  <title>MY SCHOOL TALKS — Anonymous Campus Stories</title>
+  <title>GOSSIPGUYS — Anonymous Campus Stories</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans+Condensed:wght@400;500;600;700;800&family=Norwester&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="noise"></div>
   <header class="nav">
-    <a class="brand" href="#top" aria-label="My School Talks home">
-      <span class="brand-mark">◉</span>
-      <span>MY SCHOOL <em>TALKS</em></span>
+    <a class="brand" href="#top" aria-label="GossipGuys home">
+      <span class="wordmark"><strong>GOSSIP</strong><em>Guys</em></span>
     </a>
     <nav class="nav-links">
       <a href="#blasts">Latest</a>
@@ -30,7 +29,7 @@
       <div class="hero-copy">
         <div class="eyebrow"><span class="pulse"></span> THE STUDENT VOICE</div>
         <h1>What’s happening<br><span>at school?</span></h1>
-        <p>My School Talks is a thoughtful place for campus updates, events, observations, and the conversations that bring a school community together.</p>
+        <p>GossipGuys is the place for campus updates, events, observations, and the conversations that bring a school community together.</p>
         <div class="hero-actions">
           <a class="primary-btn" href="#blasts">Explore school talks <span>→</span></a>
           <button class="secondary-btn" onclick="openModal()">Share an update <span>＋</span></button>
@@ -96,7 +95,7 @@
     </section>
 
     <footer>
-      <div class="brand footer-brand"><span class="brand-mark">◉</span><span>MY SCHOOL <em>TALKS</em></span></div>
+      <div class="brand footer-brand"><span class="wordmark"><strong>GOSSIP</strong><em>Guys</em></span></div>
       <div>A better way to stay connected at school.</div>
     </footer>
   </main>
@@ -129,6 +128,7 @@
     // Paste the deployed Google Apps Script Web App URL here.
     const API_URL = 'https://script.google.com/macros/s/AKfycbwNiuXhwjMs1dp_exTdxWKYj44PTxn8ps-5ihGvYkgC-DwhzNsAR5q5OMIKURlTdIx3bQ/exec';
     const POLL_MS = 30000;
+    const REQUEST_TIMEOUT_MS = 15000;
     let allBlasts = [];
     let activeFilter = 'ALL';
 
@@ -213,14 +213,22 @@
         return;
       }
       try {
-        const response = await fetch(`${API_URL}?action=published&_=${Date.now()}`, { cache: 'no-store' });
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+        const response = await fetch(`${API_URL}?action=published&_=${Date.now()}`, {
+          cache: 'no-store',
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
         if (!data.ok) throw new Error(data.error || 'Unable to load feed');
         allBlasts = Array.isArray(data.blasts) ? data.blasts : [];
         renderFeed();
       } catch (error) {
-        feedMessage.textContent = 'The feed is temporarily unavailable. Please try again shortly.';
+        feedMessage.textContent = error.name === 'AbortError'
+          ? 'The feed is taking longer than expected. Please try again shortly.'
+          : 'The feed is temporarily unavailable. Please try again shortly.';
         console.error(error);
       }
     }
