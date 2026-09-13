@@ -1,0 +1,39 @@
+{
+  "name": "@svedah/ui-telemetry",
+  "version": "1.0.0",
+  "description": "Framework-agnostic browser UI telemetry SDK for user journeys, data-test-id capture, engagement, forms, outbound links and network correlation.",
+  "type": "module",
+  "main": "dist/telemetry.js",
+  "module": "src/core.js",
+  "browser": "dist/telemetry.min.js",
+  "exports": {
+    ".": {
+      "import": "./src/core.js",
+      "browser": "./dist/telemetry.min.js",
+      "default": "./dist/telemetry.js"
+    },
+    "./react": "./adapters/react.js",
+    "./vue": "./adapters/vue.js",
+    "./angular": "./adapters/angular.js",
+    "./dist/telemetry.js": "./dist/telemetry.js",
+    "./dist/telemetry.min.js": "./dist/telemetry.min.js"
+  },
+  "files": [
+    "src",
+    "adapters",
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "telemetry",
+    "ui-telemetry",
+    "session-journey",
+    "playwright",
+    "data-testid",
+    "browser-sdk"
+  ],
+  "author": "Svedah",
+  "license": "MIT",
+  "sideEffects": false
+}
