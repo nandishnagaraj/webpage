@@ -4,6 +4,7 @@ export function installFormTracking(api) {
   document.addEventListener('focusin', (event) => {
     const element = event.target?.closest?.('input,select,textarea');
     if (!element) return;
+    api.markUserActivity?.(true);
     const info = getElementInfo(element);
     api.emit('FORM_FIELD_FOCUS', {
       action: 'focus',
@@ -20,6 +21,7 @@ export function installFormTracking(api) {
   document.addEventListener('change', (event) => {
     const element = event.target?.closest?.('input,select,textarea');
     if (!element) return;
+    api.markUserActivity?.(true);
     const info = getElementInfo(element);
     const sensitive = ['password', 'hidden'].includes((info.type || '').toLowerCase());
     api.emit('FORM_FIELD_CHANGE', {
@@ -38,6 +40,7 @@ export function installFormTracking(api) {
 
   document.addEventListener('submit', (event) => {
     if (!(event.target instanceof HTMLFormElement)) return;
+    api.markUserActivity?.(true);
     const info = getElementInfo(event.target);
     api.emit('FORM_SUBMIT', {
       action: 'submit',
