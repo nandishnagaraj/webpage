@@ -259,11 +259,41 @@
       background: var(--bg-alt2);
     }
 
+    /* Join form */
+    #join { background: var(--bg-alt1); }
+    .join-panel {
+      display: grid;
+      grid-template-columns: minmax(260px, .75fr) minmax(0, 1.25fr);
+      gap: 32px;
+      align-items: start;
+      max-width: 1000px;
+      margin: 2rem auto 0;
+      padding: 32px;
+      border: 1px solid #fed7aa;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 16px 36px rgba(249, 115, 22, .12);
+      text-align: left;
+    }
+    .join-intro { padding: 18px 8px; }
+    .join-label { color: var(--brand-2); font-size: .78rem; font-weight: 800; letter-spacing: .12em; }
+    .join-intro h3 { margin: .7rem 0 1rem; font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: .05em; line-height: 1; }
+    .join-intro p { color: var(--muted); margin-bottom: 1.5rem; }
+    .join-points { display: grid; gap: 10px; color: var(--text); font-size: .94rem; }
+    .join-points span { display: flex; align-items: center; gap: 9px; }
+    .join-points strong { color: var(--brand-2); font-size: 1.1rem; }
+    .form-frame { width: 100%; min-height: 680px; border: 0; border-radius: 12px; background: #fff; }
+    .join-fallback { margin-top: 14px; color: var(--muted); font-size: .86rem; text-align: center; }
+    .join-fallback a { color: var(--brand-2); font-weight: 700; text-decoration: underline; }
+
     /* Mobile adjustments */
     @media (max-width: 680px) {
       header { padding: 80px 0 60px; }
       header h1 { font-size: 2.4rem; }
       #bio img { width:180px; height:180px; }
+      .join-panel { grid-template-columns: 1fr; padding: 22px; }
+      .join-intro { padding: 4px; }
+      .form-frame { min-height: 720px; }
     }
     @media (max-width: 480px) {
       section { padding: 60px 16px; }
@@ -648,10 +678,11 @@
     <div class="container nav-wrap">
       <span class="brand-text">SVEDAH</span>
       <div class="nav-links">
-        <a href="#home">Home</a>
-        <a href="#longruns">Upcoming Runs</a>
-        <a href="#calendar" class="nav-cta">Book Slots</a>
-        <a href="#contact">Contact</a>
+        <a href="#home" data-test-id="svedah_nav_home">Home</a>
+        <a href="#longruns" data-test-id="svedah_nav_upcoming_runs">Upcoming Runs</a>
+        <a href="#join" data-test-id="svedah_nav_join">Join</a>
+        <a href="#calendar" class="nav-cta" data-test-id="svedah_nav_book_slots">Book Slots</a>
+        <a href="#contact" data-test-id="svedah_nav_contact">Contact</a>
       </div>
     </div>
   </nav>
@@ -680,25 +711,25 @@
           Our Bangalore team meets weekly to train alongside coaches and fellow athletes — blending science, community, and consistency to help you reach your goals.
         </p>
         <div style="margin-top:2rem;">
-          <a href="#calendar" class="btn">Start Your Journey</a>
+          <a href="#calendar" class="btn" data-test-id="svedah_home_start_journey">Start Your Journey</a>
         </div>
       </div>
 
       <div style="margin-top:3rem;">
 <h2 style="font-size:2rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em;">Our Services</h2>
 <div class="services-grid">
-<div class="service-card"><h3>🏃 Running Strength</h3><p>Running-specific strength using plyometrics, kettlebells, resistance training, mobility, bodyweight exercises and running form correction.</p></div>
-<div class="service-card"><h3>🏅 Marathon Coaching</h3><p>Scientific coaching for 5K, 10K, Half Marathon and Marathon runners.</p></div>
-<div class="service-card"><h3>🏋️ Strength & Conditioning</h3><p>Personal and small-group coaching to improve resilience, performance and injury prevention.</p></div>
-<div class="service-card"><h3>⚡ Plyometrics</h3><p>Develop power, coordination and running economy.</p></div>
-<div class="service-card"><h3>🫖 Kettlebell Training</h3><p>Build strength, stability and endurance that transfers directly to running.</p></div>
-<div class="service-card"><h3>🎥 Running Form Analysis</h3><p>Improve cadence, posture, arm swing and stride efficiency.</p></div>
-<div class="service-card"><h3>🧘 Recovery & Mobility</h3><p>Mobility, stretching, breathwork and recovery planning.</p></div>
-<div class="service-card"><h3>🥗 Nutrition</h3><p>Fuel smarter, recover faster and perform better.</p></div>
-<div class="service-card"><h3>🧠 Mindset & Performance</h3><p>Build confidence, discipline and sustainable habits.</p></div>
-<div class="service-card"><h3>👦 Youth Athletic Development</h3><p>Customised fitness programmes for young athletes.</p></div>
-<div class="service-card"><h3>🏢 Corporate Wellness</h3><p>Corporate talks on health, movement and performance.</p></div>
-<div class="service-card"><h3>🤖 AI Running Planner</h3><p>AI-generated weekly running plans based on your training data.</p></div>
+<div class="service-card" data-test-id="svedah_service_running_strength"><h3>🏃 Running Strength</h3><p>Running-specific strength using plyometrics, kettlebells, resistance training, mobility, bodyweight exercises and running form correction.</p></div>
+<div class="service-card" data-test-id="svedah_service_marathon_coaching"><h3>🏅 Marathon Coaching</h3><p>Scientific coaching for 5K, 10K, Half Marathon and Marathon runners.</p></div>
+<div class="service-card" data-test-id="svedah_service_strength_conditioning"><h3>🏋️ Strength & Conditioning</h3><p>Personal and small-group coaching to improve resilience, performance and injury prevention.</p></div>
+<div class="service-card" data-test-id="svedah_service_plyometrics"><h3>⚡ Plyometrics</h3><p>Develop power, coordination and running economy.</p></div>
+<div class="service-card" data-test-id="svedah_service_kettlebell"><h3>🫖 Kettlebell Training</h3><p>Build strength, stability and endurance that transfers directly to running.</p></div>
+<div class="service-card" data-test-id="svedah_service_running_form"><h3>🎥 Running Form Analysis</h3><p>Improve cadence, posture, arm swing and stride efficiency.</p></div>
+<div class="service-card" data-test-id="svedah_service_recovery_mobility"><h3>🧘 Recovery & Mobility</h3><p>Mobility, stretching, breathwork and recovery planning.</p></div>
+<div class="service-card" data-test-id="svedah_service_nutrition"><h3>🥗 Nutrition</h3><p>Fuel smarter, recover faster and perform better.</p></div>
+<div class="service-card" data-test-id="svedah_service_mindset"><h3>🧠 Mindset & Performance</h3><p>Build confidence, discipline and sustainable habits.</p></div>
+<div class="service-card" data-test-id="svedah_service_youth"><h3>👦 Youth Athletic Development</h3><p>Customised fitness programmes for young athletes.</p></div>
+<div class="service-card" data-test-id="svedah_service_corporate"><h3>🏢 Corporate Wellness</h3><p>Corporate talks on health, movement and performance.</p></div>
+<div class="service-card" data-test-id="svedah_service_ai_planner"><h3>🤖 AI Running Planner</h3><p>AI-generated weekly running plans based on your training data.</p></div>
 </div>
 </div>
     </div>
@@ -734,25 +765,25 @@
       margin-left: auto;
       margin-right: auto;
     ">
-      <div class="philosophy-card">
+      <div class="philosophy-card" data-test-id="svedah_philosophy_no_motivation">
         <div class="philosophy-icon">💡</div>
         <h3 style="font-weight:700; margin:1rem 0 0.8rem; font-size:1.1rem;">We Don't Chase Motivation</h3>
         <p style="color:#6b7280; font-size:0.95rem;">We build systems that work even when motivation fades.</p>
       </div>
 
-      <div class="philosophy-card">
+      <div class="philosophy-card" data-test-id="svedah_philosophy_consistency">
         <div class="philosophy-icon">🔨</div>
         <h3 style="font-weight:700; margin:1rem 0 0.8rem; font-size:1.1rem;">Fitness Isn't Built in One Workout</h3>
         <p style="color:#6b7280; font-size:0.95rem;">It's the compound effect of small daily habits.</p>
       </div>
 
-      <div class="philosophy-card">
+      <div class="philosophy-card" data-test-id="svedah_philosophy_running_skill">
         <div class="philosophy-icon">🏃</div>
         <h3 style="font-weight:700; margin:1rem 0 0.8rem; font-size:1.1rem;">Running is a Skill</h3>
         <p style="color:#6b7280; font-size:0.95rem;">Like any skill, it improves with smart practice and coaching.</p>
       </div>
 
-      <div class="philosophy-card">
+      <div class="philosophy-card" data-test-id="svedah_philosophy_strength">
         <div class="philosophy-icon">💪</div>
         <h3 style="font-weight:700; margin:1rem 0 0.8rem; font-size:1.1rem;">Strength is Part of Running</h3>
         <p style="color:#6b7280; font-size:0.95rem;">A strong runner is an efficient, injury-resistant runner.</p>
@@ -760,7 +791,7 @@
     </div>
 
     <div style="margin-top:2.5rem;">
-      <a href="#" id="openAbout" class="btn"
+      <a href="#" id="openAbout" class="btn" data-test-id="svedah_philosophy_full_story"
          style="background:linear-gradient(90deg,#f59e0b,#f97316);
                 box-shadow:0 6px 18px rgba(249,115,22,.4);">
         📖 My Full Story
@@ -776,7 +807,7 @@
 
 <div id="aboutModal">
   <div class="modal-content">
-    <button id="closeAbout">&times;</button>
+    <button id="closeAbout" data-test-id="svedah_about_close">&times;</button>
 
     <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.05em;
                background:linear-gradient(90deg,#f59e0b,#f97316);
@@ -877,7 +908,7 @@
       margin-top: 2rem;
     ">
       <!-- Half Marathon Program -->
-      <div class="program-card visible">
+      <div class="program-card visible" data-test-id="svedah_program_half_marathon">
         <div class="program-icon">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f97316" stroke-width="2">
             <circle cx="50" cy="25" r="12"/>
@@ -909,11 +940,11 @@
           <li>🧘‍♀️ <strong>16 Stretching Sessions</strong> — recovery focused</li>
           <li>🏃 <strong>16-Week Running Plan</strong> — endurance building</li>
         </ul>
-        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." class="btn" style="width:100%; text-align:center; margin-top:auto;">Join Now</a>
+        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." class="btn" data-test-id="svedah_program_half_marathon_join_now" style="width:100%; text-align:center; margin-top:auto;">Join Now</a>
       </div>
 
       <!-- 10KM Program -->
-      <div class="program-card visible">
+      <div class="program-card visible" data-test-id="svedah_program_10k">
         <div class="program-icon">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f97316" stroke-width="2">
             <path d="M 20 70 Q 50 20 80 70" stroke-linecap="round"/>
@@ -943,11 +974,11 @@
           <li>🧘‍♀️ <strong>12 Stretching Sessions</strong> — injury prevention</li>
           <li>🏃 <strong>12-Week Running Plan</strong> — pace training</li>
         </ul>
-        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." class="btn" style="width:100%; text-align:center; margin-top:auto;">Join Now</a>
+        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." class="btn" data-test-id="svedah_program_10k_join_now" style="width:100%; text-align:center; margin-top:auto;">Join Now</a>
       </div>
 
       <!-- Full Marathon Program -->
-      <div class="program-card visible">
+      <div class="program-card visible" data-test-id="svedah_program_full_marathon">
         <div class="program-icon">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f97316" stroke-width="2">
             <circle cx="50" cy="20" r="10"/>
@@ -982,7 +1013,7 @@
           <li>🏃 <strong>25-Week Running Plan</strong> — marathon prep</li>
           <li>🎯 <strong>Nutrition Strategy</strong> — race-day fueling</li>
         </ul>
-        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." class="btn" style="width:100%; text-align:center; margin-top:auto;">Join Now</a>
+        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions." class="btn" data-test-id="svedah_program_full_marathon_join_now" style="width:100%; text-align:center; margin-top:auto;">Join Now</a>
       </div>
     </div>
   </div>
@@ -1031,7 +1062,7 @@
       margin: 2rem auto 0;
     ">
       <!-- Wednesday Session -->
-      <div class="session-card visible">
+      <div class="session-card visible" data-test-id="svedah_session_wednesday">
         <div class="session-day">📅 WEDNESDAY</div>
         <div class="session-time">6:30 PM – 8 PM</div>
         <div class="session-activity">Running Strength</div>
@@ -1039,11 +1070,11 @@
         <p style="color:#6b7280; margin-top:1rem; font-size:0.9rem;">
           Strength & conditioning workouts designed for runners. Build power, stability, and injury resilience.
         </p>
-        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20join%20the%20Wednesday%20Running%20Strength%20session." class="btn" style="width:100%; margin-top:1.2rem; text-align:center;">Join Session</a>
+        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20join%20the%20Wednesday%20Running%20Strength%20session." class="btn" data-test-id="svedah_session_wednesday_join" style="width:100%; margin-top:1.2rem; text-align:center;">Join Session</a>
       </div>
 
       <!-- Sunday Session -->
-      <div class="session-card visible" style="animation-delay:0.1s;">
+      <div class="session-card visible" data-test-id="svedah_session_sunday" style="animation-delay:0.1s;">
         <div class="session-day">📅 SUNDAY</div>
         <div class="session-time">6 AM – 8 AM</div>
         <div class="session-activity">Running Strength</div>
@@ -1051,7 +1082,7 @@
         <p style="color:#6b7280; margin-top:1rem; font-size:0.9rem;">
           Community-powered group training. Learn running form, build endurance, and connect with fellow runners.
         </p>
-        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20join%20the%20Sunday%20Running%20Strength%20session." class="btn" style="width:100%; margin-top:1.2rem; text-align:center;">Join Session</a>
+        <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20join%20the%20Sunday%20Running%20Strength%20session." class="btn" data-test-id="svedah_session_sunday_join" style="width:100%; margin-top:1.2rem; text-align:center;">Join Session</a>
       </div>
     </div>
 
@@ -1076,7 +1107,7 @@
     </div>
 
     <div style="text-align:center;margin-top:2.5rem;">
-      <a href="https://calendar.app.google/D6obo8kMrDpTuARWA" target="_blank" rel="noopener" class="btn">
+      <a href="https://calendar.app.google/D6obo8kMrDpTuARWA" target="_blank" rel="noopener" class="btn" data-test-id="svedah_booking_open_calendar">
         Open My Calendar
       </a>
       <p style="margin-top:0.8rem;color:#6b7280;font-size:0.9rem;">Limited to 4 appointments per slot — reserve early!</p>
@@ -1088,7 +1119,7 @@
   <div class="container">
     <h2>Upcoming Long Runs</h2>
     <p class="section-sub">Community-powered group runs updated live every week.</p>
-    <div id="runs-list" class="services-grid"></div>
+    <div id="runs-list" class="services-grid" data-test-id="svedah_upcoming_runs_list"></div>
   </div>
 </section>
 
@@ -1101,7 +1132,7 @@
       past seven days of <strong>Strava data</strong>.
       Get precise mileage, pace, and recovery suggestions tailored to your recent effort and goals.
     </p>
-    <a href="https://aiplanner.svedah.co.in/" target="_blank" rel="noopener" class="btn">Try the AI Planner Now</a>
+    <a href="https://aiplanner.svedah.co.in/" target="_blank" rel="noopener" class="btn" data-test-id="svedah_ai_planner_try_now">Try the AI Planner Now</a>
   </div>
 </section>
 
@@ -1122,18 +1153,46 @@
   </div>
 </section>
 
+<section id="join" data-test-id="svedah_join_section">
+  <div class="container">
+    <h2>Join Svedah</h2>
+    <p class="section-sub">Tell us where you are in your running journey, and we will help you find the right next step.</p>
+    <div class="join-panel">
+      <div class="join-intro">
+        <div class="join-label">RUN WITH PURPOSE</div>
+        <h3>YOUR NEXT STRIDE STARTS HERE</h3>
+        <p>Complete this short form to join the Svedah community and receive guidance tailored to your goals.</p>
+        <div class="join-points">
+          <span><strong>01</strong> Share your running goals</span>
+          <span><strong>02</strong> Tell us your preferred training style</span>
+          <span><strong>03</strong> We will help you get started</span>
+        </div>
+      </div>
+      <div>
+        <iframe
+          class="form-frame"
+          data-test-id="svedah_join_google_form_iframe"
+          title="Join Svedah form"
+          src="https://docs.google.com/forms/d/1g5nat26OmBxjMoS-tcGWTpZVFcdianmj4oybWD8Ky3k/viewform?embedded=true">
+        </iframe>
+        <p class="join-fallback">Having trouble viewing the form? <a href="https://docs.google.com/forms/d/1g5nat26OmBxjMoS-tcGWTpZVFcdianmj4oybWD8Ky3k/viewform" target="_blank" rel="noopener" data-test-id="svedah_join_open_form">Open the joining form</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="contact">
   <div class="container">
     <h2>Contact</h2>
     <div class="card" style="max-width:520px;margin:auto">
-      <p><strong>📞 Phone:</strong> <a href="tel:9886033901">9886033901</a></p>
-      <p><strong>📧 Email:</strong> <a href="mailto:svedahplatform@svedah.co.in">svedahplatform@svedah.co.in</a></p>
+      <p><strong>📞 Phone:</strong> <a href="tel:9886033901" data-test-id="svedah_contact_phone">9886033901</a></p>
+      <p><strong>📧 Email:</strong> <a href="mailto:svedahplatform@svedah.co.in" data-test-id="svedah_contact_email">svedahplatform@svedah.co.in</a></p>
       <p><strong>📍 Location:</strong> Bengaluru, India</p>
       <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin-top:1rem;">
         <!-- WhatsApp Button -->
         <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions."
            target="_blank"
-           class="btn"
+           class="btn" data-test-id="svedah_contact_whatsapp"
            style="background:linear-gradient(90deg,#25D366,#128C7E);
                   box-shadow:0 6px 18px rgba(37,211,102,.4);
                   min-width:160px; text-align:center;">
@@ -1143,7 +1202,7 @@
         <!-- Instagram Button -->
         <a href="https://www.instagram.com/nandishnagaraj?igsh=bzR6N285N2tpOG45"
            target="_blank"
-           class="btn"
+           class="btn" data-test-id="svedah_contact_instagram"
            style="background:linear-gradient(90deg,#f59e0b,#f97316);
                   box-shadow:0 6px 18px rgba(249,115,22,.4);
                   min-width:160px; text-align:center;">
@@ -1157,12 +1216,12 @@
 
 <footer>
   <p>Ready to take the next stride?</p>
-  <a href="#calendar" class="btn" style="margin-top:10px;">Join Svedah Today</a>
+  <a href="#join" class="btn" data-test-id="svedah_footer_join_today" style="margin-top:10px;">Join Svedah Today</a>
   <p style="margin-top:1rem;color:var(--muted);">© <span id="year"></span> Svedah — Run with purpose.</p>
 </footer>
 
 <a href="https://calendar.app.google/D6obo8kMrDpTuARWA"
-   class="floating-btn"
+   class="floating-btn" data-test-id="svedah_mobile_book_slot"
    target="_blank"
    rel="noopener">
    Book a Slot
@@ -1221,6 +1280,7 @@
       runs.forEach(r=>{
         const el=document.createElement("div");
         el.className="service-card visible";
+        el.setAttribute("data-test-id", `svedah_upcoming_run_${runs.indexOf(r) + 1}`);
         el.innerHTML=`
           <h3 style="color:#991b1b">${r.location||"Run"}</h3>
           <p><strong>Date:</strong> ${r.dateRaw||"-"}</p>
@@ -1259,6 +1319,35 @@
 
 </script>
 
+
+
+
+  <!-- Svedah UI Telemetry SDK - hosted from /uitelemetry -->
+  <script src="https://svedah.co.in/uitelemetry/dist/telemetry.min.js"></script>
+  <script>
+    window.SvedahTelemetry && window.SvedahTelemetry.init({
+      serviceName: "svedah",
+      environment: "test",
+      exporter: {
+        type: "console"
+      },
+      capture: {
+        clicks: true,
+        navigation: true,
+        forms: true,
+        network: true,
+        errors: true,
+        journey: true,
+        engagement: true,
+        outbound: true
+      },
+      privacy: {
+        respectDoNotTrack: false,
+        maskInputs: true,
+        capturePasswords: false
+      }
+    });
+  </script>
 
 </body>
 </html>
