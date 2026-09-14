@@ -1,25 +1,31 @@
-export function createExporter(config = {}) {
-  const type = config.type || 'console';
-  const endpoint = config.endpoint || '';
+import { createHttpExporter } from './exporters/http-exporter.js';
 
-  async function exportRecord(record) {
-    if (type === 'none') return;
-    if (type === 'console') {
-      console.groupCollapsed(`%c[Svedah UI Telemetry] ${record.event}`, 'color:#f97316;font-weight:700');
-      console.table(record);
-      console.log(record);
-      console.groupEnd();
-      return;
-    }
-    if (type === 'http' && endpoint) {
-      await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(record),
-        keepalive: true
-      });
-    }
+export function createExporter(config = {}) {
+  const exporterConfig = config.exporter || { type: 'console' };
+
+  if (exporterConfig.type === 'http') {
+    return createHttpExporter(exporterConfig);
   }
 
-  return { exportRecord };
+  return createConsoleExporter();
+}
+
+function createConsoleExporter() {
+  function enqueue(event) {
+    const eventName = event.event || 'EVENT';
+    console.groupCollapsed(
+      `%c[Svedah UI Telemetry] ${eventName}`,
+      'color:#f97316;font-weight:700'
+    );
+    console.table(event);
+    console.log(event);
+    console.groupEnd();
+  }
+
+  return {
+    type: 'console',
+    enqueue,
+    flush() {},
+    getQueueSize: () => 0
+  };
 }

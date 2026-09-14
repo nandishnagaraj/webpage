@@ -1,330 +1,549 @@
-import { createSessionState, touchSession, createTraceId, createSpanId, DEFAULT_SESSION_KEY, DEFAULT_SESSION_IDLE_TIMEOUT_MS } from './session.js';
-import { getElementInfo } from './element.js';
-import { createJourney } from './journey.js';
-import { installNetworkTracking } from './network.js';
-import { installFormTracking } from './forms.js';
-import { installErrorTracking } from './errors.js';
 import { createExporter } from './exporter.js';
 
 const DEFAULT_CONFIG = {
-  serviceName: 'svedah-web',
-  environment: 'development',
-  sessionKey: DEFAULT_SESSION_KEY,
-  respectDoNotTrack: false,
-  maxJourneyEvents: 500,
-  sessionIdleTimeoutMs: DEFAULT_SESSION_IDLE_TIMEOUT_MS,
-  activityIdleThresholdMs: 30000,
-  activityEventThrottleMs: 1000,
-  engagementIntervalMs: 30000,
+  serviceName: 'svedah',
+  environment: 'test',
+  exporter: { type: 'console' },
   capture: {
     clicks: true,
     navigation: true,
     forms: true,
     network: true,
     errors: true,
-    engagement: true
+    journey: true,
+    engagement: true,
+    outbound: true
   },
   privacy: {
+    respectDoNotTrack: false,
     maskInputs: true,
-    capturePasswords: false,
-    stripQueryString: false
+    capturePasswords: false
   },
-  exporter: {
-    type: 'console'
+  session: {
+    idleTimeoutMs: 30000,
+    resetAfterInactiveMs: 30 * 60 * 1000
   }
 };
 
-let currentInstance = null;
+let initialized = false;
+let config = DEFAULT_CONFIG;
+let exporter = null;
+let journey = [];
+let counters = {
+  page_views: 0,
+  clicks: 0,
+  changes: 0,
+  forms_submitted: 0,
+  fetches: 0,
+  outbound_clicks: 0,
+  navigations: 0,
+  errors: 0
+};
+let session = null;
+let currentTraceId = createHexId(32);
+let lastUiSpanId = null;
+let engagementTimer = null;
+let lastVisibilityStart = null;
+let visibleTimeMs = 0;
+let activeTimeMs = 0;
+let lastActivityAt = 0;
+let activeWindowStartedAt = null;
+let originalFetch = null;
+let originalXhrOpen = null;
+let originalXhrSend = null;
 
-export function initTelemetry(userConfig = {}) {
-  if (currentInstance) return currentInstance;
+function deepMerge(target, source) {
+  const output = { ...target };
+  Object.keys(source || {}).forEach((key) => {
+    if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      output[key] = deepMerge(output[key] || {}, source[key]);
+    } else {
+      output[key] = source[key];
+    }
+  });
+  return output;
+}
 
-  const config = mergeConfig(DEFAULT_CONFIG, userConfig);
-  const dnt = navigator.doNotTrack === '1' || window.doNotTrack === '1';
-  const disabled = config.respectDoNotTrack && dnt;
-  const session = createSessionState(config.sessionKey, config.sessionIdleTimeoutMs);
-  const sessionId = session.sessionId;
-  const journeyTraceId = createTraceId();
-  const journey = createJourney(config.maxJourneyEvents);
-  const exporter = createExporter(config.exporter);
-  const sessionStart = session.startedAt;
-  let visibleStartedAt = document.hidden ? 0 : Date.now();
-  let visibleAccumulatedMs = 0;
-  let activePeriodStartedAt = 0;
-  let lastUserActivityAt = 0;
-  let activeAccumulatedMs = 0;
-  let lastActivityEventAt = 0;
-  let lastUiSpanId = '';
+function createHexId(length) {
+  const bytes = new Uint8Array(Math.ceil(length / 2));
+  if (window.crypto && window.crypto.getRandomValues) {
+    window.crypto.getRandomValues(bytes);
+  } else {
+    for (let i = 0; i < bytes.length; i += 1) bytes[i] = Math.floor(Math.random() * 256);
+  }
+  return Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, length);
+}
 
-  function normalizeUrl(url) {
-    if (!config.privacy.stripQueryString) return url;
+function now() {
+  return Date.now();
+}
+
+function readSession() {
+  const raw = sessionStorage.getItem('svedah_ui_session');
+  const current = now();
+  if (raw) {
     try {
-      const parsed = new URL(url, location.href);
-      parsed.search = '';
-      return parsed.href;
-    } catch {
-      return url;
-    }
-  }
-
-  function closeActivePeriod(now = Date.now()) {
-    if (!activePeriodStartedAt || !lastUserActivityAt) return;
-    const activeUntil = Math.min(now, lastUserActivityAt + config.activityIdleThresholdMs);
-    if (activeUntil > activePeriodStartedAt) {
-      activeAccumulatedMs += activeUntil - activePeriodStartedAt;
-    }
-    activePeriodStartedAt = 0;
-    lastUserActivityAt = 0;
-  }
-
-  function markUserActivity(force = false) {
-    if (document.hidden) return;
-
-    const now = Date.now();
-    if (!force && now - lastActivityEventAt < config.activityEventThrottleMs) return;
-    lastActivityEventAt = now;
-
-    if (!activePeriodStartedAt || (lastUserActivityAt && now - lastUserActivityAt > config.activityIdleThresholdMs)) {
-      closeActivePeriod(now);
-      activePeriodStartedAt = now;
-    }
-
-    lastUserActivityAt = now;
-    touchSession(config.sessionKey, session);
-  }
-
-  function getVisibleMs(now = Date.now()) {
-    return visibleAccumulatedMs + (visibleStartedAt ? Math.max(0, now - visibleStartedAt) : 0);
-  }
-
-  function getActualActiveMs(now = Date.now()) {
-    let total = activeAccumulatedMs;
-    if (activePeriodStartedAt && lastUserActivityAt) {
-      const activeUntil = Math.min(now, lastUserActivityAt + config.activityIdleThresholdMs);
-      if (activeUntil > activePeriodStartedAt) total += activeUntil - activePeriodStartedAt;
-    }
-    return total;
-  }
-
-  function getEngagement() {
-    const now = Date.now();
-    const durationSeconds = Math.max(0, Math.round((now - sessionStart) / 1000));
-    const visibleSeconds = Math.round(getVisibleMs(now) / 1000);
-    const actualActiveSeconds = Math.round(getActualActiveMs(now) / 1000);
-    const idleSeconds = Math.max(0, durationSeconds - actualActiveSeconds);
-
-    return {
-      session_duration_seconds: durationSeconds,
-      visible_time_seconds: visibleSeconds,
-      actual_active_time_seconds: actualActiveSeconds,
-      active_time_seconds: actualActiveSeconds,
-      idle_time_seconds: idleSeconds,
-      active_ratio: durationSeconds > 0 ? Number((actualActiveSeconds / durationSeconds).toFixed(2)) : 0,
-      ...journey.getCounters()
-    };
-  }
-
-  function emit(event, attributes = {}) {
-    if (disabled) return null;
-    touchSession(config.sessionKey, session);
-    const spanId = createSpanId();
-    const record = {
-      timestamp: new Date().toISOString(),
-      service: config.serviceName,
-      environment: config.environment,
-      session_id: sessionId,
-      trace_id: journeyTraceId,
-      span_id: spanId,
-      parent_ui_span_id: attributes.parent_ui_span_id || lastUiSpanId || '',
-      event,
-      page_url: normalizeUrl(location.href),
-      page_path: location.pathname + location.hash,
-      ...attributes,
-      ...getEngagement()
-    };
-
-    journey.add(record);
-    if (['CLICK', 'OUTBOUND_CLICK', 'FORM_FIELD_FOCUS', 'FORM_FIELD_CHANGE', 'FORM_SUBMIT'].includes(event)) {
-      lastUiSpanId = spanId;
-    }
-    exporter.exportRecord(record).catch?.((error) => console.warn('[Svedah UI Telemetry] export failed', error));
-    return record;
-  }
-
-  function trackPageView(reason = 'initial') {
-    return emit('PAGE_VIEW', {
-      action: 'page_view',
-      reason,
-      title: document.title,
-      referrer: document.referrer || ''
-    });
-  }
-
-  function isOutboundHref(href) {
-    if (!href) return false;
-    try {
-      const url = new URL(href, location.href);
-      return url.origin !== location.origin && !['tel:', 'mailto:'].includes(url.protocol);
-    } catch {
-      return false;
-    }
-  }
-
-  function trackClick(element) {
-    markUserActivity(true);
-    const info = getElementInfo(element);
-    const outbound = isOutboundHref(info.href);
-    const event = outbound ? 'OUTBOUND_CLICK' : 'CLICK';
-    return emit(event, {
-      action: outbound ? 'outbound_click' : 'click',
-      element_tag: info.tag || '',
-      element_text: info.text || '',
-      element_id: info.id || '',
-      data_test_id: info.data_test_id || '',
-      role: info.role || '',
-      aria_label: info.aria_label || '',
-      title: info.title || '',
-      placeholder: info.placeholder || '',
-      href: normalizeUrl(info.href || ''),
-      destination_domain: outbound ? new URL(info.href).hostname : '',
-      css_selector: info.css_selector || '',
-      xpath: info.xpath || '',
-      width: info.width || 0,
-      height: info.height || 0,
-      viewport_visible: Boolean(info.viewport_visible),
-      component_name: info.component_name || '',
-      section_id: info.section_id || '',
-      section_name: info.section_name || ''
-    });
-  }
-
-  function trackNavigation(reason, from, to) {
-    emit('SPA_NAVIGATION', {
-      action: 'navigation',
-      navigation_reason: reason,
-      from: normalizeUrl(from || ''),
-      to: normalizeUrl(to || '')
-    });
-    trackPageView(reason);
-  }
-
-  function installClicks() {
-    document.addEventListener('click', (event) => {
-      const element = event.target?.closest?.('a,button,input,select,textarea,[role="button"],[data-test-id],[data-testid]');
-      if (element) trackClick(element);
-    }, true);
-  }
-
-  function installNavigation() {
-    const pushState = history.pushState;
-    const replaceState = history.replaceState;
-
-    history.pushState = function (...args) {
-      const from = location.href;
-      const result = pushState.apply(this, args);
-      const to = location.href;
-      if (from !== to) trackNavigation('pushState', from, to);
-      return result;
-    };
-
-    history.replaceState = function (...args) {
-      const from = location.href;
-      const result = replaceState.apply(this, args);
-      const to = location.href;
-      if (from !== to) trackNavigation('replaceState', from, to);
-      return result;
-    };
-
-    window.addEventListener('popstate', () => trackNavigation('popstate', '', location.href));
-    window.addEventListener('hashchange', (event) => trackNavigation('hashchange', event.oldURL, event.newURL));
-  }
-
-  function installEngagement() {
-    ['click', 'scroll', 'keydown', 'input', 'touchstart'].forEach((name) => {
-      window.addEventListener(name, () => markUserActivity(true), { passive: true });
-    });
-    window.addEventListener('mousemove', () => markUserActivity(false), { passive: true });
-
-    const emitEngagement = () => emit('SESSION_ENGAGEMENT', { action: 'session_engagement' });
-
-    window.addEventListener('pagehide', () => {
-      const now = Date.now();
-      if (visibleStartedAt) {
-        visibleAccumulatedMs += now - visibleStartedAt;
-        visibleStartedAt = 0;
+      const parsed = JSON.parse(raw);
+      if (parsed.last_seen_at && current - parsed.last_seen_at <= config.session.resetAfterInactiveMs) {
+        return parsed;
       }
-      closeActivePeriod(now);
-      emit('SESSION_END', { action: 'session_end' });
-    });
-
-    document.addEventListener('visibilitychange', () => {
-      const now = Date.now();
-      if (document.hidden) {
-        if (visibleStartedAt) {
-          visibleAccumulatedMs += now - visibleStartedAt;
-          visibleStartedAt = 0;
-        }
-        closeActivePeriod(now);
-        emit('SESSION_HIDDEN', { action: 'session_hidden' });
-      } else {
-        visibleStartedAt = now;
-        emit('SESSION_RESUMED', { action: 'session_resumed' });
-      }
-    });
-
-    setInterval(emitEngagement, config.engagementIntervalMs);
+    } catch {}
   }
 
-  const api = {
-    config,
-    sessionId,
-    traceId: journeyTraceId,
-    emit,
-    trackPageView,
-    trackClick,
-    getElementInfo,
-    getJourney: journey.getEvents,
-    getEngagement,
-    markUserActivity,
-    createSpanId,
-    getCurrentCorrelation() {
-      return { trace_id: journeyTraceId, parent_ui_span_id: lastUiSpanId };
-    }
+  return {
+    session_id: `ses_${createHexId(24)}`,
+    started_at: current,
+    last_seen_at: current
   };
+}
 
-  if (config.capture.clicks) installClicks();
-  if (config.capture.navigation) installNavigation();
-  if (config.capture.forms) installFormTracking(api);
-  if (config.capture.network) installNetworkTracking(api);
-  if (config.capture.errors) installErrorTracking(api);
-  if (config.capture.engagement) installEngagement();
+function saveSession() {
+  if (!session) return;
+  session.last_seen_at = now();
+  sessionStorage.setItem('svedah_ui_session', JSON.stringify(session));
+}
 
-  trackPageView('initial');
+function seconds(ms) {
+  return Math.max(0, Math.round(ms / 1000));
+}
 
-  console.info('[Svedah UI Telemetry] initialized', {
+function markActivity() {
+  const current = now();
+  lastActivityAt = current;
+
+  if (document.visibilityState === 'hidden') return;
+
+  if (activeWindowStartedAt === null) {
+    activeWindowStartedAt = current;
+  }
+}
+
+function closeActiveWindow() {
+  if (activeWindowStartedAt === null) return;
+  const current = now();
+  const maxActiveUntil = Math.min(current, lastActivityAt + config.session.idleTimeoutMs);
+  if (maxActiveUntil > activeWindowStartedAt) {
+    activeTimeMs += maxActiveUntil - activeWindowStartedAt;
+  }
+  activeWindowStartedAt = null;
+}
+
+function updateActiveTime() {
+  if (activeWindowStartedAt === null) return;
+  const current = now();
+  if (current - lastActivityAt > config.session.idleTimeoutMs) {
+    closeActiveWindow();
+  }
+}
+
+function updateVisibleTime() {
+  if (document.visibilityState === 'visible' && lastVisibilityStart !== null) {
+    const current = now();
+    visibleTimeMs += current - lastVisibilityStart;
+    lastVisibilityStart = current;
+  }
+}
+
+function getEngagement() {
+  updateActiveTime();
+  updateVisibleTime();
+  const durationMs = now() - session.started_at;
+  const actualActiveSeconds = seconds(activeTimeMs);
+  return {
+    session_duration_seconds: seconds(durationMs),
+    visible_time_seconds: seconds(visibleTimeMs),
+    actual_active_time_seconds: actualActiveSeconds,
+    active_time_seconds: actualActiveSeconds,
+    idle_time_seconds: Math.max(0, seconds(durationMs) - actualActiveSeconds),
+    active_ratio: durationMs > 0 ? Number((activeTimeMs / durationMs).toFixed(2)) : 0,
+    ...counters,
+    journey_length: journey.length
+  };
+}
+
+function createSpan() {
+  return {
+    trace_id: currentTraceId,
+    span_id: createHexId(16),
+    parent_ui_span_id: lastUiSpanId
+  };
+}
+
+function emit(eventName, attributes = {}, options = {}) {
+  if (!session) return null;
+
+  saveSession();
+  const span = createSpan();
+  if (options.uiSpan !== false) lastUiSpanId = span.span_id;
+
+  const record = {
+    timestamp: new Date().toISOString(),
     service: config.serviceName,
     environment: config.environment,
-    session_id: sessionId,
-    trace_id: journeyTraceId,
-    do_not_track: dnt,
-    tracking_disabled: disabled
+    session_id: session.session_id,
+    trace_id: span.trace_id,
+    span_id: span.span_id,
+    parent_ui_span_id: span.parent_ui_span_id,
+    event: eventName,
+    page_url: window.location.href,
+    page_path: `${window.location.pathname}${window.location.search}${window.location.hash}`,
+    ...attributes
+  };
+
+  if (config.capture.journey) journey.push(record);
+  exporter.enqueue(record);
+  return record;
+}
+
+function getText(element) {
+  return (element.innerText || element.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 160);
+}
+
+function getSelector(element) {
+  if (!element || !element.tagName) return '';
+  const testId = element.getAttribute('data-test-id');
+  if (testId) return `[data-test-id="${testId}"]`;
+  if (element.id) return `#${CSS.escape(element.id)}`;
+  const parts = [];
+  let current = element;
+  while (current && current.nodeType === 1 && current !== document.body && parts.length < 5) {
+    let part = current.tagName.toLowerCase();
+    const parent = current.parentElement;
+    if (parent) {
+      const siblings = Array.from(parent.children).filter((child) => child.tagName === current.tagName);
+      if (siblings.length > 1) part += `:nth-of-type(${siblings.indexOf(current) + 1})`;
+    }
+    parts.unshift(part);
+    current = parent;
+  }
+  return parts.join(' > ');
+}
+
+function getXPath(element) {
+  if (!element || element.nodeType !== 1) return '';
+  const parts = [];
+  let current = element;
+  while (current && current.nodeType === 1) {
+    let index = 1;
+    let sibling = current.previousElementSibling;
+    while (sibling) {
+      if (sibling.tagName === current.tagName) index += 1;
+      sibling = sibling.previousElementSibling;
+    }
+    parts.unshift(`${current.tagName.toLowerCase()}[${index}]`);
+    current = current.parentElement;
+  }
+  return `/${parts.join('/')}`;
+}
+
+function getSection(element) {
+  const section = element.closest('section, header, footer, nav');
+  if (!section) return {};
+  const heading = section.querySelector('h1,h2,h3');
+  return {
+    section_id: section.id || undefined,
+    section_name: heading ? getText(heading) : section.tagName.toLowerCase()
+  };
+}
+
+function getElementInfo(element) {
+  const rect = element.getBoundingClientRect ? element.getBoundingClientRect() : {};
+  return {
+    data_test_id: element.getAttribute('data-test-id') || undefined,
+    element_tag: element.tagName,
+    element_text: getText(element),
+    element_id: element.id || undefined,
+    role: element.getAttribute('role') || undefined,
+    aria_label: element.getAttribute('aria-label') || undefined,
+    title: element.getAttribute('title') || undefined,
+    placeholder: element.getAttribute('placeholder') || undefined,
+    type: element.getAttribute('type') || undefined,
+    name: element.getAttribute('name') || undefined,
+    href: element.href || undefined,
+    css_selector: getSelector(element),
+    xpath: getXPath(element),
+    width: Math.round(rect.width || 0),
+    height: Math.round(rect.height || 0),
+    viewport_visible: Boolean(rect.width && rect.height && rect.bottom >= 0 && rect.right >= 0 && rect.top <= window.innerHeight && rect.left <= window.innerWidth),
+    component_name: element.closest('[data-component]')?.getAttribute('data-component') || undefined,
+    ...getSection(element)
+  };
+}
+
+function isOutboundLink(element) {
+  if (!element.href) return false;
+  try {
+    return new URL(element.href).origin !== window.location.origin;
+  } catch {
+    return false;
+  }
+}
+
+function trackClick(event) {
+  if (!config.capture.clicks) return;
+  const element = event.target.closest('a,button,input,select,textarea,[role="button"],[data-test-id]');
+  if (!element) return;
+  markActivity();
+  counters.clicks += 1;
+  const info = getElementInfo(element);
+
+  if (config.capture.outbound && element.tagName === 'A' && isOutboundLink(element)) {
+    counters.outbound_clicks += 1;
+    emit('OUTBOUND_CLICK', {
+      action: 'outbound_click',
+      destination_domain: new URL(element.href).hostname,
+      destination_url: element.href,
+      ...info,
+      ...getEngagement()
+    });
+    return;
+  }
+
+  emit('CLICK', {
+    action: 'click',
+    ...info,
+    ...getEngagement()
+  });
+}
+
+function trackFieldChange(event) {
+  if (!config.capture.forms) return;
+  const element = event.target;
+  if (!element || !['INPUT', 'TEXTAREA', 'SELECT'].includes(element.tagName)) return;
+  markActivity();
+  counters.changes += 1;
+  const sensitive = ['password', 'hidden'].includes((element.type || '').toLowerCase());
+  emit('FORM_FIELD_CHANGE', {
+    action: 'form_field_change',
+    ...getElementInfo(element),
+    input_filled: Boolean(element.value),
+    value_length: sensitive ? undefined : String(element.value || '').length,
+    ...getEngagement()
+  });
+}
+
+function trackFormSubmit(event) {
+  if (!config.capture.forms) return;
+  markActivity();
+  counters.forms_submitted += 1;
+  emit('FORM_SUBMIT', {
+    action: 'form_submit',
+    ...getElementInfo(event.target),
+    ...getEngagement()
+  });
+}
+
+function trackNavigation(action, fromUrl, toUrl) {
+  if (!config.capture.navigation) return;
+  counters.navigations += 1;
+  emit('SPA_NAVIGATION', {
+    action,
+    from_url: fromUrl,
+    to_url: toUrl,
+    ...getEngagement()
+  });
+}
+
+function patchNavigation() {
+  const originalPushState = history.pushState;
+  const originalReplaceState = history.replaceState;
+
+  history.pushState = function pushState(...args) {
+    const fromUrl = window.location.href;
+    const result = originalPushState.apply(this, args);
+    trackNavigation('pushState', fromUrl, window.location.href);
+    return result;
+  };
+
+  history.replaceState = function replaceState(...args) {
+    const fromUrl = window.location.href;
+    const result = originalReplaceState.apply(this, args);
+    trackNavigation('replaceState', fromUrl, window.location.href);
+    return result;
+  };
+
+  window.addEventListener('popstate', () => trackNavigation('popstate', '', window.location.href));
+  window.addEventListener('hashchange', (event) => trackNavigation('hashchange', event.oldURL, event.newURL));
+}
+
+function patchNetwork() {
+  if (!config.capture.network) return;
+
+  originalFetch = window.fetch;
+  if (originalFetch) {
+    window.fetch = async function instrumentedFetch(input, init = {}) {
+      const startedAt = performance.now();
+      const method = init.method || 'GET';
+      const url = typeof input === 'string' ? input : input?.url;
+      const requestId = `req_${createHexId(12)}`;
+      try {
+        const response = await originalFetch.apply(this, arguments);
+        counters.fetches += 1;
+        emit('FETCH', {
+          action: 'fetch',
+          request_id: requestId,
+          method,
+          url,
+          status: response.status,
+          duration_ms: Math.round(performance.now() - startedAt),
+          ...getEngagement()
+        }, { uiSpan: false });
+        return response;
+      } catch (error) {
+        counters.errors += 1;
+        emit('FETCH_ERROR', {
+          action: 'fetch_error',
+          request_id: requestId,
+          method,
+          url,
+          error_message: error.message,
+          duration_ms: Math.round(performance.now() - startedAt),
+          ...getEngagement()
+        }, { uiSpan: false });
+        throw error;
+      }
+    };
+  }
+
+  originalXhrOpen = XMLHttpRequest.prototype.open;
+  originalXhrSend = XMLHttpRequest.prototype.send;
+  XMLHttpRequest.prototype.open = function open(method, url) {
+    this.__svedah = { method, url };
+    return originalXhrOpen.apply(this, arguments);
+  };
+  XMLHttpRequest.prototype.send = function send() {
+    const startedAt = performance.now();
+    const xhr = this;
+    xhr.addEventListener('loadend', () => {
+      counters.fetches += 1;
+      emit('XHR', {
+        action: 'xhr',
+        request_id: `xhr_${createHexId(12)}`,
+        method: xhr.__svedah?.method,
+        url: xhr.__svedah?.url,
+        status: xhr.status,
+        duration_ms: Math.round(performance.now() - startedAt),
+        ...getEngagement()
+      }, { uiSpan: false });
+    });
+    return originalXhrSend.apply(this, arguments);
+  };
+}
+
+function trackErrors() {
+  if (!config.capture.errors) return;
+  window.addEventListener('error', (event) => {
+    counters.errors += 1;
+    emit('ERROR', {
+      action: 'error',
+      error_message: event.message,
+      file: event.filename,
+      line: event.lineno,
+      column: event.colno,
+      ...getEngagement()
+    });
+  });
+  window.addEventListener('unhandledrejection', (event) => {
+    counters.errors += 1;
+    emit('UNHANDLED_REJECTION', {
+      action: 'unhandled_rejection',
+      error_message: String(event.reason?.message || event.reason || ''),
+      ...getEngagement()
+    });
+  });
+}
+
+function startEngagementTracking() {
+  lastVisibilityStart = document.visibilityState === 'visible' ? now() : null;
+  ['click', 'scroll', 'keydown', 'input', 'touchstart'].forEach((eventName) => {
+    window.addEventListener(eventName, markActivity, { passive: true, capture: true });
+  });
+  let lastMouseMove = 0;
+  window.addEventListener('mousemove', () => {
+    const current = now();
+    if (current - lastMouseMove > 1000) {
+      lastMouseMove = current;
+      markActivity();
+    }
+  }, { passive: true, capture: true });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      updateVisibleTime();
+      closeActiveWindow();
+      emit('SESSION_HIDDEN', { action: 'session_hidden', ...getEngagement() });
+    } else {
+      lastVisibilityStart = now();
+      emit('SESSION_RESUMED', { action: 'session_resumed', ...getEngagement() });
+    }
   });
 
-  currentInstance = api;
-  window.SvedahTelemetry = api;
-  return api;
+  engagementTimer = window.setInterval(() => {
+    emit('SESSION_ENGAGEMENT', { action: 'session_engagement', ...getEngagement() });
+  }, 30000);
+
+  window.addEventListener('pagehide', () => {
+    updateVisibleTime();
+    closeActiveWindow();
+    emit('SESSION_END', { action: 'session_end', ...getEngagement() });
+    exporter.flush?.();
+  });
+}
+
+export function initTelemetry(userConfig = {}) {
+  if (initialized) return window.SvedahTelemetry;
+  config = deepMerge(DEFAULT_CONFIG, userConfig);
+
+  if (config.privacy.respectDoNotTrack && navigator.doNotTrack === '1') {
+    return window.SvedahTelemetry;
+  }
+
+  exporter = createExporter(config);
+  session = readSession();
+  saveSession();
+
+  document.addEventListener('click', trackClick, true);
+  document.addEventListener('change', trackFieldChange, true);
+  document.addEventListener('submit', trackFormSubmit, true);
+  patchNavigation();
+  patchNetwork();
+  trackErrors();
+  startEngagementTracking();
+
+  counters.page_views += 1;
+  emit('PAGE_VIEW', { action: 'page_view', ...getEngagement() });
+
+  initialized = true;
+  return window.SvedahTelemetry;
 }
 
 export function getTelemetry() {
-  return currentInstance;
+  return {
+    getSession: () => ({ ...session }),
+    getJourney: () => [...journey],
+    getEngagement,
+    flush: () => exporter?.flush?.()
+  };
 }
 
-function mergeConfig(base, override) {
-  return {
-    ...base,
-    ...override,
-    capture: { ...base.capture, ...(override.capture || {}) },
-    privacy: { ...base.privacy, ...(override.privacy || {}) },
-    exporter: { ...base.exporter, ...(override.exporter || {}) }
+if (typeof window !== 'undefined') {
+  window.SvedahTelemetry = {
+    init: initTelemetry,
+    getTelemetry,
+    getJourney: () => [...journey],
+    getSession: () => ({ ...session }),
+    emit,
+    flush: () => exporter?.flush?.()
   };
+
+  const script = document.currentScript;
+  if (script && script.dataset && script.dataset.autoInit !== 'false') {
+    const exporterType = script.dataset.exporter || 'console';
+    const endpoint = script.dataset.endpoint;
+    initTelemetry({
+      serviceName: script.dataset.serviceName || 'svedah',
+      environment: script.dataset.environment || 'test',
+      exporter: exporterType === 'http' ? { type: 'http', endpoint } : { type: 'console' }
+    });
+  }
 }
