@@ -22,6 +22,12 @@ const DEFAULT_CONFIG = {
   session: {
     idleTimeoutMs: 30000,
     resetAfterInactiveMs: 30 * 60 * 1000
+  },
+  network: {
+    ignoreUrls: [
+      '/v1/telemetry/events',
+      'localhost:8080/v1/telemetry/events'
+    ]
   }
 };
 
@@ -366,6 +372,28 @@ function patchNavigation() {
   window.addEventListener('hashchange', (event) => trackNavigation('hashchange', event.oldURL, event.newURL));
 }
 
+function normalizeUrlForCompare(value) {
+  if (!value) return '';
+  try {
+    if (typeof value === 'string') return value;
+    if (value.url) return value.url;
+  } catch {}
+  return String(value || '');
+}
+
+function getIgnoredNetworkUrls() {
+  const ignored = Array.isArray(config.network?.ignoreUrls) ? [...config.network.ignoreUrls] : [];
+  const endpoint = config.exporter?.endpoint;
+  if (endpoint) ignored.push(endpoint);
+  return ignored.filter(Boolean);
+}
+
+function shouldIgnoreNetworkTelemetry(url) {
+  const normalizedUrl = normalizeUrlForCompare(url);
+  if (!normalizedUrl) return false;
+  return getIgnoredNetworkUrls().some((ignoredUrl) => normalizedUrl.includes(ignoredUrl));
+}
+
 function patchNetwork() {
   if (!config.capture.network) return;
 
@@ -375,31 +403,36 @@ function patchNetwork() {
       const startedAt = performance.now();
       const method = init.method || 'GET';
       const url = typeof input === 'string' ? input : input?.url;
+      const ignoreTelemetry = shouldIgnoreNetworkTelemetry(url);
       const requestId = `req_${createHexId(12)}`;
       try {
         const response = await originalFetch.apply(this, arguments);
-        counters.fetches += 1;
-        emit('FETCH', {
-          action: 'fetch',
-          request_id: requestId,
-          method,
-          url,
-          status: response.status,
-          duration_ms: Math.round(performance.now() - startedAt),
-          ...getEngagement()
-        }, { uiSpan: false });
+        if (!ignoreTelemetry) {
+          counters.fetches += 1;
+          emit('FETCH', {
+            action: 'fetch',
+            request_id: requestId,
+            method,
+            url,
+            status: response.status,
+            duration_ms: Math.round(performance.now() - startedAt),
+            ...getEngagement()
+          }, { uiSpan: false });
+        }
         return response;
       } catch (error) {
-        counters.errors += 1;
-        emit('FETCH_ERROR', {
-          action: 'fetch_error',
-          request_id: requestId,
-          method,
-          url,
-          error_message: error.message,
-          duration_ms: Math.round(performance.now() - startedAt),
-          ...getEngagement()
-        }, { uiSpan: false });
+        if (!ignoreTelemetry) {
+          counters.errors += 1;
+          emit('FETCH_ERROR', {
+            action: 'fetch_error',
+            request_id: requestId,
+            method,
+            url,
+            error_message: error.message,
+            duration_ms: Math.round(performance.now() - startedAt),
+            ...getEngagement()
+          }, { uiSpan: false });
+        }
         throw error;
       }
     };
@@ -415,6 +448,7 @@ function patchNetwork() {
     const startedAt = performance.now();
     const xhr = this;
     xhr.addEventListener('loadend', () => {
+      if (shouldIgnoreNetworkTelemetry(xhr.__svedah?.url)) return;
       counters.fetches += 1;
       emit('XHR', {
         action: 'xhr',
@@ -522,6 +556,7 @@ export function getTelemetry() {
     getSession: () => ({ ...session }),
     getJourney: () => [...journey],
     getEngagement,
+    shouldIgnoreNetworkTelemetry,
     flush: () => exporter?.flush?.()
   };
 }
@@ -532,6 +567,7 @@ if (typeof window !== 'undefined') {
     getTelemetry,
     getJourney: () => [...journey],
     getSession: () => ({ ...session }),
+    shouldIgnoreNetworkTelemetry,
     emit,
     flush: () => exporter?.flush?.()
   };
