@@ -1,39 +1,22 @@
 {
   "name": "@svedah/ui-telemetry",
-  "version": "1.0.1",
-  "description": "Framework-agnostic UI telemetry SDK with tab-scoped sessions and real user activity timing.",
+  "version": "1.1.0",
+  "description": "Browser UI telemetry SDK with console and HTTP exporters.",
   "type": "module",
-  "main": "dist/telemetry.js",
-  "module": "src/core.js",
-  "browser": "dist/telemetry.min.js",
+  "main": "src/core.js",
   "exports": {
-    ".": {
-      "import": "./src/core.js",
-      "browser": "./dist/telemetry.min.js",
-      "default": "./dist/telemetry.js"
-    },
-    "./react": "./adapters/react.js",
-    "./vue": "./adapters/vue.js",
-    "./angular": "./adapters/angular.js",
-    "./dist/telemetry.js": "./dist/telemetry.js",
-    "./dist/telemetry.min.js": "./dist/telemetry.min.js"
+    ".": "./src/core.js",
+    "./exporter": "./src/exporter.js",
+    "./http-exporter": "./src/exporters/http-exporter.js"
   },
   "files": [
     "src",
-    "adapters",
     "dist",
     "README.md",
     "LICENSE"
   ],
-  "keywords": [
-    "telemetry",
-    "ui-telemetry",
-    "session-journey",
-    "playwright",
-    "data-testid",
-    "browser-sdk"
-  ],
-  "author": "Svedah",
-  "license": "MIT",
-  "sideEffects": false
+  "scripts": {
+    "check": "node --check src/core.js && node --check src/exporter.js && node --check src/exporters/http-exporter.js"
+  },
+  "license": "MIT"
 }

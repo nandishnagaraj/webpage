@@ -1,351 +1,95 @@
-# Svedah UI Telemetry
+# Svedah UI Telemetry SDK - HTTP Exporter Build
 
-A framework-agnostic browser UI telemetry SDK for capturing user journeys, rich element context, `data-test-id`, safe form interaction metadata, outbound journeys, engagement metrics, JavaScript errors, `fetch`/XHR calls and network correlation.
+This SDK captures browser UI telemetry and can export events either to the browser console or to an HTTP telemetry API.
 
-This package is designed to work with:
-
-- Static HTML
-- Angular
-- React
-- Vue
-- Any browser-based JavaScript application
-
-The SDK currently exports events to the browser console by default. It can also POST event records to an HTTP endpoint.
-
----
-
-## Folder structure
-
-```text
-svedah-ui-telemetry/
-├── src/
-│   ├── core.js
-│   ├── session.js
-│   ├── element.js
-│   ├── journey.js
-│   ├── network.js
-│   ├── forms.js
-│   ├── errors.js
-│   └── exporter.js
-├── adapters/
-│   ├── angular.js
-│   ├── react.js
-│   └── vue.js
-├── dist/
-│   ├── telemetry.js
-│   └── telemetry.min.js
-├── package.json
-├── README.md
-└── LICENSE
-```
-
----
-
-## Static HTML usage
-
-Copy `dist/telemetry.min.js` to your hosted folder or CDN.
+## Browser script usage
 
 ```html
-<script
-  src="./dist/telemetry.min.js"
-  data-service-name="svedah-web"
-  data-environment="production">
-</script>
-```
-
-The script auto-initializes unless you set:
-
-```html
-<script src="./dist/telemetry.min.js" data-auto-init="false"></script>
+<script src="https://svedah.co.in/uitelemetry/dist/telemetry.min.js" data-auto-init="false"></script>
 <script>
-  SvedahTelemetry.init({
-    serviceName: 'my-static-site',
-    environment: 'production'
+  window.SvedahTelemetry.init({
+    serviceName: 'svedah',
+    environment: 'test',
+    exporter: {
+      type: 'http',
+      endpoint: 'https://YOUR_API_DOMAIN/v1/telemetry/events',
+      batchSize: 10,
+      flushIntervalMs: 3000,
+      maxQueueSize: 500
+    },
+    capture: {
+      clicks: true,
+      navigation: true,
+      forms: true,
+      network: true,
+      errors: true,
+      journey: true,
+      engagement: true,
+      outbound: true
+    },
+    privacy: {
+      respectDoNotTrack: false,
+      maskInputs: true,
+      capturePasswords: false
+    }
   });
 </script>
 ```
 
----
-
-## CDN-style usage
-
-Host the file at a versioned location:
-
-```text
-https://your-domain.example/ui-telemetry/1.0.0/telemetry.min.js
-```
-
-Then use:
+## Auto-init usage
 
 ```html
 <script
-  src="https://your-domain.example/ui-telemetry/1.0.0/telemetry.min.js"
-  data-service-name="customer-portal"
-  data-environment="production">
+  src="https://svedah.co.in/uitelemetry/dist/telemetry.min.js"
+  data-service-name="svedah"
+  data-environment="test"
+  data-exporter="http"
+  data-endpoint="https://YOUR_API_DOMAIN/v1/telemetry/events">
 </script>
 ```
 
----
-
-## React usage
-
-```js
-import { initReactTelemetry } from '@svedah/ui-telemetry/react';
-
-initReactTelemetry({
-  serviceName: 'react-portal',
-  environment: 'production'
-});
-```
-
----
-
-## Vue usage
-
-```js
-import { createApp } from 'vue';
-import App from './App.vue';
-import { createSvedahTelemetryPlugin } from '@svedah/ui-telemetry/vue';
-
-createApp(App)
-  .use(createSvedahTelemetryPlugin({
-    serviceName: 'vue-portal',
-    environment: 'production'
-  }))
-  .mount('#app');
-```
-
----
-
-## Angular usage
-
-In `main.ts` or `app.config.ts`:
-
-```ts
-import { initAngularTelemetry } from '@svedah/ui-telemetry/angular';
-
-initAngularTelemetry({
-  serviceName: 'angular-portal',
-  environment: 'production'
-});
-```
-
----
-
-## Recommended data-test-id convention
-
-Use stable attributes on important elements:
+## Console testing
 
 ```html
-<button data-test-id="product_checkout_submit">
-  Submit
-</button>
+<script
+  src="https://svedah.co.in/uitelemetry/dist/telemetry.min.js"
+  data-service-name="svedah"
+  data-environment="test"
+  data-exporter="console">
+</script>
 ```
 
-Suggested pattern:
+## API payload sent by HTTP exporter
 
-```text
-<product>_<area>_<component>_<action>
+```json
+{
+  "batch_id": "batch_...",
+  "sent_at": "2026-09-14T06:20:00.000Z",
+  "event_count": 2,
+  "events": [
+    {
+      "timestamp": "2026-09-14T06:20:00.000Z",
+      "service": "svedah",
+      "environment": "test",
+      "session_id": "ses_...",
+      "trace_id": "...",
+      "span_id": "...",
+      "event": "CLICK",
+      "data_test_id": "svedah_home_start_journey"
+    }
+  ]
+}
 ```
 
-Examples:
+## Retrieve events from Lambda API
 
-```text
-svedah_nav_home
-svedah_session_sunday_join
-svedah_ai_planner_try_now
+```bash
+curl "https://YOUR_API_DOMAIN/v1/telemetry/events?service=svedah&limit=50"
 ```
 
----
+## Changed SDK behavior
 
-## Events captured
-
-| Event | Description |
-|---|---|
-| `PAGE_VIEW` | Initial page view and SPA route/hash changes |
-| `CLICK` | Internal element clicks |
-| `OUTBOUND_CLICK` | Links to external domains |
-| `SPA_NAVIGATION` | `pushState`, `replaceState`, `popstate`, `hashchange` |
-| `FORM_FIELD_FOCUS` | Safe field focus metadata |
-| `FORM_FIELD_CHANGE` | Safe field change metadata; does not capture actual input value |
-| `FORM_SUBMIT` | Form submit metadata |
-| `FETCH` | `fetch()` request result |
-| `FETCH_ERROR` | Failed `fetch()` request |
-| `XHR` | XMLHttpRequest result |
-| `ERROR` | JavaScript runtime errors |
-| `UNHANDLED_REJECTION` | Unhandled Promise rejections |
-| `SESSION_ENGAGEMENT` | Periodic engagement summary |
-| `SESSION_END` | Fired on page hide/unload lifecycle |
-
----
-
-## Rich element context
-
-For clicks and form fields, the SDK captures:
-
-```text
-data_test_id
-element_tag
-element_text
-element_id
-role
-aria_label
-title
-placeholder
-href
-css_selector
-xpath
-width
-height
-viewport_visible
-component_name
-section_id
-section_name
-```
-
----
-
-## Session and journey
-
-Open the browser console and run:
-
-```js
-SvedahTelemetry.getTelemetry().getJourney()
-```
-
-or, when loaded by script tag:
-
-```js
-SvedahTelemetry.getTelemetry().getEngagement()
-```
-
-Every event has:
-
-```text
-session_id
-trace_id
-span_id
-parent_ui_span_id
-timestamp
-service
-environment
-```
-
-The same `trace_id` is used for the browser journey, and each event receives a unique `span_id`.
-
----
-
-## Exporting to a server
-
-Console mode is the default:
-
-```js
-SvedahTelemetry.init({
-  exporter: {
-    type: 'console'
-  }
-});
-```
-
-HTTP mode:
-
-```js
-SvedahTelemetry.init({
-  exporter: {
-    type: 'http',
-    endpoint: 'https://telemetry.example.com/events'
-  }
-});
-```
-
-Your backend endpoint should accept JSON POST requests and return a 2xx status.
-
----
-
-## Privacy defaults
-
-The SDK does not capture full form values. For form fields it captures only:
-
-```text
-input_filled
-value_length
-element_type
-element_name
-data_test_id
-```
-
-Password and hidden field values are not captured.
-
-Recommended production config:
-
-```js
-SvedahTelemetry.init({
-  respectDoNotTrack: true,
-  privacy: {
-    maskInputs: true,
-    capturePasswords: false,
-    stripQueryString: true
-  }
-});
-```
-
----
-
-## Playwright generation use case
-
-Because every important event captures `data_test_id`, you can later transform a journey into Playwright actions:
-
-```js
-await page.getByTestId('svedah_session_sunday_join').click();
-```
-
-This package does not generate Playwright scripts yet, but it captures the metadata required for that next step.
-
----
-
-## Session timing changes in v1.0.1
-
-The SDK now uses tab-scoped `sessionStorage` for session state. A new session is created per browser tab and the stored session is reset after 30 minutes of inactivity.
-
-Session timing fields now have clearer meanings:
-
-| Field | Meaning |
-|---|---|
-| `session_duration_seconds` | Time from the current tab session start to now |
-| `visible_time_seconds` | Time the page/tab was visible |
-| `actual_active_time_seconds` | Time derived from real user activity only |
-| `active_time_seconds` | Backward-compatible alias of `actual_active_time_seconds` |
-| `idle_time_seconds` | Session duration minus actual active time |
-| `active_ratio` | `actual_active_time_seconds / session_duration_seconds` |
-
-Actual active time is based on real user activity events:
-
-```text
-click
-scroll
-keydown
-input
-touchstart
-mousemove, throttled
-```
-
-The active window stops when either of these happens:
-
-```text
-No user activity for 30 seconds
-The browser tab becomes hidden
-The page is unloaded
-```
-
-You can tune the timing behavior:
-
-```js
-SvedahTelemetry.init({
-  serviceName: 'svedah',
-  environment: 'test',
-  sessionIdleTimeoutMs: 30 * 60 * 1000,
-  activityIdleThresholdMs: 30000,
-  activityEventThrottleMs: 1000,
-  engagementIntervalMs: 30000
-});
-```
+- Uses sessionStorage for tab-scoped sessions.
+- Emits `visible_time_seconds` separately from `actual_active_time_seconds`.
+- Keeps `active_time_seconds` for backward compatibility, mapped to actual active time.
+- HTTP exporter batches events and flushes using fetch or sendBeacon.
