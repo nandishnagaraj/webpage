@@ -1,19 +1,51 @@
-# Svedah UI Telemetry SDK - HTTP Exporter Build
+# Svedah UI Telemetry SDK
 
-This SDK captures browser UI telemetry and can export events either to the browser console or to an HTTP telemetry API.
+Browser UI telemetry SDK with console and HTTP exporters.
 
-## Browser script usage
+## Key update in this version
+
+The SDK now ignores its own telemetry transport calls so your user journey is not polluted by repeated `FETCH` events to the telemetry API.
+
+Ignored by default:
+
+```js
+'/v1/telemetry/events'
+'localhost:8080/v1/telemetry/events'
+```
+
+The configured HTTP exporter endpoint is also ignored automatically.
+
+## Files to upload to GitHub Pages
+
+Replace these files in your repo:
+
+```text
+webpage/uitelemetry/dist/telemetry.js
+webpage/uitelemetry/dist/telemetry.min.js
+```
+
+If you keep source files in GitHub too, also replace:
+
+```text
+webpage/uitelemetry/src/core.js
+webpage/uitelemetry/src/exporter.js
+webpage/uitelemetry/src/exporters/http-exporter.js
+webpage/uitelemetry/package.json
+webpage/uitelemetry/README.md
+```
+
+## Local API test config
 
 ```html
 <script src="https://svedah.co.in/uitelemetry/dist/telemetry.min.js" data-auto-init="false"></script>
 <script>
   window.SvedahTelemetry.init({
-    serviceName: 'svedah',
-    environment: 'test',
+    serviceName: "svedah",
+    environment: "local-api-test",
     exporter: {
-      type: 'http',
-      endpoint: 'https://YOUR_API_DOMAIN/v1/telemetry/events',
-      batchSize: 10,
+      type: "http",
+      endpoint: "http://localhost:8080/v1/telemetry/events",
+      batchSize: 5,
       flushIntervalMs: 3000,
       maxQueueSize: 500
     },
@@ -36,60 +68,33 @@ This SDK captures browser UI telemetry and can export events either to the brows
 </script>
 ```
 
-## Auto-init usage
+## Optional custom ignored network URLs
 
-```html
-<script
-  src="https://svedah.co.in/uitelemetry/dist/telemetry.min.js"
-  data-service-name="svedah"
-  data-environment="test"
-  data-exporter="http"
-  data-endpoint="https://YOUR_API_DOMAIN/v1/telemetry/events">
-</script>
+```js
+window.SvedahTelemetry.init({
+  serviceName: "svedah",
+  exporter: {
+    type: "http",
+    endpoint: "http://localhost:8080/v1/telemetry/events"
+  },
+  network: {
+    ignoreUrls: [
+      "/v1/telemetry/events",
+      "localhost:8080/v1/telemetry/events",
+      "analytics.google.com"
+    ]
+  }
+});
 ```
 
-## Console testing
+## Debug
 
-```html
-<script
-  src="https://svedah.co.in/uitelemetry/dist/telemetry.min.js"
-  data-service-name="svedah"
-  data-environment="test"
-  data-exporter="console">
-</script>
+```js
+SvedahTelemetry.shouldIgnoreNetworkTelemetry("http://localhost:8080/v1/telemetry/events")
 ```
 
-## API payload sent by HTTP exporter
+Expected result:
 
-```json
-{
-  "batch_id": "batch_...",
-  "sent_at": "2026-09-14T06:20:00.000Z",
-  "event_count": 2,
-  "events": [
-    {
-      "timestamp": "2026-09-14T06:20:00.000Z",
-      "service": "svedah",
-      "environment": "test",
-      "session_id": "ses_...",
-      "trace_id": "...",
-      "span_id": "...",
-      "event": "CLICK",
-      "data_test_id": "svedah_home_start_journey"
-    }
-  ]
-}
+```js
+true
 ```
-
-## Retrieve events from Lambda API
-
-```bash
-curl "https://YOUR_API_DOMAIN/v1/telemetry/events?service=svedah&limit=50"
-```
-
-## Changed SDK behavior
-
-- Uses sessionStorage for tab-scoped sessions.
-- Emits `visible_time_seconds` separately from `actual_active_time_seconds`.
-- Keeps `active_time_seconds` for backward compatibility, mapped to actual active time.
-- HTTP exporter batches events and flushes using fetch or sendBeacon.
