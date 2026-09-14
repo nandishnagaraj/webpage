@@ -1,7 +1,7 @@
 {
   "name": "@svedah/ui-telemetry",
-  "version": "1.0.0",
-  "description": "Framework-agnostic browser UI telemetry SDK for user journeys, data-test-id capture, engagement, forms, outbound links and network correlation.",
+  "version": "1.0.1",
+  "description": "Framework-agnostic UI telemetry SDK with tab-scoped sessions and real user activity timing.",
   "type": "module",
   "main": "dist/telemetry.js",
   "module": "src/core.js",

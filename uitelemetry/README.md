@@ -300,3 +300,52 @@ await page.getByTestId('svedah_session_sunday_join').click();
 ```
 
 This package does not generate Playwright scripts yet, but it captures the metadata required for that next step.
+
+---
+
+## Session timing changes in v1.0.1
+
+The SDK now uses tab-scoped `sessionStorage` for session state. A new session is created per browser tab and the stored session is reset after 30 minutes of inactivity.
+
+Session timing fields now have clearer meanings:
+
+| Field | Meaning |
+|---|---|
+| `session_duration_seconds` | Time from the current tab session start to now |
+| `visible_time_seconds` | Time the page/tab was visible |
+| `actual_active_time_seconds` | Time derived from real user activity only |
+| `active_time_seconds` | Backward-compatible alias of `actual_active_time_seconds` |
+| `idle_time_seconds` | Session duration minus actual active time |
+| `active_ratio` | `actual_active_time_seconds / session_duration_seconds` |
+
+Actual active time is based on real user activity events:
+
+```text
+click
+scroll
+keydown
+input
+touchstart
+mousemove, throttled
+```
+
+The active window stops when either of these happens:
+
+```text
+No user activity for 30 seconds
+The browser tab becomes hidden
+The page is unloaded
+```
+
+You can tune the timing behavior:
+
+```js
+SvedahTelemetry.init({
+  serviceName: 'svedah',
+  environment: 'test',
+  sessionIdleTimeoutMs: 30 * 60 * 1000,
+  activityIdleThresholdMs: 30000,
+  activityEventThrottleMs: 1000,
+  engagementIntervalMs: 30000
+});
+```
