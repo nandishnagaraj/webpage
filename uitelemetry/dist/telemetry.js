@@ -1,13 +1,18 @@
-/* Svedah UI Telemetry SDK v1.0.0 - browser bundle */
+/* Svedah UI Telemetry SDK v1.0.1 - browser bundle */
 (function (global) {
   'use strict';
 
+  const DEFAULT_SESSION_IDLE_TIMEOUT_MS = 30 * 60 * 1000;
   const DEFAULT_CONFIG = {
     serviceName: 'svedah-web',
     environment: 'development',
-    sessionKey: 'svedah_ui_session_id',
+    sessionKey: 'svedah_ui_session_state',
     respectDoNotTrack: false,
     maxJourneyEvents: 500,
+    sessionIdleTimeoutMs: DEFAULT_SESSION_IDLE_TIMEOUT_MS,
+    activityIdleThresholdMs: 30000,
+    activityEventThrottleMs: 1000,
+    engagementIntervalMs: 30000,
     capture: {
       clicks: true,
       navigation: true,
@@ -46,16 +51,33 @@
     return result.slice(0, length);
   }
 
-  function getSessionId(sessionKey) {
+  function createSessionState(sessionKey, idleTimeoutMs) {
+    const now = Date.now();
     try {
-      const existing = sessionStorage.getItem(sessionKey);
-      if (existing) return existing;
-      const id = `ses_${createHexId(24)}`;
-      sessionStorage.setItem(sessionKey, id);
-      return id;
+      const raw = sessionStorage.getItem(sessionKey);
+      if (raw) {
+        const existing = JSON.parse(raw);
+        const lastSeenAt = Number(existing.lastSeenAt || existing.startedAt || 0);
+        const expired = lastSeenAt > 0 && now - lastSeenAt > idleTimeoutMs;
+        if (!expired && existing.sessionId && existing.startedAt) {
+          const state = { sessionId: existing.sessionId, startedAt: Number(existing.startedAt), lastSeenAt: now };
+          sessionStorage.setItem(sessionKey, JSON.stringify(state));
+          return state;
+        }
+      }
+      const state = { sessionId: `ses_${createHexId(24)}`, startedAt: now, lastSeenAt: now };
+      sessionStorage.setItem(sessionKey, JSON.stringify(state));
+      return state;
     } catch {
-      return `ses_${createHexId(24)}`;
+      return { sessionId: `ses_${createHexId(24)}`, startedAt: now, lastSeenAt: now };
     }
+  }
+
+  function touchSession(sessionKey, state) {
+    if (!state) return;
+    try {
+      sessionStorage.setItem(sessionKey, JSON.stringify({ sessionId: state.sessionId, startedAt: state.startedAt, lastSeenAt: Date.now() }));
+    } catch {}
   }
 
   function cleanText(value, max = 160) {
@@ -104,12 +126,10 @@
     const title = element.getAttribute('title') || '';
     const placeholder = element.getAttribute('placeholder') || '';
     const rect = element.getBoundingClientRect();
-
     let cssSelector = element.tagName.toLowerCase();
     if (testId) cssSelector = `[data-test-id="${testId.replace(/"/g, '\\"')}"]`;
     else if (id) cssSelector = `#${escapeCss(id)}`;
     else if (element.classList.length) cssSelector += '.' + Array.from(element.classList).slice(0, 2).map(escapeCss).join('.');
-
     return {
       tag: element.tagName,
       text: cleanText(element.innerText || element.value || title || ariaLabel || placeholder),
@@ -169,13 +189,18 @@
     const config = mergeConfig(DEFAULT_CONFIG, userConfig);
     const dnt = navigator.doNotTrack === '1' || global.doNotTrack === '1';
     const disabled = config.respectDoNotTrack && dnt;
-    const sessionId = getSessionId(config.sessionKey);
+    const session = createSessionState(config.sessionKey, config.sessionIdleTimeoutMs);
+    const sessionId = session.sessionId;
     const traceId = createHexId(32);
     const journey = createJourney(config.maxJourneyEvents);
     const exporter = createExporter(config.exporter);
-    const sessionStart = Date.now();
-    let lastActivity = Date.now();
-    let activeMs = 0;
+    const sessionStart = session.startedAt;
+    let visibleStartedAt = document.hidden ? 0 : Date.now();
+    let visibleAccumulatedMs = 0;
+    let activePeriodStartedAt = 0;
+    let lastUserActivityAt = 0;
+    let activeAccumulatedMs = 0;
+    let lastActivityEventAt = 0;
     let lastUiSpanId = '';
 
     function normalizeUrl(url) {
@@ -183,23 +208,61 @@
       try { const parsed = new URL(url, location.href); parsed.search = ''; return parsed.href; } catch { return url; }
     }
 
-    function markActivity() {
+    function closeActivePeriod(now = Date.now()) {
+      if (!activePeriodStartedAt || !lastUserActivityAt) return;
+      const activeUntil = Math.min(now, lastUserActivityAt + config.activityIdleThresholdMs);
+      if (activeUntil > activePeriodStartedAt) activeAccumulatedMs += activeUntil - activePeriodStartedAt;
+      activePeriodStartedAt = 0;
+      lastUserActivityAt = 0;
+    }
+
+    function markUserActivity(force = false) {
+      if (document.hidden) return;
       const now = Date.now();
-      const delta = now - lastActivity;
-      if (delta > 0 && delta < 30000) activeMs += delta;
-      lastActivity = now;
+      if (!force && now - lastActivityEventAt < config.activityEventThrottleMs) return;
+      lastActivityEventAt = now;
+      if (!activePeriodStartedAt || (lastUserActivityAt && now - lastUserActivityAt > config.activityIdleThresholdMs)) {
+        closeActivePeriod(now);
+        activePeriodStartedAt = now;
+      }
+      lastUserActivityAt = now;
+      touchSession(config.sessionKey, session);
+    }
+
+    function getVisibleMs(now = Date.now()) {
+      return visibleAccumulatedMs + (visibleStartedAt ? Math.max(0, now - visibleStartedAt) : 0);
+    }
+
+    function getActualActiveMs(now = Date.now()) {
+      let total = activeAccumulatedMs;
+      if (activePeriodStartedAt && lastUserActivityAt) {
+        const activeUntil = Math.min(now, lastUserActivityAt + config.activityIdleThresholdMs);
+        if (activeUntil > activePeriodStartedAt) total += activeUntil - activePeriodStartedAt;
+      }
+      return total;
     }
 
     function getEngagement() {
-      const duration = Math.round((Date.now() - sessionStart) / 1000);
-      const active = Math.round(activeMs / 1000);
-      return { session_duration_seconds: duration, active_time_seconds: active, active_ratio: duration > 0 ? Number((active / duration).toFixed(2)) : 0, ...journey.getCounters() };
+      const now = Date.now();
+      const duration = Math.max(0, Math.round((now - sessionStart) / 1000));
+      const visible = Math.round(getVisibleMs(now) / 1000);
+      const actualActive = Math.round(getActualActiveMs(now) / 1000);
+      const idle = Math.max(0, duration - actualActive);
+      return {
+        session_duration_seconds: duration,
+        visible_time_seconds: visible,
+        actual_active_time_seconds: actualActive,
+        active_time_seconds: actualActive,
+        idle_time_seconds: idle,
+        active_ratio: duration > 0 ? Number((actualActive / duration).toFixed(2)) : 0,
+        ...journey.getCounters()
+      };
     }
 
     function emit(event, attributes) {
       if (disabled) return null;
       attributes = attributes || {};
-      markActivity();
+      touchSession(config.sessionKey, session);
       const spanId = createHexId(16);
       const record = {
         timestamp: new Date().toISOString(),
@@ -231,6 +294,7 @@
     }
 
     function trackClick(element) {
+      markUserActivity(true);
       const info = getElementInfo(element);
       const outbound = isOutboundHref(info.href);
       return emit(outbound ? 'OUTBOUND_CLICK' : 'CLICK', {
@@ -250,7 +314,8 @@
 
     const api = {
       config, sessionId, traceId, emit, trackPageView, trackClick, getElementInfo,
-      getJourney: journey.getEvents, getEngagement,
+      getJourney: journey.getEvents, getEngagement, markUserActivity,
+      createSpanId: () => createHexId(16),
       getCurrentCorrelation: () => ({ trace_id: traceId, parent_ui_span_id: lastUiSpanId })
     };
 
@@ -274,18 +339,21 @@
       document.addEventListener('focusin', function(event) {
         const element = event.target?.closest?.('input,select,textarea');
         if (!element) return;
+        markUserActivity(true);
         const info = getElementInfo(element);
         emit('FORM_FIELD_FOCUS', { action: 'focus', element_tag: info.tag || '', element_id: info.id || '', data_test_id: info.data_test_id || '', element_type: info.type || '', element_name: info.name || '', form_id: element.form?.id || '', form_test_id: element.form?.getAttribute('data-test-id') || '' });
       }, true);
       document.addEventListener('change', function(event) {
         const element = event.target?.closest?.('input,select,textarea');
         if (!element) return;
+        markUserActivity(true);
         const info = getElementInfo(element);
         const sensitive = ['password', 'hidden'].includes((info.type || '').toLowerCase());
         emit('FORM_FIELD_CHANGE', { action: 'change', element_tag: info.tag || '', element_id: info.id || '', data_test_id: info.data_test_id || '', element_type: info.type || '', element_name: info.name || '', input_filled: sensitive ? false : Boolean(element.value), value_length: sensitive ? 0 : String(element.value || '').length, form_id: element.form?.id || '', form_test_id: element.form?.getAttribute('data-test-id') || '' });
       }, true);
       document.addEventListener('submit', function(event) {
         if (!(event.target instanceof HTMLFormElement)) return;
+        markUserActivity(true);
         const info = getElementInfo(event.target);
         emit('FORM_SUBMIT', { action: 'submit', form_id: event.target.id || '', data_test_id: info.data_test_id || '', css_selector: info.css_selector || '', field_count: event.target.querySelectorAll('input,select,textarea').length });
       }, true);
@@ -326,10 +394,26 @@
     }
 
     function installEngagement() {
-      ['mousemove', 'keydown', 'scroll', 'touchstart', 'click'].forEach((name) => addEventListener(name, markActivity, { passive: true }));
-      addEventListener('pagehide', () => emit('SESSION_END', { action: 'session_end' }));
-      document.addEventListener('visibilitychange', () => emit(document.hidden ? 'SESSION_HIDDEN' : 'SESSION_RESUMED', { action: document.hidden ? 'session_hidden' : 'session_resumed' }));
-      setInterval(() => emit('SESSION_ENGAGEMENT', { action: 'session_engagement' }), 30000);
+      ['click', 'scroll', 'keydown', 'input', 'touchstart'].forEach((name) => addEventListener(name, () => markUserActivity(true), { passive: true }));
+      addEventListener('mousemove', () => markUserActivity(false), { passive: true });
+      addEventListener('pagehide', () => {
+        const now = Date.now();
+        if (visibleStartedAt) { visibleAccumulatedMs += now - visibleStartedAt; visibleStartedAt = 0; }
+        closeActivePeriod(now);
+        emit('SESSION_END', { action: 'session_end' });
+      });
+      document.addEventListener('visibilitychange', () => {
+        const now = Date.now();
+        if (document.hidden) {
+          if (visibleStartedAt) { visibleAccumulatedMs += now - visibleStartedAt; visibleStartedAt = 0; }
+          closeActivePeriod(now);
+          emit('SESSION_HIDDEN', { action: 'session_hidden' });
+        } else {
+          visibleStartedAt = now;
+          emit('SESSION_RESUMED', { action: 'session_resumed' });
+        }
+      });
+      setInterval(() => emit('SESSION_ENGAGEMENT', { action: 'session_engagement' }), config.engagementIntervalMs);
     }
 
     if (config.capture.clicks) installClicks();
@@ -347,7 +431,7 @@
 
   function getTelemetry() { return instance; }
 
-  global.SvedahTelemetry = { init: initTelemetry, initTelemetry, getTelemetry, getElementInfo, version: '1.0.0' };
+  global.SvedahTelemetry = { init: initTelemetry, initTelemetry, getTelemetry, getElementInfo, version: '1.0.1' };
 
   const currentScript = document.currentScript;
   if (currentScript && currentScript.getAttribute('data-auto-init') !== 'false') {
