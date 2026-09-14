@@ -259,11 +259,41 @@
       background: var(--bg-alt2);
     }
 
+    /* Join form */
+    #join { background: var(--bg-alt1); }
+    .join-panel {
+      display: grid;
+      grid-template-columns: minmax(260px, .75fr) minmax(0, 1.25fr);
+      gap: 32px;
+      align-items: start;
+      max-width: 1000px;
+      margin: 2rem auto 0;
+      padding: 32px;
+      border: 1px solid #fed7aa;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 16px 36px rgba(249, 115, 22, .12);
+      text-align: left;
+    }
+    .join-intro { padding: 18px 8px; }
+    .join-label { color: var(--brand-2); font-size: .78rem; font-weight: 800; letter-spacing: .12em; }
+    .join-intro h3 { margin: .7rem 0 1rem; font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: .05em; line-height: 1; }
+    .join-intro p { color: var(--muted); margin-bottom: 1.5rem; }
+    .join-points { display: grid; gap: 10px; color: var(--text); font-size: .94rem; }
+    .join-points span { display: flex; align-items: center; gap: 9px; }
+    .join-points strong { color: var(--brand-2); font-size: 1.1rem; }
+    .form-frame { width: 100%; min-height: 680px; border: 0; border-radius: 12px; background: #fff; }
+    .join-fallback { margin-top: 14px; color: var(--muted); font-size: .86rem; text-align: center; }
+    .join-fallback a { color: var(--brand-2); font-weight: 700; text-decoration: underline; }
+
     /* Mobile adjustments */
     @media (max-width: 680px) {
       header { padding: 80px 0 60px; }
       header h1 { font-size: 2.4rem; }
       #bio img { width:180px; height:180px; }
+      .join-panel { grid-template-columns: 1fr; padding: 22px; }
+      .join-intro { padding: 4px; }
+      .form-frame { min-height: 720px; }
     }
     @media (max-width: 480px) {
       section { padding: 60px 16px; }
@@ -650,6 +680,7 @@
       <div class="nav-links">
         <a href="#home">Home</a>
         <a href="#longruns">Upcoming Runs</a>
+        <a href="#join">Join</a>
         <a href="#calendar" class="nav-cta">Book Slots</a>
         <a href="#contact">Contact</a>
       </div>
@@ -1122,6 +1153,33 @@
   </div>
 </section>
 
+<section id="join">
+  <div class="container">
+    <h2>Join Svedah</h2>
+    <p class="section-sub">Tell us where you are in your running journey, and we will help you find the right next step.</p>
+    <div class="join-panel">
+      <div class="join-intro">
+        <div class="join-label">RUN WITH PURPOSE</div>
+        <h3>YOUR NEXT STRIDE STARTS HERE</h3>
+        <p>Complete this short form to join the Svedah community and receive guidance tailored to your goals.</p>
+        <div class="join-points">
+          <span><strong>01</strong> Share your running goals</span>
+          <span><strong>02</strong> Tell us your preferred training style</span>
+          <span><strong>03</strong> We will help you get started</span>
+        </div>
+      </div>
+      <div>
+        <iframe
+          class="form-frame"
+          title="Join Svedah form"
+          src="https://docs.google.com/forms/d/1g5nat26OmBxjMoS-tcGWTpZVFcdianmj4oybWD8Ky3k/viewform?embedded=true">
+        </iframe>
+        <p class="join-fallback">Having trouble viewing the form? <a href="https://docs.google.com/forms/d/1g5nat26OmBxjMoS-tcGWTpZVFcdianmj4oybWD8Ky3k/viewform" target="_blank" rel="noopener">Open the joining form</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="contact">
   <div class="container">
     <h2>Contact</h2>
@@ -1157,7 +1215,7 @@
 
 <footer>
   <p>Ready to take the next stride?</p>
-  <a href="#calendar" class="btn" style="margin-top:10px;">Join Svedah Today</a>
+  <a href="#join" class="btn" style="margin-top:10px;">Join Svedah Today</a>
   <p style="margin-top:1rem;color:var(--muted);">© <span id="year"></span> Svedah — Run with purpose.</p>
 </footer>
 
