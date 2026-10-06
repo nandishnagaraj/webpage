@@ -1,0 +1,29 @@
+[
+  {
+    "id":"running-strength",
+    "name":"Running Strength",
+    "category":"Strength",
+    "duration":"60 min",
+    "level":"All",
+    "equipment":["Bodyweight","Resistance Bands","Dumbbells","Kettlebells"],
+    "description":"Running-specific strength for runners."
+  },
+  {
+    "id":"plyometrics",
+    "name":"Plyometrics",
+    "category":"Power",
+    "duration":"30 min",
+    "level":"Intermediate",
+    "equipment":["Bodyweight"],
+    "description":"Explosive training for running economy."
+  },
+  {
+    "id":"mobility",
+    "name":"Recovery & Mobility",
+    "category":"Recovery",
+    "duration":"20 min",
+    "level":"All",
+    "equipment":[],
+    "description":"Mobility and recovery sessions."
+  }
+]
