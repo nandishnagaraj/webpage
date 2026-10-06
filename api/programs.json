@@ -1,0 +1,36 @@
+[
+  {
+    "id":"10k",
+    "name":"10K Speed",
+    "weeks":12,
+    "goal":"10K",
+    "strengthSessions":24,
+    "stretchingSessions":12,
+    "runningPlan":true,
+    "level":"Beginner",
+    "joinUrl":"https://wa.me/919886033901"
+  },
+  {
+    "id":"half-marathon",
+    "name":"Half Marathon",
+    "weeks":16,
+    "goal":"21.1K",
+    "strengthSessions":32,
+    "stretchingSessions":16,
+    "runningPlan":true,
+    "level":"Intermediate",
+    "joinUrl":"https://wa.me/919886033901"
+  },
+  {
+    "id":"marathon",
+    "name":"Full Marathon",
+    "weeks":25,
+    "goal":"42.2K",
+    "strengthSessions":50,
+    "stretchingSessions":25,
+    "runningPlan":true,
+    "nutrition":true,
+    "level":"Advanced",
+    "joinUrl":"https://wa.me/919886033901"
+  }
+]
