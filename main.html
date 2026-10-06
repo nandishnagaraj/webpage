@@ -160,6 +160,14 @@
       gap: 20px;
       margin-top: 2rem;
     }
+    header .services-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    header .service-card {
+      flex: 0 1 calc((100% - 40px) / 3);
+    }
     .service-card {
       border: 1px solid var(--line);
       border-radius: 16px;
@@ -286,6 +294,40 @@
     .join-fallback { margin-top: 14px; color: var(--muted); font-size: .86rem; text-align: center; }
     .join-fallback a { color: var(--brand-2); font-weight: 700; text-decoration: underline; }
 
+    /* Runner's training guide */
+    #training-guide { background: var(--bg-alt1); }
+    .term-table-wrap {
+      max-width: 820px;
+      margin: 2rem auto 0;
+      overflow-x: auto;
+      background: #fff;
+      border: 1px solid #fed7aa;
+      border-radius: 8px;
+    }
+    .term-table { width: 100%; border-collapse: collapse; text-align: left; }
+    .term-table th {
+      padding: 12px 16px;
+      background: var(--brand-2);
+      color: #fff;
+      font-size: .9rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .term-table td { padding: 12px 16px; border-top: 1px solid var(--line); }
+    .term-table tbody tr:nth-child(even) { background: #fffaf0; }
+    .term-table td:first-child { width: 26%; color: var(--brand-2); font-weight: 700; }
+    .guide-rules {
+      max-width: 820px;
+      margin: 2rem auto 0;
+      padding: 24px;
+      border: 1px solid #fed7aa;
+      border-radius: 12px;
+      background: #fff;
+      text-align: left;
+    }
+    .guide-rules h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.7rem; letter-spacing: .05em; }
+    .guide-rules ul { display: grid; gap: 12px; margin: 1rem 0 0; padding-left: 1.25rem; }
+
     /* Mobile adjustments */
     @media (max-width: 680px) {
       header { padding: 80px 0 60px; }
@@ -294,11 +336,15 @@
       .join-panel { grid-template-columns: 1fr; padding: 22px; }
       .join-intro { padding: 4px; }
       .form-frame { min-height: 720px; }
+      .guide-rules { padding: 20px; }
+      .term-table th, .term-table td { padding: 10px 12px; }
+      header .service-card { flex-basis: calc((100% - 20px) / 2); }
     }
     @media (max-width: 480px) {
       section { padding: 60px 16px; }
       .nav-links a { font-size: 0.9rem; padding: 6px 10px; }
       .btn { width: 100%; max-width: 300px; }
+      header .service-card { flex-basis: 100%; }
     }
 
     /* Floating Book Button (Mobile) */
@@ -680,6 +726,7 @@
       <div class="nav-links">
         <a href="#home" data-test-id="svedah_nav_home">Home</a>
         <a href="#longruns" data-test-id="svedah_nav_upcoming_runs">Upcoming Runs</a>
+        <a href="#training-guide" data-test-id="svedah_nav_training_guide">Training Guide</a>
         <a href="#join" data-test-id="svedah_nav_join">Join</a>
         <a href="#calendar" class="nav-cta" data-test-id="svedah_nav_book_slots">Book Slots</a>
         <a href="#contact" data-test-id="svedah_nav_contact">Contact</a>
@@ -729,7 +776,6 @@
 <div class="service-card" data-test-id="svedah_service_mindset"><h3>🧠 Mindset & Performance</h3><p>Build confidence, discipline and sustainable habits.</p></div>
 <div class="service-card" data-test-id="svedah_service_youth"><h3>👦 Youth Athletic Development</h3><p>Customised fitness programmes for young athletes.</p></div>
 <div class="service-card" data-test-id="svedah_service_corporate"><h3>🏢 Corporate Wellness</h3><p>Corporate talks on health, movement and performance.</p></div>
-<div class="service-card" data-test-id="svedah_service_ai_planner"><h3>🤖 AI Running Planner</h3><p>AI-generated weekly running plans based on your training data.</p></div>
 </div>
 </div>
     </div>
@@ -1153,11 +1199,55 @@
   </div>
 </section>
 
+<section id="training-guide" data-test-id="svedah_training_guide_section">
+  <div class="container">
+    <h2>Runner's Training Guide</h2>
+    <p class="section-sub">A quick reference for the terms used in your Svedah training plan.</p>
+    <div class="term-table-wrap">
+      <table class="term-table">
+        <thead><tr><th scope="col">Term</th><th scope="col">Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>WU</td><td>Warm-Up</td></tr>
+          <tr><td>CD</td><td>Cool Down</td></tr>
+          <tr><td>RI</td><td>Recovery Interval: walk or jog between repetitions</td></tr>
+          <tr><td>M</td><td>Marathon Pace</td></tr>
+          <tr><td>HM</td><td>Half Marathon Pace</td></tr>
+          <tr><td>10K</td><td>10K Race Pace</td></tr>
+          <tr><td>5K</td><td>5K Race Pace</td></tr>
+          <tr><td>E</td><td>Easy Run: conversational pace</td></tr>
+          <tr><td>T</td><td>Tempo Run: comfortably hard, sustainable effort</td></tr>
+          <tr><td>LR</td><td>Long Run</td></tr>
+          <tr><td>Strides</td><td>Short accelerations with full recovery</td></tr>
+          <tr><td>Intervals</td><td>Fast repetitions at 90-95% effort</td></tr>
+          <tr><td>Reps</td><td>Short, fast efforts with complete recovery for speed and form</td></tr>
+          <tr><td>Plyo</td><td>Plyometric exercises for power and running efficiency</td></tr>
+          <tr><td>S&amp;C</td><td>Strength &amp; Conditioning</td></tr>
+          <tr><td>Mobility</td><td>Dynamic exercises for range of motion and movement quality</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="guide-rules">
+      <h3>General Guidelines</h3>
+      <ul>
+        <li>Complete the prescribed warm-up before quality sessions and finish with an easy cool down to support recovery.</li>
+        <li>Keep easy runs genuinely easy: you should be able to hold a relaxed conversation throughout.</li>
+        <li>Run strides with 100% intent and good running form, not as maximum sprints.</li>
+        <li>Run intervals at approximately 90-95% effort while maintaining a consistent pace across repetitions.</li>
+        <li>Your tempo pace will be prescribed each week according to your training progression.</li>
+        <li>Build long runs steadily and keep them controlled; the goal is time on feet, not racing the distance.</li>
+        <li>Place strength and plyometric sessions away from your hardest running workout when possible, and prioritise good technique.</li>
+        <li>Take rest and recovery days seriously. Reduce or stop a session if you feel sharp pain, dizziness, or unusual fatigue.</li>
+        <li>Consistency matters more than one perfect session. If you miss a workout, continue with the plan rather than trying to make it up.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <section id="join" data-test-id="svedah_join_section">
   <div class="container">
     <h2>Join Svedah</h2>
     <p class="section-sub">Tell us where you are in your running journey, and we will help you find the right next step.</p>
-    <div class="join-panel">
+    <div class="join-panel" data-test-id="svedah_join_panel">
       <div class="join-intro">
         <div class="join-label">RUN WITH PURPOSE</div>
         <h3>YOUR NEXT STRIDE STARTS HERE</h3>
@@ -1175,7 +1265,7 @@
           title="Join Svedah form"
           src="https://docs.google.com/forms/d/1g5nat26OmBxjMoS-tcGWTpZVFcdianmj4oybWD8Ky3k/viewform?embedded=true">
         </iframe>
-        <p class="join-fallback">Having trouble viewing the form? <a href="https://docs.google.com/forms/d/1g5nat26OmBxjMoS-tcGWTpZVFcdianmj4oybWD8Ky3k/viewform" target="_blank" rel="noopener" data-test-id="svedah_join_open_form">Open the joining form</a>.</p>
+        <p class="join-fallback">Having trouble viewing the form? <a href="https://docs.google.com/forms/d/1g5nat26OmBxjMoS-tcGWTpZVFcdianmj4oybWD8Ky3k/viewform" target="_blank" rel="noopener" data-test-id="svedah_join_form_open_external">Open the joining form</a>.</p>
       </div>
     </div>
   </div>
@@ -1192,7 +1282,8 @@
         <!-- WhatsApp Button -->
         <a href="https://wa.me/919886033901?text=Hi%20Nandish%2C%20I%20would%20like%20to%20know%20more%20about%20Svedah%20coaching%20sessions."
            target="_blank"
-           class="btn" data-test-id="svedah_contact_whatsapp"
+           class="btn"
+           data-test-id="svedah_contact_whatsapp"
            style="background:linear-gradient(90deg,#25D366,#128C7E);
                   box-shadow:0 6px 18px rgba(37,211,102,.4);
                   min-width:160px; text-align:center;">
@@ -1202,7 +1293,8 @@
         <!-- Instagram Button -->
         <a href="https://www.instagram.com/nandishnagaraj?igsh=bzR6N285N2tpOG45"
            target="_blank"
-           class="btn" data-test-id="svedah_contact_instagram"
+           class="btn"
+           data-test-id="svedah_contact_instagram"
            style="background:linear-gradient(90deg,#f59e0b,#f97316);
                   box-shadow:0 6px 18px rgba(249,115,22,.4);
                   min-width:160px; text-align:center;">
@@ -1221,7 +1313,8 @@
 </footer>
 
 <a href="https://calendar.app.google/D6obo8kMrDpTuARWA"
-   class="floating-btn" data-test-id="svedah_mobile_book_slot"
+   class="floating-btn"
+   data-test-id="svedah_mobile_book_slot"
    target="_blank"
    rel="noopener">
    Book a Slot
@@ -1321,9 +1414,8 @@
 
 
 
-
-  <!-- Svedah UI Telemetry SDK - hosted from /uitelemetry -->
-  <script src="https://svedah.co.in/uitelemetry/dist/telemetry.min.js"></script>
+<!-- Svedah UI Telemetry SDK - local API test mode -->
+<script src="https://svedah.co.in/uitelemetry/dist/telemetry.min.js"></script>
   <script>
     window.SvedahTelemetry && window.SvedahTelemetry.init({
       serviceName: "svedah",
@@ -1348,6 +1440,28 @@
       }
     });
   </script>
+
+
+
+<!-- WebMCP Static Data Loader -->
+<script>
+async function loadWorkouts(){
+  try{
+    const r=await fetch('./api/workouts.json');
+    const workouts=await r.json();
+    console.log('Loaded workouts.json',workouts);
+  }catch(e){console.error(e);}
+}
+async function loadPrograms(){
+  try{
+    const r=await fetch('./api/programs.json');
+    const programs=await r.json();
+    console.log('Loaded programs.json',programs);
+  }catch(e){console.error(e);}
+}
+loadWorkouts();
+loadPrograms();
+</script>
 
 </body>
 </html>
