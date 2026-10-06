@@ -1443,24 +1443,133 @@
 
 
 
-<!-- WebMCP Static Data Loader -->
-<script>
-async function loadWorkouts(){
-  try{
-    const r=await fetch('./api/workouts.json');
-    const workouts=await r.json();
-    console.log('Loaded workouts.json',workouts);
-  }catch(e){console.error(e);}
+<!-- ========================= -->
+<!-- WebMCP + Static JSON Tools -->
+<!-- ========================= -->
+
+<script type="module">
+
+let workouts = [];
+let programs = [];
+
+/* -----------------------------
+   Load Static JSON
+------------------------------ */
+
+async function loadWorkouts() {
+    const response = await fetch("./api/workouts.json");
+    workouts = await response.json();
+    console.log("Loaded workouts", workouts);
 }
-async function loadPrograms(){
-  try{
-    const r=await fetch('./api/programs.json');
-    const programs=await r.json();
-    console.log('Loaded programs.json',programs);
-  }catch(e){console.error(e);}
+
+async function loadPrograms() {
+    const response = await fetch("./api/programs.json");
+    programs = await response.json();
+    console.log("Loaded programs", programs);
 }
-loadWorkouts();
-loadPrograms();
+
+await Promise.all([
+    loadWorkouts(),
+    loadPrograms()
+]);
+
+/* ------------------------------------
+   Register WebMCP Tools
+------------------------------------- */
+
+if ("modelContext" in document) {
+
+    /* ===========================
+       search_workouts
+    =========================== */
+
+    await document.modelContext.registerTool({
+
+        name: "search_workouts",
+
+        description:
+            "Search Svedah workouts by name, category or level.",
+
+        inputSchema: {
+            type: "object",
+            properties: {
+                query: {
+                    type: "string",
+                    description: "Workout name or keyword"
+                }
+            }
+        },
+
+        async execute({ query }) {
+
+            const q = (query || "").toLowerCase();
+
+            const results = workouts.filter(workout =>
+                workout.name.toLowerCase().includes(q) ||
+                workout.category.toLowerCase().includes(q) ||
+                workout.level.toLowerCase().includes(q)
+            );
+
+            return {
+                content: [{
+                    type: "text",
+                    text: JSON.stringify(results, null, 2)
+                }]
+            };
+
+        }
+
+    });
+
+    /* ===========================
+       search_programs
+    =========================== */
+
+    await document.modelContext.registerTool({
+
+        name: "search_programs",
+
+        description:
+            "Search Svedah running programs.",
+
+        inputSchema: {
+            type: "object",
+            properties: {
+                query: {
+                    type: "string",
+                    description: "10K, Half Marathon, Marathon..."
+                }
+            }
+        },
+
+        async execute({ query }) {
+
+            const q = (query || "").toLowerCase();
+
+            const results = programs.filter(program =>
+                program.name.toLowerCase().includes(q) ||
+                program.goal.toLowerCase().includes(q)
+            );
+
+            return {
+                content: [{
+                    type: "text",
+                    text: JSON.stringify(results, null, 2)
+                }]
+            };
+
+        }
+
+    });
+
+    console.log("✅ Svedah WebMCP tools registered");
+
+} else {
+
+    console.log("ℹ️ WebMCP not available in this browser.");
+
+}
+
 </script>
 
 </body>
