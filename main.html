@@ -1164,10 +1164,20 @@
 <section id="longruns">
   <div class="container">
     <h2>Upcoming Long Runs</h2>
-    <p class="section-sub">Community-powered group runs updated live every week.</p>
+    <p class="section-sub">Find your Saturday running group. Leaders can post runs and athletes can register.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:20px 0">
+      <button type="button" class="btn" onclick="openRunPortal('join')">Join a Run</button>
+      <button type="button" class="btn" onclick="openRunPortal('post')">Post a Run (Leader)</button>
+    </div>
     <div id="runs-list" class="services-grid" data-test-id="svedah_upcoming_runs_list"></div>
   </div>
 </section>
+<div id="runPortalModal" role="dialog" aria-modal="true" aria-label="Saturday long run registration" hidden style="position:fixed;inset:0;z-index:2500;background:rgba(0,0,0,.7);padding:18px;overflow:auto">
+ <div style="max-width:620px;margin:10px auto;background:white;border-radius:16px;padding:12px">
+  <button type="button" onclick="closeRunPortal()" aria-label="Close" style="float:right;padding:8px 12px;cursor:pointer">Close ×</button>
+  <iframe id="runPortalFrame" title="Saturday long runs" style="width:100%;height:75vh;min-height:560px;border:0" loading="lazy"></iframe>
+ </div>
+</div>
 
 <section id="aiplanner" style="background:#fff5f5;">
   <div class="container" style="text-align:center;">
@@ -1341,52 +1351,65 @@
   .forEach(el => observer.observe(el));
 
 
-  // Fetch long runs from Google Sheet
+  // Existing public Google Sheet CSV remains unchanged.
   const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv";
-
-  function parseDate(s){ if(!s) return null; const parts=s.trim().split(/[\/\-]/); if(parts.length===3){const[d,m,y]=parts.map(n=>parseInt(n,10));return new Date(y,m-1,d);} const dt=new Date(s);return isNaN(dt)?null:dt; }
-  function parseCSV(text){ return text.split(/\r?\n/).filter(l=>l.trim()!=="").map(l=>l.split(",")); }
-
-  fetch(SHEET_CSV)
-    .then(r=>r.text())
-    .then(csv=>{
-      const rows=parseCSV(csv);
-      const headers=rows.shift().map(h=>h.toLowerCase());
-      const idxDate=headers.findIndex(h=>h.includes("date"));
-      const idxLoc=headers.findIndex(h=>h.includes("location"));
-      const idxDist=headers.findIndex(h=>h.includes("distance"));
-      const idxTime=headers.findIndex(h=>h.includes("time"));
-      const today=new Date();
-      const runs=rows.map(r=>({
-        dateRaw:r[idxDate],
-        dateObj:parseDate(r[idxDate]),
-        location:r[idxLoc],
-        distance:r[idxDist],
-        time:r[idxTime]
-      }))
-      .filter(r=>r.dateObj&&r.dateObj>=today)
-      .sort((a,b)=>a.dateObj-b.dateObj)
-      .slice(0,5);
-
-      const box=document.getElementById("runs-list");
-      box.innerHTML=runs.length?"":'<p class="section-sub">No upcoming long runs scheduled.</p>';
-      runs.forEach(r=>{
-        const el=document.createElement("div");
-        el.className="service-card visible";
-        el.setAttribute("data-test-id", `svedah_upcoming_run_${runs.indexOf(r) + 1}`);
-        el.innerHTML=`
-          <h3 style="color:#991b1b">${r.location||"Run"}</h3>
-          <p><strong>Date:</strong> ${r.dateRaw||"-"}</p>
-          <p><strong>Distance:</strong> ${r.distance||"-"}</p>
-          <p><strong>Time:</strong> ${r.time||"-"}</p>`;
-        box.appendChild(el);
-      });
-    })
-    .catch(err=>{
-      console.error("Sheet load error:",err);
-      document.getElementById("runs-list").innerHTML='<p style="color:#dc2626">Error loading runs.</p>';
+  // Replace this placeholder after deploying the bound Google Apps Script web app.
+  const RUN_PORTAL_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+  function openRunPortal(mode, runId='') {
+    if (RUN_PORTAL_URL.startsWith('PASTE_')) { alert('Svedah setup: add your Apps Script web app URL in RUN_PORTAL_URL.'); return; }
+    const modal=document.getElementById('runPortalModal');
+    const url=new URL(RUN_PORTAL_URL);
+    if(runId) url.searchParams.set('runId',runId);
+    url.searchParams.set('mode',mode);
+    document.getElementById('runPortalFrame').src=url.toString();
+    modal.hidden=false;
+    document.body.style.overflow='hidden';
+    // The form has its own Join / Post tabs.
+  }
+  function closeRunPortal() {
+    document.getElementById('runPortalModal').hidden=true;
+    document.getElementById('runPortalFrame').src='about:blank';
+    document.body.style.overflow='';
+  }
+  document.getElementById('runPortalModal').addEventListener('click',e=>{if(e.target.id==='runPortalModal')closeRunPortal()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.getElementById('runPortalModal').hidden)closeRunPortal()});
+  function parseCSV(text) {
+    const rows=[];let row=[],field='',quoted=false;
+    for(let i=0;i<text.length;i++) {
+      const c=text[i];
+      if(c==='"') { if(quoted&&text[i+1]==='"'){field+='"';i++}else quoted=!quoted; }
+      else if(c===','&&!quoted){row.push(field);field=''}
+      else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&text[i+1]==='\n')i++;row.push(field);if(row.some(v=>v.trim()))rows.push(row);row=[];field=''}
+      else field+=c;
+    }
+    row.push(field);if(row.some(v=>v.trim()))rows.push(row);
+    return rows;
+  }
+  function parseDate(s) {
+    if(!s)return null;
+    const p=String(s).trim().split(/[\/-]/);
+    if(p.length===3){const [d,m,y]=p.map(Number);const dt=new Date(y,m-1,d);return dt.getFullYear()===y&&dt.getMonth()===m-1&&dt.getDate()===d?dt:null;}
+    return null;
+  }
+  function textNode(tag,value) { const el=document.createElement(tag);el.textContent=value;return el; }
+  fetch(SHEET_CSV).then(r=>{if(!r.ok)throw Error('Sheet request failed');return r.text()}).then(csv=>{
+    const rows=parseCSV(csv), headers=(rows.shift()||[]).map(h=>h.trim().toLowerCase());
+    const field=(row,name)=>row[headers.indexOf(name)]||'';
+    const today=new Date();today.setHours(0,0,0,0);
+    const runs=rows.map(row=>({date:field(row,'date'),dateObj:parseDate(field(row,'date')),location:field(row,'location'),distance:field(row,'distance'),time:field(row,'time'),id:field(row,'run id'),leader:field(row,'leader name'),status:field(row,'status')}))
+      .filter(r=>r.dateObj&&r.dateObj>=today&&r.status.toLowerCase()!=='cancelled').sort((a,b)=>a.dateObj-b.dateObj).slice(0,5);
+    const box=document.getElementById('runs-list');box.replaceChildren();
+    if(!runs.length)box.append(textNode('p','No upcoming long runs scheduled.'));
+    runs.forEach(r=>{
+      const el=document.createElement('div');el.className='service-card visible';
+      const title=textNode('h3',r.location||'Run');title.style.color='#991b1b';el.append(title);
+      [['Date',r.date],['Distance',r.distance],['Time',r.time],['Leader',r.leader]].forEach(([k,v])=>{const p=document.createElement('p');p.append(textNode('strong',k+': '),document.createTextNode(v||'-'));el.append(p)});
+      if(r.id&&r.status.toLowerCase()==='open'){
+        const btn=document.createElement('button');btn.className='btn';btn.style.marginTop='12px';btn.textContent='Join this Run';btn.addEventListener('click',()=>openRunPortal('join',r.id));el.append(btn);
+      }else if(!r.id){el.append(textNode('p','Registration will open when a Run ID is added to this row.'))}
+      box.append(el);
     });
-
+  }).catch(err=>{console.error('Sheet load error',err);document.getElementById('runs-list').textContent='Unable to load upcoming runs.'});
 
   // Folder URL containing your background images
   const bgFolder = "https://raw.githubusercontent.com/nandishnagaraj/webpage/main/backgrounds/";
@@ -1441,136 +1464,6 @@
     });
   </script>
 
-
-
-<!-- ========================= -->
-<!-- WebMCP + Static JSON Tools -->
-<!-- ========================= -->
-
-<script type="module">
-
-let workouts = [];
-let programs = [];
-
-/* -----------------------------
-   Load Static JSON
------------------------------- */
-
-async function loadWorkouts() {
-    const response = await fetch("./api/workouts.json");
-    workouts = await response.json();
-    console.log("Loaded workouts", workouts);
-}
-
-async function loadPrograms() {
-    const response = await fetch("./api/programs.json");
-    programs = await response.json();
-    console.log("Loaded programs", programs);
-}
-
-await Promise.all([
-    loadWorkouts(),
-    loadPrograms()
-]);
-
-/* ------------------------------------
-   Register WebMCP Tools
-------------------------------------- */
-
-if ("modelContext" in document) {
-
-    /* ===========================
-       search_workouts
-    =========================== */
-
-    await document.modelContext.registerTool({
-
-        name: "search_workouts",
-
-        description:
-            "Search Svedah workouts by name, category or level.",
-
-        inputSchema: {
-            type: "object",
-            properties: {
-                query: {
-                    type: "string",
-                    description: "Workout name or keyword"
-                }
-            }
-        },
-
-        async execute({ query }) {
-
-            const q = (query || "").toLowerCase();
-
-            const results = workouts.filter(workout =>
-                workout.name.toLowerCase().includes(q) ||
-                workout.category.toLowerCase().includes(q) ||
-                workout.level.toLowerCase().includes(q)
-            );
-
-            return {
-                content: [{
-                    type: "text",
-                    text: JSON.stringify(results, null, 2)
-                }]
-            };
-
-        }
-
-    });
-
-    /* ===========================
-       search_programs
-    =========================== */
-
-    await document.modelContext.registerTool({
-
-        name: "search_programs",
-
-        description:
-            "Search Svedah running programs.",
-
-        inputSchema: {
-            type: "object",
-            properties: {
-                query: {
-                    type: "string",
-                    description: "10K, Half Marathon, Marathon..."
-                }
-            }
-        },
-
-        async execute({ query }) {
-
-            const q = (query || "").toLowerCase();
-
-            const results = programs.filter(program =>
-                program.name.toLowerCase().includes(q) ||
-                program.goal.toLowerCase().includes(q)
-            );
-
-            return {
-                content: [{
-                    type: "text",
-                    text: JSON.stringify(results, null, 2)
-                }]
-            };
-
-        }
-
-    });
-
-    console.log("✅ Svedah WebMCP tools registered");
-
-} else {
-
-    console.log("ℹ️ WebMCP not available in this browser.");
-
-}
-
-</script>
 
 </body>
 </html>
