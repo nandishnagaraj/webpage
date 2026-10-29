@@ -1164,7 +1164,7 @@
 <section id="longruns">
   <div class="container">
     <h2>Upcoming Long Runs</h2>
-    <p class="section-sub">Community-powered group runs updated live every week.</p>
+    <p class="section-sub">Find your Saturday running group and register for an upcoming run.</p>
     <div id="runs-list" class="services-grid" data-test-id="svedah_upcoming_runs_list"></div>
   </div>
 </section>
@@ -1341,52 +1341,78 @@
   .forEach(el => observer.observe(el));
 
 
-  // Fetch long runs from Google Sheet
-  const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?output=csv";
-
-  function parseDate(s){ if(!s) return null; const parts=s.trim().split(/[\/\-]/); if(parts.length===3){const[d,m,y]=parts.map(n=>parseInt(n,10));return new Date(y,m-1,d);} const dt=new Date(s);return isNaN(dt)?null:dt; }
-  function parseCSV(text){ return text.split(/\r?\n/).filter(l=>l.trim()!=="").map(l=>l.split(",")); }
-
-  fetch(SHEET_CSV)
-    .then(r=>r.text())
-    .then(csv=>{
-      const rows=parseCSV(csv);
-      const headers=rows.shift().map(h=>h.toLowerCase());
-      const idxDate=headers.findIndex(h=>h.includes("date"));
-      const idxLoc=headers.findIndex(h=>h.includes("location"));
-      const idxDist=headers.findIndex(h=>h.includes("distance"));
-      const idxTime=headers.findIndex(h=>h.includes("time"));
-      const today=new Date();
-      const runs=rows.map(r=>({
-        dateRaw:r[idxDate],
-        dateObj:parseDate(r[idxDate]),
-        location:r[idxLoc],
-        distance:r[idxDist],
-        time:r[idxTime]
-      }))
-      .filter(r=>r.dateObj&&r.dateObj>=today)
-      .sort((a,b)=>a.dateObj-b.dateObj)
-      .slice(0,5);
-
-      const box=document.getElementById("runs-list");
-      box.innerHTML=runs.length?"":'<p class="section-sub">No upcoming long runs scheduled.</p>';
-      runs.forEach(r=>{
-        const el=document.createElement("div");
-        el.className="service-card visible";
-        el.setAttribute("data-test-id", `svedah_upcoming_run_${runs.indexOf(r) + 1}`);
-        el.innerHTML=`
-          <h3 style="color:#991b1b">${r.location||"Run"}</h3>
-          <p><strong>Date:</strong> ${r.dateRaw||"-"}</p>
-          <p><strong>Distance:</strong> ${r.distance||"-"}</p>
-          <p><strong>Time:</strong> ${r.time||"-"}</p>`;
-        box.appendChild(el);
-      });
-    })
-    .catch(err=>{
-      console.error("Sheet load error:",err);
-      document.getElementById("runs-list").innerHTML='<p style="color:#dc2626">Error loading runs.</p>';
+  // Existing public Google Sheet CSV remains unchanged.
+  const SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?gid=0&single=true&output=csv";
+  // Published CSV of the "Run Summary" tab ONLY (counts, no personal data). Leave as PASTE_ to hide join counts.
+  const SUMMARY_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTzDUn6SfBk7H0_vEytsbvU0aDjcCnPifX5aNkLoLPAXuDZAAa2YhmrNc0SAlwxnzkQXeCvW_HPFa52/pub?gid=220387219&single=true&output=csv";
+  // Leaders add runs directly in the Google Sheet (see SETUP.txt). Athletes register through ONE Google Form.
+  const JOIN_RUN_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdtduzau4lo_sgboOe8ksInveGhFkgQU2UyvxGKpAZSe5i1ZA/viewform";   // athlete form
+  const JOIN_RUN_ID_ENTRY = "entry.805595964";         // "Run ID" question id from the form's pre-filled link
+  const formReady = u => !u.startsWith('PASTE_');
+  function joinRunFormLink(runId) {
+    const url = new URL(JOIN_RUN_FORM_URL);
+    url.searchParams.set('usp', 'pp_url');
+    url.searchParams.set(JOIN_RUN_ID_ENTRY, runId); // pre-fills the Run ID question
+    return url.toString();
+  }
+  function parseCSV(text) {
+    const rows=[];let row=[],field='',quoted=false;
+    for(let i=0;i<text.length;i++) {
+      const c=text[i];
+      if(c==='"') { if(quoted&&text[i+1]==='"'){field+='"';i++}else quoted=!quoted; }
+      else if(c===','&&!quoted){row.push(field);field=''}
+      else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&text[i+1]==='\n')i++;row.push(field);if(row.some(v=>v.trim()))rows.push(row);row=[];field=''}
+      else field+=c;
+    }
+    row.push(field);if(row.some(v=>v.trim()))rows.push(row);
+    return rows;
+  }
+  function parseDate(s) {
+    if(!s)return null;
+    const p=String(s).trim().split(/[\/-]/);
+    if(p.length===3){const [d,m,y]=p.map(Number);const dt=new Date(y,m-1,d);return dt.getFullYear()===y&&dt.getMonth()===m-1&&dt.getDate()===d?dt:null;}
+    return null;
+  }
+  function textNode(tag,value) { const el=document.createElement(tag);el.textContent=value;return el; }
+  const fetchText=u=>fetch(u).then(r=>{if(!r.ok)throw Error('Sheet request failed');return r.text()});
+  // Summary is optional: if it is unset or fails, runs still render without counts.
+  const summaryP=SUMMARY_CSV.startsWith('PASTE_')?Promise.resolve(''):fetchText(SUMMARY_CSV).catch(e=>{console.warn('Summary load error',e);return ''});
+  Promise.all([fetchText(SHEET_CSV),summaryP]).then(([csv,summaryCsv])=>{
+    const summary={};
+    const sRows=parseCSV(summaryCsv||''),sHead=(sRows.shift()||[]).map(h=>h.trim().toLowerCase());
+    sRows.forEach(row=>{const g=n=>row[sHead.indexOf(n)]||'';if(g('run id'))summary[g('run id').trim()]={joining:Number(g('joining'))||0,'5K':Number(g('5k'))||0,'10K':Number(g('10k'))||0,'15K':Number(g('15k'))||0,'20K':Number(g('20k'))||0}});
+    const rows=parseCSV(csv), headers=(rows.shift()||[]).map(h=>h.trim().toLowerCase());
+    const field=(row,name)=>row[headers.indexOf(name)]||'';
+    const today=new Date();today.setHours(0,0,0,0);
+    const runs=rows.map(row=>({date:field(row,'date'),dateObj:parseDate(field(row,'date')),location:field(row,'location'),distance:field(row,'distance'),time:field(row,'time'),id:field(row,'run id'),leader:field(row,'leader name'),status:field(row,'status'),mapLink:field(row,'map link').trim(),meeting:field(row,'meeting point'),paceFrom:field(row,'pace from (min/km)'),paceTo:field(row,'pace to (min/km)'),route:field(row,'route details'),notes:field(row,'notes'),max:Number(field(row,'maximum runners'))||0}))
+      .filter(r=>r.dateObj&&r.dateObj>=today&&r.status.toLowerCase()!=='cancelled').sort((a,b)=>a.dateObj-b.dateObj).slice(0,5);
+    const box=document.getElementById('runs-list');box.replaceChildren();
+    if(!runs.length)box.append(textNode('p','No upcoming long runs scheduled.'));
+    runs.forEach(r=>{
+      const el=document.createElement('div');el.className='service-card visible';
+      const title=textNode('h3',r.location||'Run');title.style.color='#991b1b';el.append(title);
+      [['Date',r.date],['Distance',r.distance?r.distance+' km':''],['Time',r.time],['Leader',r.leader],['Pace',(r.paceFrom||r.paceTo)?(r.paceFrom||'-')+' - '+(r.paceTo||'-')+' min/km':''],['Meeting point',r.meeting],['Route',r.route],['Max runners',r.max>0?String(r.max):''],['Notes',r.notes]].filter(([k,v])=>v||['Date','Distance','Time','Leader'].includes(k)).forEach(([k,v])=>{const p=document.createElement('p');p.append(textNode('strong',k+': '),document.createTextNode(v||'-'));el.append(p)});
+      // Map link from the sheet; only http(s) is accepted (the sheet is editable by leaders). Falls back to a Google Maps search of the location.
+      const mapHref=/^https?:\/\//i.test(r.mapLink)?r.mapLink:(r.location?'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(r.location):'');
+      if(mapHref){
+        const mp=document.createElement('p'),a=document.createElement('a');
+        a.href=mapHref;a.target='_blank';a.rel='noopener noreferrer';a.textContent='View on Google Maps';a.style.cssText='color:#991b1b;font-weight:700;text-decoration:underline';
+        mp.append(textNode('strong','Location: '),a);el.append(mp);
+      }
+      const sm=summary[r.id];
+      const isFull=(r.max>0&&sm&&sm.joining>=r.max)||r.status.toLowerCase()==='full';
+      if(sm){
+        const p=document.createElement('p');p.append(textNode('strong','Joining: '),document.createTextNode(String(sm.joining)));el.append(p);
+        const parts=['5K','10K','15K','20K'].filter(k=>sm[k]>0).map(k=>k+': '+sm[k]);
+        if(parts.length)el.append(textNode('p',parts.join(' · ')));
+      }
+      if(isFull){el.append(textNode('p','This run is full.'))}
+      else if(r.id&&(r.status.toLowerCase()==='open'||r.status==='')){
+        const btn=document.createElement('a');btn.className='btn';btn.style.cssText='margin-top:12px;display:inline-block;text-decoration:none';btn.textContent='Join this Run';if(formReady(JOIN_RUN_FORM_URL)){btn.href=joinRunFormLink(r.id);btn.target='_blank';btn.rel='noopener'}else{btn.title='Athlete form not configured yet'}el.append(btn);
+      }else if(!r.id){el.append(textNode('p','Registration will open when a Run ID is added to this row.'))}
+      box.append(el);
     });
-
+  }).catch(err=>{console.error('Sheet load error',err);document.getElementById('runs-list').textContent='Unable to load upcoming runs.'});
 
   // Folder URL containing your background images
   const bgFolder = "https://raw.githubusercontent.com/nandishnagaraj/webpage/main/backgrounds/";
