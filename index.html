@@ -1410,8 +1410,30 @@
       else if(r.id&&(r.status.toLowerCase()==='open'||r.status==='')){
         const btn=document.createElement('a');btn.className='btn';btn.style.cssText='margin-top:12px;display:inline-block;text-decoration:none';btn.textContent='Join this Run';if(formReady(JOIN_RUN_FORM_URL)){btn.href=joinRunFormLink(r.id);btn.target='_blank';btn.rel='noopener'}else{btn.title='Athlete form not configured yet'}el.append(btn);
       }else if(!r.id){el.append(textNode('p','Registration will open when a Run ID is added to this row.'))}
+      if(r.id){
+        // Shareable deep link: opens the site scrolled to this run's card.
+        el.dataset.runId=r.id;
+        const link=location.origin+location.pathname+'?run='+encodeURIComponent(r.id)+'#longruns';
+        const shareText='Svedah Saturday run: '+(r.location||'')+', '+r.date+' '+r.time+(r.distance?', '+r.distance+' km':'')+'. Join here:';
+        const row=document.createElement('div');row.style.cssText='margin-top:10px;display:flex;gap:14px;flex-wrap:wrap;align-items:center';
+        const shareBtn=document.createElement('button');shareBtn.type='button';shareBtn.className='btn';shareBtn.textContent='Share this run';
+        shareBtn.addEventListener('click',async()=>{
+          try{
+            if(navigator.share){await navigator.share({title:'Svedah Saturday run',text:shareText,url:link});return}
+            await navigator.clipboard.writeText(link);shareBtn.textContent='Link copied!';setTimeout(()=>shareBtn.textContent='Share this run',2500);
+          }catch(e){if(e&&e.name!=='AbortError')window.prompt('Copy this link to share:',link)}
+        });
+        const wa=document.createElement('a');wa.href='https://wa.me/?text='+encodeURIComponent(shareText+' '+link);wa.target='_blank';wa.rel='noopener noreferrer';wa.textContent='WhatsApp';wa.style.cssText='color:#991b1b;font-weight:700;text-decoration:underline';
+        row.append(shareBtn,wa);el.append(row);
+      }
       box.append(el);
     });
+    // Opened from a shared link (?run=LR001): scroll to and highlight that card.
+    const wanted=new URLSearchParams(location.search).get('run');
+    if(wanted){
+      const target=[...box.children].find(c=>c.dataset.runId===wanted);
+      if(target){target.style.outline='3px solid #f97316';target.style.outlineOffset='4px';setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'center'}),300)}
+    }
   }).catch(err=>{console.error('Sheet load error',err);document.getElementById('runs-list').textContent='Unable to load upcoming runs.'});
 
   // Folder URL containing your background images
