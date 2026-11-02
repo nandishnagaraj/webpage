@@ -1413,17 +1413,17 @@
       if(r.id){
         // Shareable deep link: opens the site scrolled to this run's card.
         el.dataset.runId=r.id;
-        const link=location.origin+location.pathname+'?run='+encodeURIComponent(r.id)+'#longruns';
-        const shareText='Svedah Saturday run: '+(r.location||'')+', '+r.date+' '+r.time+(r.distance?', '+r.distance+' km':'')+'. Join here:';
+        const link=location.origin+location.pathname+'?run='+encodeURIComponent(r.id); // short link, no #anchor: the page scrolls to the card itself
+        const shareText='Svedah Saturday run: '+(r.location||'')+', '+r.date+' '+r.time+(r.distance?', '+r.distance+' km':'')+'.';
         const row=document.createElement('div');row.style.cssText='margin-top:10px;display:flex;gap:14px;flex-wrap:wrap;align-items:center';
         const shareBtn=document.createElement('button');shareBtn.type='button';shareBtn.className='btn';shareBtn.textContent='Share this run';
         shareBtn.addEventListener('click',async()=>{
           try{
-            if(navigator.share){await navigator.share({title:'Svedah Saturday run',text:shareText,url:link});return}
+            if(navigator.share){await navigator.share({title:'Svedah Saturday run',text:shareText+'\n'+link});return}
             await navigator.clipboard.writeText(link);shareBtn.textContent='Link copied!';setTimeout(()=>shareBtn.textContent='Share this run',2500);
           }catch(e){if(e&&e.name!=='AbortError')window.prompt('Copy this link to share:',link)}
         });
-        const wa=document.createElement('a');wa.href='https://wa.me/?text='+encodeURIComponent(shareText+' '+link);wa.target='_blank';wa.rel='noopener noreferrer';wa.textContent='WhatsApp';wa.style.cssText='color:#991b1b;font-weight:700;text-decoration:underline';
+        const wa=document.createElement('a');wa.href='https://wa.me/?text='+encodeURIComponent(shareText+'\n'+link);wa.target='_blank';wa.rel='noopener noreferrer';wa.textContent='WhatsApp';wa.style.cssText='color:#991b1b;font-weight:700;text-decoration:underline';
         row.append(shareBtn,wa);el.append(row);
       }
       box.append(el);
