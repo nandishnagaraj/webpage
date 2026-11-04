@@ -1423,8 +1423,7 @@
             await navigator.clipboard.writeText(link);shareBtn.textContent='Link copied!';setTimeout(()=>shareBtn.textContent='Share this run',2500);
           }catch(e){if(e&&e.name!=='AbortError')window.prompt('Copy this link to share:',link)}
         });
-        const wa=document.createElement('a');wa.href='https://wa.me/?text='+encodeURIComponent(shareText+'\n'+link);wa.target='_blank';wa.rel='noopener noreferrer';wa.textContent='WhatsApp';wa.style.cssText='color:#991b1b;font-weight:700;text-decoration:underline';
-        row.append(shareBtn,wa);el.append(row);
+        row.append(shareBtn);el.append(row);
       }
       box.append(el);
     });
